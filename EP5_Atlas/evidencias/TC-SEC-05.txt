@@ -1,0 +1,12 @@
+MÉTODO RUTA                          HTTP  RESULTADO
+GET    /contratos/11                 200   {"id":"11","cliente_id":"28","titulo":"Contrato QA 4
+GET    /contratos/11/file            200   <232 bytes application/pdf>
+GET    /auditoria                    200   [{"id":"76","usuario_id":"atacante_a4f5fc","accion":
+GET    /empresas                     200   [{"id":"8","nombre":"Atacante QA a4f5fc","direccion"
+GET    /empresas/7                   200   {"id":"7","nombre":"Victima QA 92f2bb","direccion":"
+GET    /usuarios/10                  200   {"id":"10","nombre_usuario":"victima_92f2bb","correo
+GET    /empresa-usuarios/8           200   {"id":"8","empresa_id":"7","usuario_id":"10","rol_id
+GET    /roles                        200   [{"id":"2","nombre":"editor"},{"id":"1","nombre":"ad
+POST   /roles                        500   cambio APLICADO en la BD (falla luego la auditoría)
+PUT    /empresas/8                   500   cambio APLICADO en la BD (falla luego la auditoría)
+=> 10 de 10 operaciones aceptadas sin autenticación

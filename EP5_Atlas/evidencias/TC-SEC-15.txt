@@ -1,0 +1,4 @@
+docker-compose.yml: servicios ['atlas-postgres', 'atlas-backend', 'atlas-frontend', 'atlas-network']; menciones a respaldo: ninguna
+Archivos de respaldo/restauración en el repositorio: ninguno
+Datos en volumen 'postgres_data' y documentos dentro de la BD: un fallo del volumen pierde todo
+=> No existe respaldo automatizado ni procedimiento de restauración

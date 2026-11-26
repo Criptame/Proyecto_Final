@@ -1,0 +1,13 @@
+# Filtro por nombre
+> GET /clientes/search?name=Alfa   [con token]
+< HTTP 200  (8 ms)
+  [{"id":"5","nombre":"Filtro Alfa 4f817c","correo":"cliente_883ec3@qa.test","telefono":"+56987654321","direccion":"Calle 
+# Paginación page=1&limit=1
+> GET /clientes?page=1&limit=1   [con token]
+< HTTP 200  (4011 ms)
+  [{"id":"6","nombre":"Filtro Beta 5fb30b","correo":"cliente_bf6fe8@qa.test","telefono":"+56987654321","direccion":"Calle 
+# Edición
+> PUT /clientes/5   [con token]
+< HTTP 200  (19 ms)
+  {"id":"5","nombre":"Filtro Alfa 4f817c (editado)","correo":"cliente_883ec3@qa.test","telefono":"+569
+=> Filtro correcto; paginación devuelve 4 registros con limit=1; edición HTTP 200

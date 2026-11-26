@@ -1,0 +1,27 @@
+# POST /contratos/:id/share
+> POST /contratos/5/share   [con token]
+< HTTP 404  (4 ms)
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /contratos/5/share</pre>
+</body>
+<
+# GET /contratos/:id/share
+> GET /contratos/5/share   [con token]
+< HTTP 404  (4 ms)
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot GET /contratos/5/share</pre>
+</body>
+</
+=> No existe servicio para compartir documentos (HTTP 404/404)

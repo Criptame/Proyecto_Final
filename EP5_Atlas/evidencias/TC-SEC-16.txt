@@ -1,0 +1,7 @@
+# Editor lista clientes
+> GET /clientes/search?name=   [con token]
+< HTTP 200  (9 ms)
+  [{"id":"1"
+  María González: RUT 17654321-9 | Banco Santander cta 9876543210 | titular Biotec Solutions SpA
+  Pedro Morales: RUT 18933456-2 | Banco BCI cta 4567891230 | titular Constructora Andes Ltda.
+=> El editor recibe 2 números de cuenta completos sin enmascarar

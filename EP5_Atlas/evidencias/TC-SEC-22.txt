@@ -1,0 +1,11 @@
+Semgrep: 87 hallazgos -> {'ERROR': 32, 'WARNING': 55}
+  [ERROR] missing-user -> BACKEND/Dockerfile:23
+  [ERROR] atlas-credenciales-bd-en-codigo -> BACKEND/src/db.js:5
+  [ERROR] atlas-secreto-jwt-por-defecto -> BACKEND/src/routes/audit.js:6
+  [ERROR] atlas-ruta-escritura-sin-autenticacion -> BACKEND/src/routes/audit.js:20
+  [ERROR] atlas-contrasena-comparada-en-claro -> BACKEND/src/routes/auth.js:26
+  [ERROR] atlas-contrasena-guardada-sin-hash -> BACKEND/src/routes/empresa_usuarios.js:43
+  [ERROR] atlas-rol-definido-en-el-cliente -> FRONTEND/src/context/AuthContext.jsx:15
+  [WARNING] atlas-cors-sin-lista-blanca -> BACKEND/src/app.js:22
+  [WARNING] atlas-error-interno-expuesto -> BACKEND/src/routes/audit.js:32
+=> 87 hallazgos SAST (32 de severidad ERROR)

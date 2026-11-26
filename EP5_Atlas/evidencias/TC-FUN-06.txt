@@ -1,0 +1,3 @@
+$ SELECT ... FROM empresa_usuarios WHERE usuario_id=4
+  4|1|administrador
+=> El creador quedó vinculado con rol 'administrador'

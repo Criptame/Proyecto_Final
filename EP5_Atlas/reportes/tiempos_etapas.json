@@ -1,0 +1,12 @@
+﻿{
+    "SAST - Semgrep":  15.4,
+    "Secretos - Gitleaks":  1.3,
+    "SCA - npm audit":  7.9,
+    "SCA - Trivy fs":  1.6,
+    "IaC - Trivy config":  2.4,
+    "DAST - OWASP ZAP baseline":  100.6,
+    "Carga - k6 (200 VU)":  108.7,
+    "API - pytest (funcional, seguridad, no funcional)":  289.9,
+    "Interfaz - Playwright + axe-core":  208.8,
+    "Disponibilidad - caída controlada":  6.4
+}

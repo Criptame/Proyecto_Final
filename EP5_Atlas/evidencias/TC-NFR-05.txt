@@ -1,0 +1,5 @@
+Login: fuente mínima 12.2 px; textos < 12 px: 0; controles < 24×24 px: 1 de 5
+   control 64×17 px: 'Regístrate'
+Dashboard: fuente mínima 10.5 px; textos < 12 px: 1; controles < 24×24 px: 0 de 11
+   texto 10.5 px: 'Versión 1.0.0'
+=> Fuente mínima 10.5 px; 1 textos < 12 px y 1 controles < 24 px

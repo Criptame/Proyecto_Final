@@ -1,0 +1,11 @@
+# Contraseña incorrecta
+> POST /autenticacion/login   [SIN token]
+  {"nombre_usuario": "admin", "password": "clave_incorrecta"}
+< HTTP 401  (4010 ms)
+  {"error":"Credenciales inválidas"}
+# Usuario inexistente
+> POST /autenticacion/login   [SIN token]
+  {"nombre_usuario": "no_existe_907a99", "password": "x"}
+< HTTP 401  (4013 ms)
+  {"error":"Credenciales inválidas"}
+=> HTTP 401 / 401 con mensajes idénticos

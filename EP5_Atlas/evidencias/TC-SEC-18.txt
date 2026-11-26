@@ -1,0 +1,4 @@
+> registro con contraseña '123' -> HTTP 201
+> registro con contraseña 'password' -> HTTP 201
+> registro con contraseña 'abcdefghijkl' -> HTTP 201
+=> Se aceptaron 3/3 contraseñas débiles: ['123', 'password', 'abcdefghijkl']

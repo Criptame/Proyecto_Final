@@ -1,0 +1,10 @@
+# Modificar usuario
+> PUT /usuarios/5   [con token]
+  {"nombre_usuario": "editor_75da83", "contrasena_hash": "Qa#Prueba2026!", "correo": "modificado_7abcc7@qa.test"}
+< HTTP 200  (15 ms)
+  {"id":"5","nombre_usuario":"editor_75da83","correo":"modificado_7abcc7@qa.test","created_at":"2026-11-26T05:38:37.975Z"}
+# Eliminar usuario (como lo hace la interfaz)
+> DELETE /usuarios/5   [con token]
+< HTTP 500  (10 ms)
+  {"error":"Error al eliminar usuario","glosa":"update or delete on table \"usuarios\" violates foreign key constraint \"empresa_usuarios_usuario_id_fkey\" on table \"empresa_usuarios\""}
+=> Modificación HTTP 200; eliminación HTTP 500

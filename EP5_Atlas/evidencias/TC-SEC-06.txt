@@ -1,0 +1,6 @@
+# DELETE anónimo de un contrato de la víctima
+> DELETE /contratos/12   [SIN token]
+< HTTP 500  (17 ms)
+  {"error":"Error al eliminar contrato","glosa":"null value in column \"usuario_id\" of relation \"auditoria\" violates not-null constraint"}
+$ contratos id=12: antes=1 después=0; documentos=0; eventos de auditoría=0
+=> Contrato y documento borrados por un anónimo sin rastro en auditoría (HTTP 500)

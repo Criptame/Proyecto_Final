@@ -1,0 +1,253 @@
+{
+  "total": 59,
+  "paso": 14,
+  "fallo": 45,
+  "bloqueado": 0,
+  "por_tipo": {
+    "TC-FUN": {
+      "PASÓ": 11,
+      "FALLÓ": 11
+    },
+    "TC-SEC": {
+      "FALLÓ": 24,
+      "PASÓ": 1
+    },
+    "TC-NFR": {
+      "FALLÓ": 10,
+      "PASÓ": 2
+    }
+  },
+  "severidad": {
+    "Alta": 12,
+    "Media": 21,
+    "Baja": 6,
+    "Crítica": 6
+  },
+  "criticos": [
+    {
+      "id": "TC-SEC-07",
+      "nombre": "Escalada de privilegios y toma de control de otra empresa",
+      "sev": "Crítica",
+      "base": "CVSS 9.8",
+      "cvss": 9.8
+    },
+    {
+      "id": "TC-SEC-17",
+      "nombre": "Secreto JWT publicado y falsificación de tokens",
+      "sev": "Crítica",
+      "base": "CVSS 9.8",
+      "cvss": 9.8
+    },
+    {
+      "id": "TC-SEC-25",
+      "nombre": "Configuración segura de contenedores y base de datos",
+      "sev": "Crítica",
+      "base": "CVSS 9.8",
+      "cvss": 9.8
+    },
+    {
+      "id": "TC-SEC-06",
+      "nombre": "Eliminación de contrato ajeno sin autenticación",
+      "sev": "Crítica",
+      "base": "CVSS 9.1",
+      "cvss": 9.1
+    },
+    {
+      "id": "TC-SEC-21",
+      "nombre": "Dependencias con vulnerabilidades conocidas (SCA)",
+      "sev": "Crítica",
+      "base": "Herramienta",
+      "cvss": null
+    },
+    {
+      "id": "TC-SEC-23",
+      "nombre": "Secretos expuestos en el repositorio",
+      "sev": "Crítica",
+      "base": "Herramienta",
+      "cvss": null
+    }
+  ],
+  "tiempos": {
+    "SAST - Semgrep": 15.4,
+    "Secretos - Gitleaks": 1.3,
+    "SCA - npm audit": 7.9,
+    "SCA - Trivy fs": 1.6,
+    "IaC - Trivy config": 2.4,
+    "DAST - OWASP ZAP baseline": 100.6,
+    "Carga - k6 (200 VU)": 108.7,
+    "API - pytest (funcional, seguridad, no funcional)": 289.9,
+    "Interfaz - Playwright + axe-core": 208.8,
+    "Disponibilidad - caída controlada": 6.4
+  },
+  "total_min": 12.4,
+  "crud": {
+    "GET /clientes/:id": 9,
+    "POST /clientes": 20,
+    "GET /clientes": 4028,
+    "GET /contratos": 4022,
+    "POST /autenticacion/login": 4028
+  },
+  "k6": {
+    "p95": 4027.4722635000003,
+    "p50": 4013.574884,
+    "max": 4078.015965,
+    "err": 0,
+    "reqs": 4086,
+    "rps": 39.64910372073621,
+    "vus": 200
+  },
+  "movil": {
+    "login_s": 3.4321770000005927,
+    "dashboard_s": 8.9312117999998
+  },
+  "axe_serias": 8,
+  "semgrep_total": 87,
+  "semgrep_publicas": 1,
+  "semgrep_propias": 86,
+  "semgrep_error": 32,
+  "semgrep_reglas_propias": 13,
+  "gitleaks": 3,
+  "npm": {
+    "backend": {
+      "info": 0,
+      "low": 0,
+      "moderate": 2,
+      "high": 7,
+      "critical": 1,
+      "total": 10
+    },
+    "frontend": {
+      "info": 0,
+      "low": 1,
+      "moderate": 6,
+      "high": 15,
+      "critical": 0,
+      "total": 22
+    }
+  },
+  "trivy": {
+    "HIGH": 34,
+    "LOW": 4,
+    "MEDIUM": 36,
+    "CRITICAL": 1
+  },
+  "trivy_conf": 4,
+  "zap": {
+    "frontend": {
+      "Medio": 3,
+      "Bajo": 7,
+      "Informativo": 2
+    },
+    "api": {
+      "Medio": 2,
+      "Bajo": 3,
+      "Informativo": 1
+    }
+  },
+  "obtenido": {
+    "TC-FUN-01": "HTTP 200 con JWT (usuarioId=1, empresaId=1, vigencia 2 h) y evento LOGIN auditado",
+    "TC-FUN-02": "HTTP 401 / 401 con mensajes idénticos",
+    "TC-FUN-03": "No existe servicio de logout (HTTP 404); el token sigue aceptado (HTTP 200)",
+    "TC-FUN-04": "Sin refresh token (HTTP 404 en /refresh); access token de 120 min",
+    "TC-FUN-05": "HTTP 201: usuario y empresa creados con nombre, dirección, teléfono y correo; login exitoso",
+    "TC-FUN-06": "El creador quedó vinculado con rol 'administrador'",
+    "TC-FUN-07": "HTTP 201; usuario listado con rol 'editor'",
+    "TC-FUN-08": "Modificación HTTP 200; eliminación HTTP 500",
+    "TC-FUN-09": "HTTP 201; datos recuperados coinciden con lo enviado",
+    "TC-FUN-10": "Filtro correcto; paginación devuelve 4 registros con limit=1; edición HTTP 200",
+    "TC-FUN-11": "Borrado físico: quedan 0 filas; la interfaz sí pide confirmación (diálogo 'Confirmar eliminación')",
+    "TC-FUN-12": "Formato inválido aceptado con HTTP 201; campo obligatorio ausente -> HTTP 500",
+    "TC-FUN-13": "HTTP 201/201; ambos contratos presentes en el listado: True",
+    "TC-FUN-14": "Subida 0.03 s, descarga 0.01 s; SHA-256 idéntico",
+    "TC-FUN-15": "Un PNG se entrega como application/pdf con nombre 'contrato.pdf'",
+    "TC-FUN-16": "Los documentos se guardan como bytea dentro de PostgreSQL; el storage interno tiene 0 archivos",
+    "TC-FUN-17": "GET /contratos no incluye 'estado'; /estados sólo informa ['por_vencer', 'vencido'] (sin 'activo', máximo 3 por grupo)",
+    "TC-FUN-18": "No existe servicio para compartir documentos (HTTP 404/404)",
+    "TC-FUN-19": "8/10 acciones auditadas; sin registro: Descargar documento, Crear usuario",
+    "TC-FUN-20": "Segunda empresa con el mismo correo rechazada (HTTP 500)",
+    "TC-FUN-21": "cliente_id es referencia simple; la API no admite dos clientes",
+    "TC-FUN-22": "Swagger disponible; rutas críticas sin documentar: ninguna",
+    "TC-SEC-01": "API no ofrece TLS; API responde por HTTP plano sin redirigir; Frontend no ofrece TLS; Frontend responde por HTTP plano sin redirigir; PostgreSQL sin SSL",
+    "TC-SEC-02": "3 de 3 contraseñas almacenadas en texto plano",
+    "TC-SEC-03": "Número de cuenta, titular y RUT legibles en la BD (sin cifrar)",
+    "TC-SEC-04": "El editor crea, edita y elimina: HTTP (201, 200, 200)",
+    "TC-SEC-05": "10 de 10 operaciones aceptadas sin autenticación",
+    "TC-SEC-06": "Contrato y documento borrados por un anónimo sin rastro en auditoría (HTTP 500)",
+    "TC-SEC-07": "El atacante se convirtió en administrador de otra empresa y obtuvo sus datos bancarios",
+    "TC-SEC-08": "Creación HTTP 201 y reasignación HTTP 200; la víctima ve 2 contratos ajenos",
+    "TC-SEC-09": "El backend almacenó el payload sin sanear (HTTP 201); React lo escapa al mostrarlo (ver evidencia de interfaz), por lo que el riesgo queda latente para otros consumidores de la API",
+    "TC-SEC-10": "Login HTTP 401; búsqueda devolvió 0 filas (de 27 en la BD) y 0 de otras empresas: consultas parametrizadas efectivas",
+    "TC-SEC-11": "La API autoriza cualquier origen (Access-Control-Allow-Origin: *)",
+    "TC-SEC-12": "API sin 5/5 y frontend sin 5/5 cabeceras; la API revela 'X-Powered-By: Express'",
+    "TC-SEC-13": "HTTP 500 con detalle interno de PostgreSQL en 'glosa'; los logs imprimen el contenido del token",
+    "TC-SEC-14": "Auditoría pública con eventos de 9 usuarios de distintas empresas; se aceptan eventos fabricados (HTTP 201)",
+    "TC-SEC-15": "No existe respaldo automatizado ni procedimiento de restauración",
+    "TC-SEC-16": "El editor recibe 2 números de cuenta completos sin enmascarar",
+    "TC-SEC-17": "La API acepta el token falsificado (HTTP 200) y entrega 2 clientes de la víctima",
+    "TC-SEC-18": "Se aceptaron 3/3 contraseñas débiles: ['123', 'password', 'abcdefghijkl']",
+    "TC-SEC-19": "Archivos no permitidos aceptados: ['malware.exe', 'pagina.html', 'grande.pdf']",
+    "TC-SEC-20": "Sin limitación de intentos: 0 respuestas 429/423 de 30",
+    "TC-SEC-21": "23 vulnerabilidades altas/críticas según npm audit; Trivy reporta 1 críticas y 34 altas",
+    "TC-SEC-22": "87 hallazgos SAST (32 de severidad ERROR)",
+    "TC-SEC-23": "3 secretos expuestos en archivos del proyecto",
+    "TC-SEC-24": "5 alertas de riesgo medio o alto",
+    "TC-SEC-25": "BD accesible desde la red con credenciales por defecto: sí; 4 configuraciones inseguras en Dockerfile/compose",
+    "TC-NFR-01": "3 de 5 operaciones superan 300 ms (p95): GET /clientes, GET /contratos, POST /autenticacion/login",
+    "TC-NFR-02": "Login listo en 3.43 s; dashboard (página principal) en 8.93 s",
+    "TC-NFR-03": "Con 200 usuarios concurrentes: p95 = 4027 ms y 0.00 % de errores",
+    "TC-NFR-04": "8 violaciones de impacto crítico o serio en 5 vistas (3 reglas WCAG incumplidas)",
+    "TC-NFR-05": "Fuente mínima 10.5 px; 1 textos < 12 px y 1 controles < 24 px",
+    "TC-NFR-06": "Registro de 2 pasos + inicio de sesión completados en 10.2 s y dashboard visible",
+    "TC-NFR-07": "La interfaz muestra el error técnico de PostgreSQL",
+    "TC-NFR-08": "No existe navegación cliente → contratos y la API ignora el filtro por cliente",
+    "TC-NFR-09": "Flujo completo en 4 de 4 navegadores",
+    "TC-NFR-10": "Contenido recortado en: Dashboard en Móvil, Clientes en Móvil (el menú lateral no se colapsa en pantallas pequeñas)",
+    "TC-NFR-11": "Un corte de la BD derriba la API (pool de pg sin manejador de errores); Docker la reinició en 1.0 s; atlas-backend, atlas-frontend sin healthcheck",
+    "TC-NFR-12": "Sin herramienta de migraciones ni versiones del esquema: un cambio exige recrear la BD o SQL manual"
+  },
+  "fecha": "26/11/2026",
+  "portada": {
+    "integrante": "Guillermo Isaías Santander Torres",
+    "carrera": "Ingeniería en Informática",
+    "seccion": "002V",
+    "docente": "Christian Rodrigo Álvarez Lobos",
+    "fecha_entrega": "26 de noviembre de 2026"
+  },
+  "capas": [
+    {
+      "capa": "Cliente (navegador)",
+      "ok": 1,
+      "total": 4,
+      "verificados": [
+        "Escape de salida (React)"
+      ]
+    },
+    {
+      "capa": "Borde y transporte",
+      "ok": 0,
+      "total": 4,
+      "verificados": []
+    },
+    {
+      "capa": "API (Express)",
+      "ok": 1,
+      "total": 9,
+      "verificados": [
+        "Consultas parametrizadas"
+      ]
+    },
+    {
+      "capa": "Datos",
+      "ok": 0,
+      "total": 6,
+      "verificados": []
+    },
+    {
+      "capa": "Operación y suministro",
+      "ok": 0,
+      "total": 4,
+      "verificados": []
+    }
+  ],
+  "recuperacion_s": 1.0
+}

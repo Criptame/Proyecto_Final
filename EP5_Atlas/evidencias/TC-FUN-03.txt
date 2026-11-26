@@ -1,0 +1,17 @@
+# Cerrar sesión
+> POST /autenticacion/logout   [con token]
+< HTTP 404  (6 ms)
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /autenticacion/logout</pre>
+</body
+# Reutilizar el mismo token
+> GET /clientes/search?name=   [con token]
+< HTTP 200  (8 ms)
+  [{"id":"1","nombre":"María González","correo":"maria.gonzalez@biotec.cl","telefo
+=> No existe servicio de logout (HTTP 404); el token sigue aceptado (HTTP 200)

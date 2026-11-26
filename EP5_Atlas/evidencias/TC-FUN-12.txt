@@ -1,0 +1,11 @@
+# Correo, RUT y teléfono inválidos
+> POST /clientes   [con token]
+  {"nombre": "Cliente QA da1ef5", "correo": "no-es-correo", "telefono": "abc", "direccion": "Calle Falsa 742, Valpara\u00edso", "es_empresa": true, "rut": "123", "nombre_fantasia": "Servicios QA", "giro_actividad_economica": "Consultor\u00eda", "nombre_banco": "Banco de Pruebas", "numero_cuenta": "000
+< HTTP 201  (16 ms)
+  {"id":"8","nombre":"Cliente QA da1ef5","correo":"no-es-correo","telefono":"abc","direccion":"Calle Falsa 742, Valparaíso
+# Sin nombre (obligatorio)
+> POST /clientes   [con token]
+  {"correo": "cliente_9f8712@qa.test", "telefono": "+56987654321", "direccion": "Calle Falsa 742, Valpara\u00edso", "es_empresa": true, "rut": "76.543.210-3", "nombre_fantasia": "Servicios QA", "giro_actividad_economica": "Consultor\u00eda", "nombre_banco": "Banco de Pruebas", "numero_cuenta": "000123
+< HTTP 500  (7 ms)
+  {"error":"Error al crear cliente","glosa":"null value in column \"nombre\" of relation \"clientes\" violates not-null constraint"}
+=> Formato inválido aceptado con HTTP 201; campo obligatorio ausente -> HTTP 500

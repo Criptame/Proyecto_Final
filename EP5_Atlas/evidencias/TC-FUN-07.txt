@@ -1,0 +1,6 @@
+> POST /empresa-usuarios   [con token]
+  {"nombre_usuario": "editor_75da83", "contrasena_hash": "Qa#Prueba2026!", "correo": "editor_75da83@qa.test", "rol_id": 2}
+< HTTP 201  (22 ms)
+  {"id":"5","empresa_id":"3","usuario_id":"5","rol_id":"2","created_at":"2026-11-26T05:38:37.981Z"}
+GET /empresa-usuarios -> [{'id': '5', 'nombre_usuario': 'editor_75da83', 'correo': 'editor_75da83@qa.test', 'created_at': '2026-11-26T05:38:37.981Z', 'rol_id': '2', 'rol_nombre': 'editor'}]
+=> HTTP 201; usuario listado con rol 'editor'

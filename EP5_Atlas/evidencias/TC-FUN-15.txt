@@ -1,0 +1,5 @@
+> GET /contratos/6/file   [con token]
+< HTTP 200  (6 ms)
+  <70 bytes application/pdf>
+Content-Type: application/pdf | Content-Disposition: inline; filename="contrato.pdf"
+=> Un PNG se entrega como application/pdf con nombre 'contrato.pdf'

@@ -1,0 +1,10 @@
+VISTA       crítica  seria  moderada  menor   reglas
+Login             0      1         0      0   color-contrast
+Registro          0      1         0      0   color-contrast
+Dashboard         0      2         0      0   color-contrast, list
+Clientes          1      1         0      0   button-name, list
+Contratos         1      1         0      0   button-name, list
+  · button-name [critical] Buttons must have discernible text (10 elementos)
+  · color-contrast [serious] Elements must meet minimum color contrast ratio thresholds (5 elementos)
+  · list [serious] <ul> and <ol> must only directly contain <li>, <script> or <template> elements (3 elementos)
+=> 8 violaciones de impacto crítico o serio en 5 vistas (3 reglas WCAG incumplidas)

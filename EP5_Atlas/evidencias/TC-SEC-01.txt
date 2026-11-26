@@ -1,0 +1,7 @@
+> GET https://localhost:4450  -> sin TLS (SSLError)
+> GET http://localhost:4450  -> HTTP 200, HSTS: ausente
+> GET https://localhost:3350  -> sin TLS (SSLError)
+> GET http://localhost:3350  -> HTTP 200, HSTS: ausente
+$ psql -c 'SHOW ssl'  -> off
+Credenciales del login viajan en claro: {"nombre_usuario": "admin", "password": "admin"}
+=> API no ofrece TLS; API responde por HTTP plano sin redirigir; Frontend no ofrece TLS; Frontend responde por HTTP plano sin redirigir; PostgreSQL sin SSL

@@ -1,0 +1,7 @@
+OPERACIÓN                     p50 (ms)  p95 (ms)  máx (ms)  ≤300 ms
+GET /clientes/:id                    7         9         9  sí
+POST /clientes                      18        20        21  sí
+GET /clientes                     4013      4028      4041  NO
+GET /contratos                    4019      4022      4023  NO
+POST /autenticacion/login         4024      4028      4028  NO
+=> 3 de 5 operaciones superan 300 ms (p95): GET /clientes, GET /contratos, POST /autenticacion/login

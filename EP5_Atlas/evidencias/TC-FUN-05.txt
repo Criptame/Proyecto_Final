@@ -1,0 +1,6 @@
+> POST /empresas   [SIN token]
+  {"usuario": {"nombre_usuario": "registro_035512", "contrasena_hash": "Qa#Prueba2026!", "correo": "registro_035512@qa.test"}, "empresa": {"nombre": "Registro QA 035512", "direccion": "Av. Libertador 1234, Santiago, RM", "telefono": "+56912345678", "correo": "contacto_registro_035512@qa.test"}}
+< HTTP 201  (24 ms)
+  {"usuario":{"id":"3","nombre_usuario":"registro_035512","correo":"registro_035512@qa.test","created_at":"2026-11-26T05:38:29.723Z"},"empresa":{"id":"2","nombre":"Registro QA 035512","direccion":"Av. Libertador 1234, Santiago, RM","telefono":"+56912345678","correo":"contacto_registro_035512@qa.test","created_at":"2026-11-26T05:38:29.729Z"}}
+Login del nuevo usuario: OK (empresaId=2)
+=> HTTP 201: usuario y empresa creados con nombre, dirección, teléfono y correo; login exitoso

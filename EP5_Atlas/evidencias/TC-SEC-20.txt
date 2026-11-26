@@ -1,0 +1,3 @@
+30 intentos fallidos en 12.2 s con 10 hilos -> códigos: {401: 30}
+Login correcto inmediatamente después: HTTP 200
+=> Sin limitación de intentos: 0 respuestas 429/423 de 30

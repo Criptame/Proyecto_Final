@@ -1,0 +1,3 @@
+Paso 1 (usuario) y paso 2 (empresa) completados; redirección a /login con aviso de éxito
+Dashboard visible tras el registro: 'Inicio | Clientes | Contratos | Auditoría | Usuarios | U |  | ui_f58745 |  | Administrador | Editar cuenta | Cerrar Sesi…'
+=> Registro de 2 pasos + inicio de sesión completados en 10.2 s y dashboard visible

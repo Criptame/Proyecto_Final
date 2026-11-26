@@ -1,0 +1,8 @@
+Criterio: sin desplazamiento horizontal y sin textos visibles recortados fuera del viewport
+VISTA               Móvil        Tablet    Escritorio   (textos recortados · desborde)
+Login            0 · no ✓      0 · no ✓      0 · no ✓
+Dashboard        6 · no ✗      0 · no ✓      0 · no ✓
+Clientes         4 · no ✗      0 · no ✓      0 · no ✓
+  texto recortado -> Dashboard/Móvil: 'Bienvenido, admin'
+  texto recortado -> Clientes/Móvil: 'Gestión de Clientes'
+=> Contenido recortado en: Dashboard en Móvil, Clientes en Móvil (el menú lateral no se colapsa en pantallas pequeñas)

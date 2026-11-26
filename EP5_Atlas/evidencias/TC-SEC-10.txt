@@ -1,0 +1,10 @@
+# Payload en login
+> POST /autenticacion/login   [SIN token]
+  {"nombre_usuario": "admin' OR '1'='1' --", "password": "x"}
+< HTTP 401  (4011 ms)
+  {"error":"Credenciales inválidas"}
+# Payload en búsqueda (token de la víctima)
+> GET /clientes/search?name=%25%27+OR+1%3D1+--   [con token]
+< HTTP 200  (9 ms)
+  []
+=> Login HTTP 401; búsqueda devolvió 0 filas (de 27 en la BD) y 0 de otras empresas: consultas parametrizadas efectivas

@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title id="head-title">reporte_api.html</title>
+      <style type="text/css">body {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  /* do not increase min-width as some may use split screens */
+  min-width: 800px;
+  color: #999;
+}
+
+h1 {
+  font-size: 24px;
+  color: black;
+}
+
+h2 {
+  font-size: 16px;
+  color: black;
+}
+
+p {
+  color: black;
+}
+
+a {
+  color: #999;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+/******************************
+ * SUMMARY INFORMATION
+ ******************************/
+#environment td {
+  padding: 5px;
+  border: 1px solid #e6e6e6;
+  vertical-align: top;
+}
+#environment tr:nth-child(odd) {
+  background-color: #f6f6f6;
+}
+#environment ul {
+  margin: 0;
+  padding: 0 20px;
+}
+
+/******************************
+ * TEST RESULT COLORS
+ ******************************/
+span.passed,
+.passed .col-result {
+  color: green;
+}
+
+span.skipped,
+span.xfailed,
+span.rerun,
+.skipped .col-result,
+.xfailed .col-result,
+.rerun .col-result {
+  color: orange;
+}
+
+span.error,
+span.failed,
+span.xpassed,
+.error .col-result,
+.failed .col-result,
+.xpassed .col-result {
+  color: red;
+}
+
+.col-links__extra {
+  margin-right: 3px;
+}
+
+/******************************
+ * RESULTS TABLE
+ *
+ * 1. Table Layout
+ * 2. Extra
+ * 3. Sorting items
+ *
+ ******************************/
+/*------------------
+ * 1. Table Layout
+ *------------------*/
+#results-table {
+  border: 1px solid #e6e6e6;
+  color: #999;
+  font-size: 12px;
+  width: 100%;
+}
+#results-table th,
+#results-table td {
+  padding: 5px;
+  border: 1px solid #e6e6e6;
+  text-align: left;
+}
+#results-table th {
+  font-weight: bold;
+}
+
+/*------------------
+ * 2. Extra
+ *------------------*/
+.logwrapper {
+  max-height: 230px;
+  overflow-y: scroll;
+  background-color: #e6e6e6;
+}
+.logwrapper.expanded {
+  max-height: none;
+}
+.logwrapper.expanded .logexpander:after {
+  content: "collapse [-]";
+}
+.logwrapper .logexpander {
+  z-index: 1;
+  position: sticky;
+  top: 10px;
+  width: max-content;
+  border: 1px solid;
+  border-radius: 3px;
+  padding: 5px 7px;
+  margin: 10px 0 10px calc(100% - 80px);
+  cursor: pointer;
+  background-color: #e6e6e6;
+}
+.logwrapper .logexpander:after {
+  content: "expand [+]";
+}
+.logwrapper .logexpander:hover {
+  color: #000;
+  border-color: #000;
+}
+.logwrapper .log {
+  min-height: 40px;
+  position: relative;
+  top: -50px;
+  height: calc(100% + 50px);
+  border: 1px solid #e6e6e6;
+  color: black;
+  display: block;
+  font-family: "Courier New", Courier, monospace;
+  padding: 5px;
+  padding-right: 80px;
+  white-space: pre-wrap;
+}
+
+div.media {
+  border: 1px solid #e6e6e6;
+  float: right;
+  height: 240px;
+  margin: 0 5px;
+  overflow: hidden;
+  width: 320px;
+}
+
+.media-container {
+  display: grid;
+  grid-template-columns: 25px auto 25px;
+  align-items: center;
+  flex: 1 1;
+  overflow: hidden;
+  height: 200px;
+}
+
+.media-container--fullscreen {
+  grid-template-columns: 0px auto 0px;
+}
+
+.media-container__nav--right,
+.media-container__nav--left {
+  text-align: center;
+  cursor: pointer;
+}
+
+.media-container__viewport {
+  cursor: pointer;
+  text-align: center;
+  height: inherit;
+}
+.media-container__viewport img,
+.media-container__viewport video {
+  object-fit: cover;
+  width: 100%;
+  max-height: 100%;
+}
+
+.media__name,
+.media__counter {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex: 0 0 25px;
+  align-items: center;
+}
+
+.collapsible td:not(.col-links) {
+  cursor: pointer;
+}
+.collapsible td:not(.col-links):hover::after {
+  color: #bbb;
+  font-style: italic;
+  cursor: pointer;
+}
+
+.col-result {
+  width: 130px;
+}
+.col-result:hover::after {
+  content: " (hide details)";
+}
+
+.col-result.collapsed:hover::after {
+  content: " (show details)";
+}
+
+#environment-header h2:hover::after {
+  content: " (hide details)";
+  color: #bbb;
+  font-style: italic;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+#environment-header.collapsed h2:hover::after {
+  content: " (show details)";
+  color: #bbb;
+  font-style: italic;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/*------------------
+ * 3. Sorting items
+ *------------------*/
+.sortable {
+  cursor: pointer;
+}
+.sortable.desc:after {
+  content: " ";
+  position: relative;
+  left: 5px;
+  bottom: -12.5px;
+  border: 10px solid #4caf50;
+  border-bottom: 0;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+.sortable.asc:after {
+  content: " ";
+  position: relative;
+  left: 5px;
+  bottom: 12.5px;
+  border: 10px solid #4caf50;
+  border-top: 0;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+
+.hidden, .summary__reload__button.hidden {
+  display: none;
+}
+
+.summary__data {
+  flex: 0 0 550px;
+}
+.summary__reload {
+  flex: 1 1;
+  display: flex;
+  justify-content: center;
+}
+.summary__reload__button {
+  flex: 0 0 300px;
+  display: flex;
+  color: white;
+  font-weight: bold;
+  background-color: #4caf50;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.summary__reload__button:hover {
+  background-color: #46a049;
+}
+.summary__spacer {
+  flex: 0 0 550px;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+}
+
+.filters,
+.collapse {
+  display: flex;
+  align-items: center;
+}
+.filters button,
+.collapse button {
+  color: #999;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.filters button:hover,
+.collapse button:hover {
+  color: #ccc;
+}
+
+.filter__label {
+  margin-right: 10px;
+}
+
+      </style>
+    
+  </head>
+  <body>
+    <h1 id="title">reporte_api.html</h1>
+    <p>Report generated on 26-Nov-2026 at 02:42:54 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a>
+        v4.2.0</p>
+    <div id="environment-header">
+      <h2>Environment</h2>
+    </div>
+    <table id="environment"></table>
+    <!-- TEMPLATES -->
+      <template id="template_environment_row">
+      <tr>
+        <td></td>
+        <td></td>
+      </tr>
+    </template>
+    <template id="template_results-table__body--empty">
+      <tbody class="results-table-row">
+        <tr id="not-found-message">
+          <td colspan="4">No results found. Check the filters.</td>
+        </tr>
+      </tbody>
+    </template>
+    <template id="template_results-table__tbody">
+      <tbody class="results-table-row">
+        <tr class="collapsible">
+        </tr>
+        <tr class="extras-row">
+          <td class="extra" colspan="4">
+            <div class="extraHTML"></div>
+            <div class="media">
+              <div class="media-container">
+                  <div class="media-container__nav--left">&lt;</div>
+                  <div class="media-container__viewport">
+                    <img src="" />
+                    <video controls>
+                      <source src="" type="video/mp4">
+                    </video>
+                  </div>
+                  <div class="media-container__nav--right">&gt;</div>
+                </div>
+                <div class="media__name"></div>
+                <div class="media__counter"></div>
+            </div>
+            <div class="logwrapper">
+              <div class="logexpander"></div>
+              <div class="log"></div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </template>
+    <!-- END TEMPLATES -->
+    <div class="summary">
+      <div class="summary__data">
+        <h2>Summary</h2>
+        <div class="additional-summary prefix">
+        </div>
+        <p class="run-count">50 tests took 00:04:49.</p>
+        <p class="filter">(Un)check the boxes to filter the results.</p>
+        <div class="summary__reload">
+          <div class="summary__reload__button hidden" onclick="location.reload()">
+            <div>There are still tests running. <br />Reload this page to get the latest results!</div>
+          </div>
+        </div>
+        <div class="summary__spacer"></div>
+        <div class="controls">
+          <div class="filters">
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="failed" >
+            <span class="failed">38 Failed,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="passed" >
+            <span class="passed">12 Passed,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="skipped" disabled>
+            <span class="skipped">0 Skipped,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="xfailed" disabled>
+            <span class="xfailed">0 Expected failures,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="xpassed" disabled>
+            <span class="xpassed">0 Unexpected passes,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="error" disabled>
+            <span class="error">0 Errors,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="rerun" disabled>
+            <span class="rerun">0 Reruns</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="retried" disabled>
+            <span class="retried">0 Retried,</span>
+          </div>
+          <div class="collapse">
+            <button id="show_all_details">Show all details</button>&nbsp;/&nbsp;<button id="hide_all_details">Hide all details</button>
+          </div>
+        </div>
+      </div>
+      <div class="additional-summary summary">
+      </div>
+      <div class="additional-summary postfix">
+      </div>
+    </div>
+    <table id="results-table">
+      <thead id="results-table-head">
+        <tr>
+          <th class="sortable" data-column-type="result">Result</th>
+          <th class="sortable" data-column-type="testId">Test</th>
+          <th class="sortable" data-column-type="duration">Duration</th>
+          <th>Links</th>
+        </tr>
+      </thead>
+    </table>
+  <footer>
+    <div id="data-container" data-jsonblob="{&#34;environment&#34;: {&#34;Python&#34;: &#34;3.13.14&#34;, &#34;Platform&#34;: &#34;Windows-11-10.0.26300-SP0&#34;, &#34;Packages&#34;: {&#34;pytest&#34;: &#34;9.2.0&#34;, &#34;pluggy&#34;: &#34;1.7.0&#34;}, &#34;Plugins&#34;: {&#34;html&#34;: &#34;4.2.0&#34;, &#34;metadata&#34;: &#34;3.1.1&#34;}}, &#34;tests&#34;: {&#34;api/test_funcionales.py::test_login_emite_jwt&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;api/test_funcionales.py::test_login_emite_jwt&#34;, &#34;duration&#34;: &#34;00:00:04&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_funcionales.py::test_login_emite_jwt&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:04&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;api/test_funcionales.py::test_credenciales_invalidas_genericas&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;api/test_funcionales.py::test_credenciales_invalidas_genericas&#34;, &#34;duration&#34;: &#34;00:00:08&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_funcionales.py::test_credenciales_invalidas_genericas&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:08&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;api/test_funcionales.py::test_logout_revoca_token&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_funcionales.py::test_logout_revoca_token&#34;, &#34;duration&#34;: &#34;00:00:04&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_funcionales.py::test_logout_revoca_token&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:04&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A89CA5D0&amp;gt;\n\n    @pytest.mark.caso(&amp;quot;TC-FUN-03&amp;quot;)\n    def test_logout_revoca_token(ev):\n        token = login(&amp;quot;admin&amp;quot;, &amp;quot;admin&amp;quot;)\n        r = requests.post(f&amp;quot;{API}/autenticacion/logout&amp;quot;, headers=h(token))\n        ev.http(r, cuerpo_max=150, etiqueta=&amp;quot;Cerrar sesi\u00f3n&amp;quot;)\n        r2 = requests.get(f&amp;quot;{API}/clientes/search?name=&amp;quot;, headers=h(token))\n        ev.http(r2, cuerpo_max=80, etiqueta=&amp;quot;Reutilizar el mismo token&amp;quot;)\n        ev.resultado(f&amp;quot;No existe servicio de logout (HTTP {r.status_code}); el token sigue aceptado (HTTP {r2.status_code})&amp;quot;)\n&amp;gt;       assert r.status_code in (200, 204), f&amp;quot;No existe servicio de cierre de sesi\u00f3n (HTTP {r.status_code}); el logout del frontend s\u00f3lo borra localStorage&amp;quot;\nE       AssertionError: No existe servicio de cierre de sesi\u00f3n (HTTP 404); el logout del frontend s\u00f3lo borra localStorage\nE       assert 404 in (200, 204)\nE        +  where 404 = &amp;lt;Response [404]&amp;gt;.status_code\n\napi\\test_funcionales.py:63: AssertionError\n&#34;}], &#34;api/test_funcionales.py::test_refresh_token&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_funcionales.py::test_refresh_token&#34;, &#34;duration&#34;: &#34;00:00:08&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_funcionales.py::test_refresh_token&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:08&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8AD8180&amp;gt;\ntok_admin = &amp;#x27;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvSWQiOiIxIiwibm9tYnJlVXN1YXJpbyI6ImFkbWluIiwiZW1wcmVzYVVzdWFyaW9JZCI6IjEiLCJlbXByZXNhSWQiOiIxIiwiaWF0IjoxNzk1NjcxNTA1LCJleHAiOjE3OTU2Nzg3MDV9.APdUZ0LeMeHfzuS7Rh8K9qoba2O1BIl186JtOP46_AI&amp;#x27;\n\n    @pytest.mark.caso(&amp;quot;TC-FUN-04&amp;quot;)\n    def test_refresh_token(ev, tok_admin):\n        r = requests.post(f&amp;quot;{API}/autenticacion/login&amp;quot;, json={&amp;quot;nombre_usuario&amp;quot;: &amp;quot;admin&amp;quot;, &amp;quot;password&amp;quot;: &amp;quot;admin&amp;quot;})\n        ev.nota(f&amp;quot;Claves de la respuesta de login: {list(r.json().keys())}&amp;quot;)\n        claims = decodificar_jwt(tok_admin)\n        vig_min = (claims[&amp;quot;exp&amp;quot;] - claims[&amp;quot;iat&amp;quot;]) / 60\n        rr = requests.post(f&amp;quot;{API}/autenticacion/refresh&amp;quot;, headers=h(tok_admin))\n        ev.http(rr, cuerpo_max=150)\n        ev.resultado(f&amp;quot;Sin refresh token (HTTP {rr.status_code} en /refresh); access token de {vig_min:.0f} min&amp;quot;)\n&amp;gt;       assert &amp;quot;refresh_token&amp;quot; in r.json() or &amp;quot;refreshToken&amp;quot; in r.json(), &amp;quot;El login no entrega refresh token&amp;quot;\nE       AssertionError: El login no entrega refresh token\nE       assert (&amp;#x27;refresh_token&amp;#x27; in {&amp;#x27;token&amp;#x27;: &amp;#x27;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvSWQiOiIxIiwibm9tYnJlVXN1YXJpbyI6ImFkbWluIiwiZW1wcmVzYVVzdW...6IjEiLCJlbXByZXNhSWQiOiIxIiwiaWF0IjoxNzk1NjcxNTA5LCJleHAiOjE3OTU2Nzg3MDl9.E5oaEiFVdSmW6JdHtPFyXwp5A6SaoDjs_dpAO6nLELM&amp;#x27;} or &amp;#x27;refreshToken&amp;#x27; in {&amp;#x27;token&amp;#x27;: &amp;#x27;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvSWQiOiIxIiwibm9tYnJlVXN1YXJpbyI6ImFkbWluIiwiZW1wcmVzYVVzdW...6IjEiLCJlbXByZXNhSWQiOiIxIiwiaWF0IjoxNzk1NjcxNTA5LCJleHAiOjE3OTU2Nzg3MDl9.E5oaEiFVdSmW6JdHtPFyXwp5A6SaoDjs_dpAO6nLELM&amp;#x27;})\nE        +  where {&amp;#x27;token&amp;#x27;: &amp;#x27;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvSWQiOiIxIiwibm9tYnJlVXN1YXJpbyI6ImFkbWluIiwiZW1wcmVzYVVzdW...6IjEiLCJlbXByZXNhSWQiOiIxIiwiaWF0IjoxNzk1NjcxNTA5LCJleHAiOjE3OTU2Nzg3MDl9.E5oaEiFVdSmW6JdHtPFyXwp5A6SaoDjs_dpAO6nLELM&amp;#x27;} = json()\nE        +    where json = &amp;lt;Response [200]&amp;gt;.json\nE        +  and   {&amp;#x27;token&amp;#x27;: &amp;#x27;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvSWQiOiIxIiwibm9tYnJlVXN1YXJpbyI6ImFkbWluIiwiZW1wcmVzYVVzdW...6IjEiLCJlbXByZXNhSWQiOiIxIiwiaWF0IjoxNzk1NjcxNTA5LCJleHAiOjE3OTU2Nzg3MDl9.E5oaEiFVdSmW6JdHtPFyXwp5A6SaoDjs_dpAO6nLELM&amp;#x27;} = json()\nE        +    where json = &amp;lt;Response [200]&amp;gt;.json\n\napi\\test_funcionales.py:76: AssertionError\n&#34;}], &#34;api/test_funcionales.py::test_registro_y_empresa&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;api/test_funcionales.py::test_registro_y_empresa&#34;, &#34;duration&#34;: &#34;00:00:04&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_funcionales.py::test_registro_y_empresa&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:04&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;api/test_funcionales.py::test_primer_usuario_admin&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;api/test_funcionales.py::test_primer_usuario_admin&#34;, &#34;duration&#34;: &#34;00:00:04&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_funcionales.py::test_primer_usuario_admin&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:04&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;api/test_funcionales.py::test_admin_crea_usuario_con_rol&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;api/test_funcionales.py::test_admin_crea_usuario_con_rol&#34;, &#34;duration&#34;: &#34;33 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_funcionales.py::test_admin_crea_usuario_con_rol&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;33 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;api/test_funcionales.py::test_admin_modifica_y_elimina_usuario&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_funcionales.py::test_admin_modifica_y_elimina_usuario&#34;, &#34;duration&#34;: &#34;34 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_funcionales.py::test_admin_modifica_y_elimina_usuario&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;34 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8ACC270&amp;gt;\nempresa_qa = {&amp;#x27;usuario&amp;#x27;: &amp;#x27;funcional_95caf7&amp;#x27;, &amp;#x27;clave&amp;#x27;: &amp;#x27;Qa#Prueba2026!&amp;#x27;, &amp;#x27;usuario_id&amp;#x27;: &amp;#x27;4&amp;#x27;, &amp;#x27;empresa_id&amp;#x27;: &amp;#x27;3&amp;#x27;, ...}\n\n    @pytest.mark.caso(&amp;quot;TC-FUN-08&amp;quot;)\n    def test_admin_modifica_y_elimina_usuario(ev, empresa_qa):\n        uid = empresa_qa.get(&amp;quot;editor_creado&amp;quot;)\n        if not uid:\n            pytest.skip(&amp;quot;Depende de TC-FUN-07 (usuario editor no creado)&amp;quot;)\n        actual = requests.get(f&amp;quot;{API}/usuarios/{uid}&amp;quot;).json()\n        r = requests.put(f&amp;quot;{API}/usuarios/{uid}&amp;quot;, headers=h(empresa_qa[&amp;quot;token&amp;quot;]),\n                         json={&amp;quot;nombre_usuario&amp;quot;: actual[&amp;quot;nombre_usuario&amp;quot;], &amp;quot;contrasena_hash&amp;quot;: CLAVE_QA,\n                               &amp;quot;correo&amp;quot;: f&amp;quot;modificado_{sufijo()}@qa.test&amp;quot;})\n        ev.http(r, etiqueta=&amp;quot;Modificar usuario&amp;quot;)\n        d = requests.delete(f&amp;quot;{API}/usuarios/{uid}&amp;quot;, headers=h(empresa_qa[&amp;quot;token&amp;quot;]))\n        ev.http(d, cuerpo_max=300, etiqueta=&amp;quot;Eliminar usuario (como lo hace la interfaz)&amp;quot;)\n        ev.resultado(f&amp;quot;Modificaci\u00f3n HTTP {r.status_code}; eliminaci\u00f3n HTTP {d.status_code}&amp;quot;)\n        assert r.status_code == 200\n&amp;gt;       assert d.status_code == 200, (f&amp;quot;La eliminaci\u00f3n falla con HTTP {d.status_code}: la clave for\u00e1nea de empresa_usuarios &amp;quot;\n                                      f&amp;quot;impide borrar a cualquier usuario vinculado a una empresa&amp;quot;)\nE       AssertionError: La eliminaci\u00f3n falla con HTTP 500: la clave for\u00e1nea de empresa_usuarios impide borrar a cualquier usuario vinculado a una empresa\nE       assert 500 == 200\nE        +  where 500 = &amp;lt;Response [500]&amp;gt;.status_code\n\napi\\test_funcionales.py:131: AssertionError\n&#34;}], &#34;api/test_funcionales.py::test_crear_cliente&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;api/test_funcionales.py::test_crear_cliente&#34;, &#34;duration&#34;: &#34;36 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_funcionales.py::test_crear_cliente&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;36 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;api/test_funcionales.py::test_listar_filtrar_paginar_editar&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_funcionales.py::test_listar_filtrar_paginar_editar&#34;, &#34;duration&#34;: &#34;00:00:04&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_funcionales.py::test_listar_filtrar_paginar_editar&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:04&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8AE0650&amp;gt;\nempresa_qa = {&amp;#x27;usuario&amp;#x27;: &amp;#x27;funcional_95caf7&amp;#x27;, &amp;#x27;clave&amp;#x27;: &amp;#x27;Qa#Prueba2026!&amp;#x27;, &amp;#x27;usuario_id&amp;#x27;: &amp;#x27;4&amp;#x27;, &amp;#x27;empresa_id&amp;#x27;: &amp;#x27;3&amp;#x27;, ...}\n\n    @pytest.mark.caso(&amp;quot;TC-FUN-10&amp;quot;)\n    def test_listar_filtrar_paginar_editar(ev, empresa_qa):\n        tok = empresa_qa[&amp;quot;token&amp;quot;]\n        a = crear_cliente(tok, nombre=f&amp;quot;Filtro Alfa {sufijo()}&amp;quot;)\n        crear_cliente(tok, nombre=f&amp;quot;Filtro Beta {sufijo()}&amp;quot;)\n        f = requests.get(f&amp;quot;{API}/clientes/search&amp;quot;, params={&amp;quot;name&amp;quot;: &amp;quot;Alfa&amp;quot;}, headers=h(tok))\n        ev.http(f, cuerpo_max=120, etiqueta=&amp;quot;Filtro por nombre&amp;quot;)\n        filtro_ok = f.status_code == 200 and all(&amp;quot;Alfa&amp;quot; in c[&amp;quot;nombre&amp;quot;] for c in f.json()) and len(f.json()) &amp;gt;= 1\n        p = requests.get(f&amp;quot;{API}/clientes&amp;quot;, params={&amp;quot;page&amp;quot;: 1, &amp;quot;limit&amp;quot;: 1}, headers=h(tok))\n        ev.http(p, cuerpo_max=120, etiqueta=&amp;quot;Paginaci\u00f3n page=1&amp;amp;limit=1&amp;quot;)\n        a[&amp;quot;nombre&amp;quot;] = a[&amp;quot;nombre&amp;quot;] + &amp;quot; (editado)&amp;quot;\n        u = requests.put(f&amp;quot;{API}/clientes/{a[&amp;#x27;id&amp;#x27;]}&amp;quot;, json=a, headers=h(tok))\n        ev.http(u, cuerpo_max=100, etiqueta=&amp;quot;Edici\u00f3n&amp;quot;)\n        ev.resultado(f&amp;quot;Filtro {&amp;#x27;correcto&amp;#x27; if filtro_ok else &amp;#x27;incorrecto&amp;#x27;}; paginaci\u00f3n devuelve {len(p.json())} registros &amp;quot;\n                     f&amp;quot;con limit=1; edici\u00f3n HTTP {u.status_code}&amp;quot;)\n        assert filtro_ok and u.status_code == 200\n&amp;gt;       assert len(p.json()) &amp;lt;= 1, f&amp;quot;No hay paginaci\u00f3n: limit=1 devolvi\u00f3 {len(p.json())} clientes&amp;quot;\nE       AssertionError: No hay paginaci\u00f3n: limit=1 devolvi\u00f3 4 clientes\nE       assert 4 &amp;lt;= 1\nE        +  where 4 = len([{&amp;#x27;id&amp;#x27;: &amp;#x27;6&amp;#x27;, &amp;#x27;nombre&amp;#x27;: &amp;#x27;Filtro Beta 5fb30b&amp;#x27;, &amp;#x27;correo&amp;#x27;: &amp;#x27;cliente_bf6fe8@qa.test&amp;#x27;, &amp;#x27;telefono&amp;#x27;: &amp;#x27;+56987654321&amp;#x27;, ...}, {&amp;#x27;i... ...}, {&amp;#x27;id&amp;#x27;: &amp;#x27;3&amp;#x27;, &amp;#x27;nombre&amp;#x27;: &amp;#x27;Cliente QA 116396&amp;#x27;, &amp;#x27;correo&amp;#x27;: &amp;#x27;cliente_116396@qa.test&amp;#x27;, &amp;#x27;telefono&amp;#x27;: &amp;#x27;+56987654321&amp;#x27;, ...}])\nE        +    where [{&amp;#x27;id&amp;#x27;: &amp;#x27;6&amp;#x27;, &amp;#x27;nombre&amp;#x27;: &amp;#x27;Filtro Beta 5fb30b&amp;#x27;, &amp;#x27;correo&amp;#x27;: &amp;#x27;cliente_bf6fe8@qa.test&amp;#x27;, &amp;#x27;telefono&amp;#x27;: &amp;#x27;+56987654321&amp;#x27;, ...}, {&amp;#x27;i... ...}, {&amp;#x27;id&amp;#x27;: &amp;#x27;3&amp;#x27;, &amp;#x27;nombre&amp;#x27;: &amp;#x27;Cliente QA 116396&amp;#x27;, &amp;#x27;correo&amp;#x27;: &amp;#x27;cliente_116396@qa.test&amp;#x27;, &amp;#x27;telefono&amp;#x27;: &amp;#x27;+56987654321&amp;#x27;, ...}] = json()\nE        +      where json = &amp;lt;Response [200]&amp;gt;.json\n\napi\\test_funcionales.py:164: AssertionError\n&#34;}], &#34;api/test_funcionales.py::test_eliminacion_logica&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_funcionales.py::test_eliminacion_logica&#34;, &#34;duration&#34;: &#34;296 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_funcionales.py::test_eliminacion_logica&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;296 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8AB2030&amp;gt;\nempresa_qa = {&amp;#x27;usuario&amp;#x27;: &amp;#x27;funcional_95caf7&amp;#x27;, &amp;#x27;clave&amp;#x27;: &amp;#x27;Qa#Prueba2026!&amp;#x27;, &amp;#x27;usuario_id&amp;#x27;: &amp;#x27;4&amp;#x27;, &amp;#x27;empresa_id&amp;#x27;: &amp;#x27;3&amp;#x27;, ...}\n\n    @pytest.mark.caso(&amp;quot;TC-FUN-11&amp;quot;)\n    def test_eliminacion_logica(ev, empresa_qa):\n        c = crear_cliente(empresa_qa[&amp;quot;token&amp;quot;])\n        d = requests.delete(f&amp;quot;{API}/clientes/{c[&amp;#x27;id&amp;#x27;]}&amp;quot;, headers=h(empresa_qa[&amp;quot;token&amp;quot;]))\n        ev.http(d)\n        filas = psql(f&amp;quot;SELECT count(*) FROM clientes WHERE id={c[&amp;#x27;id&amp;#x27;]}&amp;quot;)\n        cols = psql(&amp;quot;SELECT string_agg(column_name, &amp;#x27;,&amp;#x27;) FROM information_schema.columns WHERE table_name=&amp;#x27;clientes&amp;#x27; &amp;quot;\n                    &amp;quot;AND column_name IN (&amp;#x27;deleted_at&amp;#x27;,&amp;#x27;activo&amp;#x27;,&amp;#x27;eliminado&amp;#x27;)&amp;quot;)\n        ev.nota(f&amp;quot;$ SELECT count(*) FROM clientes WHERE id={c[&amp;#x27;id&amp;#x27;]}  -&amp;gt;  {filas}&amp;quot;)\n        ev.nota(f&amp;quot;columnas de borrado l\u00f3gico en clientes: {cols or &amp;#x27;ninguna&amp;#x27;}&amp;quot;)\n        ev.resultado(f&amp;quot;Borrado f\u00edsico: quedan {filas} filas; la interfaz s\u00ed pide confirmaci\u00f3n (di\u00e1logo &amp;#x27;Confirmar eliminaci\u00f3n&amp;#x27;)&amp;quot;)\n&amp;gt;       assert filas == &amp;quot;1&amp;quot;, &amp;quot;El cliente se elimin\u00f3 f\u00edsicamente de la base de datos (no hay eliminaci\u00f3n l\u00f3gica)&amp;quot;\nE       AssertionError: El cliente se elimin\u00f3 f\u00edsicamente de la base de datos (no hay eliminaci\u00f3n l\u00f3gica)\nE       assert &amp;#x27;0&amp;#x27; == &amp;#x27;1&amp;#x27;\nE         \nE         - 1\nE         + 0\n\napi\\test_funcionales.py:178: AssertionError\n&#34;}], &#34;api/test_funcionales.py::test_validacion_campos&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_funcionales.py::test_validacion_campos&#34;, &#34;duration&#34;: &#34;26 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_funcionales.py::test_validacion_campos&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;26 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8AB2B70&amp;gt;\nempresa_qa = {&amp;#x27;usuario&amp;#x27;: &amp;#x27;funcional_95caf7&amp;#x27;, &amp;#x27;clave&amp;#x27;: &amp;#x27;Qa#Prueba2026!&amp;#x27;, &amp;#x27;usuario_id&amp;#x27;: &amp;#x27;4&amp;#x27;, &amp;#x27;empresa_id&amp;#x27;: &amp;#x27;3&amp;#x27;, ...}\n\n    @pytest.mark.caso(&amp;quot;TC-FUN-12&amp;quot;)\n    def test_validacion_campos(ev, empresa_qa):\n        from conftest import cliente_payload\n        tok = empresa_qa[&amp;quot;token&amp;quot;]\n        malo = cliente_payload(correo=&amp;quot;no-es-correo&amp;quot;, rut=&amp;quot;123&amp;quot;, telefono=&amp;quot;abc&amp;quot;)\n        r1 = requests.post(f&amp;quot;{API}/clientes&amp;quot;, json=malo, headers=h(tok))\n        ev.http(r1, cuerpo_max=120, etiqueta=&amp;quot;Correo, RUT y tel\u00e9fono inv\u00e1lidos&amp;quot;)\n        sin_nombre = cliente_payload()\n        sin_nombre.pop(&amp;quot;nombre&amp;quot;)\n        r2 = requests.post(f&amp;quot;{API}/clientes&amp;quot;, json=sin_nombre, headers=h(tok))\n        ev.http(r2, cuerpo_max=200, etiqueta=&amp;quot;Sin nombre (obligatorio)&amp;quot;)\n        ev.resultado(f&amp;quot;Formato inv\u00e1lido aceptado con HTTP {r1.status_code}; campo obligatorio ausente -&amp;gt; HTTP {r2.status_code}&amp;quot;)\n&amp;gt;       assert r1.status_code == 400, f&amp;quot;El backend acept\u00f3 correo, RUT y tel\u00e9fono inv\u00e1lidos (HTTP {r1.status_code})&amp;quot;\nE       AssertionError: El backend acept\u00f3 correo, RUT y tel\u00e9fono inv\u00e1lidos (HTTP 201)\nE       assert 201 == 400\nE        +  where 201 = &amp;lt;Response [201]&amp;gt;.status_code\n\napi\\test_funcionales.py:193: AssertionError\n&#34;}], &#34;api/test_funcionales.py::test_multiples_contratos&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;api/test_funcionales.py::test_multiples_contratos&#34;, &#34;duration&#34;: &#34;00:00:04&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_funcionales.py::test_multiples_contratos&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:04&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;api/test_funcionales.py::test_adjuntar_descargar_pdf&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;api/test_funcionales.py::test_adjuntar_descargar_pdf&#34;, &#34;duration&#34;: &#34;48 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_funcionales.py::test_adjuntar_descargar_pdf&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;48 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;api/test_funcionales.py::test_formatos_conservan_tipo&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_funcionales.py::test_formatos_conservan_tipo&#34;, &#34;duration&#34;: &#34;31 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_funcionales.py::test_formatos_conservan_tipo&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;31 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8B197E0&amp;gt;\nempresa_qa = {&amp;#x27;usuario&amp;#x27;: &amp;#x27;funcional_95caf7&amp;#x27;, &amp;#x27;clave&amp;#x27;: &amp;#x27;Qa#Prueba2026!&amp;#x27;, &amp;#x27;usuario_id&amp;#x27;: &amp;#x27;4&amp;#x27;, &amp;#x27;empresa_id&amp;#x27;: &amp;#x27;3&amp;#x27;, ...}\n\n    @pytest.mark.caso(&amp;quot;TC-FUN-15&amp;quot;)\n    def test_formatos_conservan_tipo(ev, empresa_qa):\n        r = crear_contrato(empresa_qa[&amp;quot;token&amp;quot;], empresa_qa[&amp;quot;cliente&amp;quot;][&amp;quot;id&amp;quot;], archivo=PNG_1PX, nombre_archivo=&amp;quot;plano.png&amp;quot;)\n        d = requests.get(f&amp;quot;{API}/contratos/{r.json()[&amp;#x27;id&amp;#x27;]}/file&amp;quot;, headers=h(empresa_qa[&amp;quot;token&amp;quot;]))\n        ev.http(d)\n        ev.nota(f&amp;quot;Content-Type: {d.headers.get(&amp;#x27;Content-Type&amp;#x27;)} | Content-Disposition: {d.headers.get(&amp;#x27;Content-Disposition&amp;#x27;)}&amp;quot;)\n        ev.resultado(f&amp;quot;Un PNG se entrega como {d.headers.get(&amp;#x27;Content-Type&amp;#x27;)} con nombre &amp;#x27;contrato.pdf&amp;#x27;&amp;quot;)\n&amp;gt;       assert d.headers.get(&amp;quot;Content-Type&amp;quot;, &amp;quot;&amp;quot;).startswith(&amp;quot;image/png&amp;quot;), \\\n            f&amp;quot;El PNG se descarga como {d.headers.get(&amp;#x27;Content-Type&amp;#x27;)} y nombre contrato.pdf (archivo inutilizable)&amp;quot;\nE       AssertionError: El PNG se descarga como application/pdf y nombre contrato.pdf (archivo inutilizable)\nE       assert False\nE        +  where False = &amp;lt;built-in method startswith of str object at 0x00000291A8B9CAF0&amp;gt;(&amp;#x27;image/png&amp;#x27;)\nE        +    where &amp;lt;built-in method startswith of str object at 0x00000291A8B9CAF0&amp;gt; = &amp;#x27;application/pdf&amp;#x27;.startswith\nE        +      where &amp;#x27;application/pdf&amp;#x27; = get(&amp;#x27;Content-Type&amp;#x27;, &amp;#x27;&amp;#x27;)\nE        +        where get = {&amp;#x27;X-Powered-By&amp;#x27;: &amp;#x27;Express&amp;#x27;, &amp;#x27;Access-Control-Allow-Origin&amp;#x27;: &amp;#x27;*&amp;#x27;, &amp;#x27;Content-Type&amp;#x27;: &amp;#x27;application/pdf&amp;#x27;, &amp;#x27;Content-Dispositio...Y4IpogXIeO0PVpEQZor4&amp;quot;&amp;#x27;, &amp;#x27;Date&amp;#x27;: &amp;#x27;Thu, 26 Nov 2026 05:38:46 GMT&amp;#x27;, &amp;#x27;Connection&amp;#x27;: &amp;#x27;keep-alive&amp;#x27;, &amp;#x27;Keep-Alive&amp;#x27;: &amp;#x27;timeout=5&amp;#x27;}.get\nE        +          where {&amp;#x27;X-Powered-By&amp;#x27;: &amp;#x27;Express&amp;#x27;, &amp;#x27;Access-Control-Allow-Origin&amp;#x27;: &amp;#x27;*&amp;#x27;, &amp;#x27;Content-Type&amp;#x27;: &amp;#x27;application/pdf&amp;#x27;, &amp;#x27;Content-Dispositio...Y4IpogXIeO0PVpEQZor4&amp;quot;&amp;#x27;, &amp;#x27;Date&amp;#x27;: &amp;#x27;Thu, 26 Nov 2026 05:38:46 GMT&amp;#x27;, &amp;#x27;Connection&amp;#x27;: &amp;#x27;keep-alive&amp;#x27;, &amp;#x27;Keep-Alive&amp;#x27;: &amp;#x27;timeout=5&amp;#x27;} = &amp;lt;Response [200]&amp;gt;.headers\n\napi\\test_funcionales.py:233: AssertionError\n&#34;}], &#34;api/test_funcionales.py::test_storage_interno&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_funcionales.py::test_storage_interno&#34;, &#34;duration&#34;: &#34;373 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_funcionales.py::test_storage_interno&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;373 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8C7A990&amp;gt;\n\n    @pytest.mark.caso(&amp;quot;TC-FUN-16&amp;quot;)\n    def test_storage_interno(ev):\n        tipo = psql(&amp;quot;SELECT data_type FROM information_schema.columns WHERE table_name=&amp;#x27;documentos_contrato&amp;#x27; AND column_name=&amp;#x27;document&amp;#x27;&amp;quot;)\n        tam = psql(&amp;quot;SELECT pg_size_pretty(pg_total_relation_size(&amp;#x27;documentos_contrato&amp;#x27;))&amp;quot;)\n        from conftest import docker\n        ls = docker(&amp;quot;exec&amp;quot;, &amp;quot;atlas-backend&amp;quot;, &amp;quot;sh&amp;quot;, &amp;quot;-c&amp;quot;, &amp;quot;find /app/uploads -type f | wc -l&amp;quot;).stdout.strip()\n        ev.nota(f&amp;quot;$ columna documentos_contrato.document -&amp;gt; tipo {tipo}; tama\u00f1o de la tabla {tam}&amp;quot;)\n        ev.nota(f&amp;quot;$ find /app/uploads -type f | wc -l  -&amp;gt;  {ls}&amp;quot;)\n        ev.resultado(f&amp;quot;Los documentos se guardan como {tipo} dentro de PostgreSQL; el storage interno tiene {ls} archivos&amp;quot;)\n&amp;gt;       assert tipo != &amp;quot;bytea&amp;quot;, &amp;quot;El archivo se almacena dentro de la BD (bytea) en vez de storage interno referenciado&amp;quot;\nE       AssertionError: El archivo se almacena dentro de la BD (bytea) en vez de storage interno referenciado\nE       assert &amp;#x27;bytea&amp;#x27; != &amp;#x27;bytea&amp;#x27;\n\napi\\test_funcionales.py:246: AssertionError\n&#34;}], &#34;api/test_funcionales.py::test_estado_contrato&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_funcionales.py::test_estado_contrato&#34;, &#34;duration&#34;: &#34;00:00:04&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_funcionales.py::test_estado_contrato&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:04&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8A0D0D0&amp;gt;\nempresa_qa = {&amp;#x27;usuario&amp;#x27;: &amp;#x27;funcional_95caf7&amp;#x27;, &amp;#x27;clave&amp;#x27;: &amp;#x27;Qa#Prueba2026!&amp;#x27;, &amp;#x27;usuario_id&amp;#x27;: &amp;#x27;4&amp;#x27;, &amp;#x27;empresa_id&amp;#x27;: &amp;#x27;3&amp;#x27;, ...}\n\n    @pytest.mark.caso(&amp;quot;TC-FUN-17&amp;quot;)\n    def test_estado_contrato(ev, empresa_qa):\n        tok, cid = empresa_qa[&amp;quot;token&amp;quot;], empresa_qa[&amp;quot;cliente&amp;quot;][&amp;quot;id&amp;quot;]\n        esperado = {}\n        for dias, estado in ((90, &amp;quot;activo&amp;quot;), (10, &amp;quot;vence&amp;quot;), (-5, &amp;quot;expirado&amp;quot;)):\n            r = crear_contrato(tok, cid, fin_dias=dias, titulo=f&amp;quot;Estado {estado} {sufijo()}&amp;quot;)\n            esperado[r.json()[&amp;quot;id&amp;quot;]] = estado\n        lst = requests.get(f&amp;quot;{API}/contratos&amp;quot;, headers=h(tok))\n        est = requests.get(f&amp;quot;{API}/contratos/estados&amp;quot;, headers=h(tok))\n        ev.http(lst, cuerpo_max=250, etiqueta=&amp;quot;GET /contratos&amp;quot;)\n        ev.http(est, cuerpo_max=250, etiqueta=&amp;quot;GET /contratos/estados&amp;quot;)\n        con_estado = [c for c in lst.json() if c[&amp;quot;id&amp;quot;] in esperado and &amp;quot;estado&amp;quot; in c]\n        estados_srv = {c[&amp;quot;id&amp;quot;]: c[&amp;quot;estado&amp;quot;] for c in est.json() if c[&amp;quot;id&amp;quot;] in esperado}\n        ev.resultado(f&amp;quot;GET /contratos no incluye &amp;#x27;estado&amp;#x27;; /estados s\u00f3lo informa {sorted(set(estados_srv.values()))} &amp;quot;\n                     f&amp;quot;(sin &amp;#x27;activo&amp;#x27;, m\u00e1ximo 3 por grupo)&amp;quot;)\n&amp;gt;       assert len(con_estado) == 3, &amp;quot;El listado de contratos no informa el estado calculado de cada contrato&amp;quot;\nE       AssertionError: El listado de contratos no informa el estado calculado de cada contrato\nE       assert 0 == 3\nE        +  where 0 = len([])\n\napi\\test_funcionales.py:264: AssertionError\n&#34;}], &#34;api/test_funcionales.py::test_enlace_compartir&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_funcionales.py::test_enlace_compartir&#34;, &#34;duration&#34;: &#34;12 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_funcionales.py::test_enlace_compartir&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;12 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8B2B960&amp;gt;\nempresa_qa = {&amp;#x27;usuario&amp;#x27;: &amp;#x27;funcional_95caf7&amp;#x27;, &amp;#x27;clave&amp;#x27;: &amp;#x27;Qa#Prueba2026!&amp;#x27;, &amp;#x27;usuario_id&amp;#x27;: &amp;#x27;4&amp;#x27;, &amp;#x27;empresa_id&amp;#x27;: &amp;#x27;3&amp;#x27;, ...}\n\n    @pytest.mark.caso(&amp;quot;TC-FUN-18&amp;quot;)\n    def test_enlace_compartir(ev, empresa_qa):\n        cid = empresa_qa.get(&amp;quot;contrato_pdf&amp;quot;)\n        r = requests.post(f&amp;quot;{API}/contratos/{cid}/share&amp;quot;, headers=h(empresa_qa[&amp;quot;token&amp;quot;]))\n        ev.http(r, cuerpo_max=150, etiqueta=&amp;quot;POST /contratos/:id/share&amp;quot;)\n        r2 = requests.get(f&amp;quot;{API}/contratos/{cid}/share&amp;quot;, headers=h(empresa_qa[&amp;quot;token&amp;quot;]))\n        ev.http(r2, cuerpo_max=150, etiqueta=&amp;quot;GET /contratos/:id/share&amp;quot;)\n        ev.resultado(f&amp;quot;No existe servicio para compartir documentos (HTTP {r.status_code}/{r2.status_code})&amp;quot;)\n&amp;gt;       assert r.status_code in (200, 201), &amp;quot;RF-5.5 no implementado: no existe generaci\u00f3n de enlace para compartir&amp;quot;\nE       AssertionError: RF-5.5 no implementado: no existe generaci\u00f3n de enlace para compartir\nE       assert 404 in (200, 201)\nE        +  where 404 = &amp;lt;Response [404]&amp;gt;.status_code\n\napi\\test_funcionales.py:275: AssertionError\n&#34;}], &#34;api/test_funcionales.py::test_auditoria_acciones_criticas&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_funcionales.py::test_auditoria_acciones_criticas&#34;, &#34;duration&#34;: &#34;00:00:05&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_funcionales.py::test_auditoria_acciones_criticas&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:05&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8B2A360&amp;gt;\n\n    @pytest.mark.caso(&amp;quot;TC-FUN-19&amp;quot;)\n    def test_auditoria_acciones_criticas(ev):\n        e = registrar_empresa(&amp;quot;auditoria&amp;quot;)\n        tok = login(e[&amp;quot;usuario&amp;quot;], e[&amp;quot;clave&amp;quot;])\n        desde = psql(&amp;quot;SELECT now()&amp;quot;)\n        c = crear_cliente(tok)\n        requests.put(f&amp;quot;{API}/clientes/{c[&amp;#x27;id&amp;#x27;]}&amp;quot;, json={**c, &amp;quot;nombre&amp;quot;: c[&amp;quot;nombre&amp;quot;] + &amp;quot; v2&amp;quot;}, headers=h(tok))\n        k = crear_contrato(tok, c[&amp;quot;id&amp;quot;], archivo=pdf_minimo()).json()\n        from conftest import multipart\n        requests.put(f&amp;quot;{API}/contratos/{k[&amp;#x27;id&amp;#x27;]}&amp;quot;, files=multipart({&amp;quot;titulo&amp;quot;: &amp;quot;Contrato actualizado&amp;quot;}, pdf_minimo(&amp;quot;v2&amp;quot;), &amp;quot;v2.pdf&amp;quot;),\n                     headers=h(tok))\n        requests.get(f&amp;quot;{API}/contratos/{k[&amp;#x27;id&amp;#x27;]}/file&amp;quot;, headers=h(tok))\n        nuevo = f&amp;quot;aud_{sufijo()}&amp;quot;\n        requests.post(f&amp;quot;{API}/usuarios&amp;quot;, json={&amp;quot;nombre_usuario&amp;quot;: nuevo, &amp;quot;contrasena_hash&amp;quot;: CLAVE_QA, &amp;quot;correo&amp;quot;: f&amp;quot;{nuevo}@qa.test&amp;quot;},\n                      headers=h(tok))\n        uid = psql(f&amp;quot;SELECT id FROM usuarios WHERE nombre_usuario=&amp;#x27;{nuevo}&amp;#x27;&amp;quot;)\n        requests.put(f&amp;quot;{API}/usuarios/{uid}&amp;quot;, json={&amp;quot;nombre_usuario&amp;quot;: nuevo, &amp;quot;contrasena_hash&amp;quot;: CLAVE_QA,\n                                                     &amp;quot;correo&amp;quot;: f&amp;quot;{nuevo}2@qa.test&amp;quot;}, headers=h(tok))\n        requests.delete(f&amp;quot;{API}/usuarios/{uid}&amp;quot;, headers=h(tok))\n        requests.delete(f&amp;quot;{API}/contratos/{k[&amp;#x27;id&amp;#x27;]}&amp;quot;, headers=h(tok))\n        c2 = crear_cliente(tok)\n        requests.delete(f&amp;quot;{API}/clientes/{c2[&amp;#x27;id&amp;#x27;]}&amp;quot;, headers=h(tok))\n        filas = psql(f&amp;quot;SELECT split_part(accion, &amp;#x27;:&amp;#x27;, 1) FROM auditoria WHERE usuario_id=&amp;#x27;{e[&amp;#x27;usuario&amp;#x27;]}&amp;#x27; &amp;quot;\n                     f&amp;quot;AND fecha_hora &amp;gt;= &amp;#x27;{desde}&amp;#x27; ORDER BY id&amp;quot;).splitlines()\n        acciones = {\n            &amp;quot;Crear cliente&amp;quot;: &amp;quot;CLIENTES_CREAR&amp;quot;, &amp;quot;Editar cliente&amp;quot;: &amp;quot;CLIENTES_ACTUALIZAR&amp;quot;, &amp;quot;Eliminar cliente&amp;quot;: &amp;quot;CLIENTES_ELIMINAR&amp;quot;,\n            &amp;quot;Crear contrato + subir documento&amp;quot;: &amp;quot;CONTRATOS_CREAR&amp;quot;, &amp;quot;Editar contrato + nuevo documento&amp;quot;: &amp;quot;CONTRATOS_ACTUALIZAR&amp;quot;,\n            &amp;quot;Eliminar contrato&amp;quot;: &amp;quot;CONTRATOS_ELIMINAR&amp;quot;, &amp;quot;Descargar documento&amp;quot;: &amp;quot;DOCUMENTO_DESCARGAR&amp;quot;,\n            &amp;quot;Crear usuario&amp;quot;: &amp;quot;USUARIOS_CREAR&amp;quot;, &amp;quot;Editar usuario&amp;quot;: &amp;quot;USUARIOS_ACTUALIZAR&amp;quot;, &amp;quot;Eliminar usuario&amp;quot;: &amp;quot;USUARIOS_ELIMINAR&amp;quot;,\n        }\n        faltan = []\n        for nombre, clave in acciones.items():\n            ok = clave in filas\n            ev.nota(f&amp;quot;  [{&amp;#x27;OK&amp;#x27; if ok else &amp;#x27;NO&amp;#x27;}] {nombre:&amp;lt;36} {clave}&amp;quot;)\n            if not ok:\n                faltan.append(nombre)\n        ev.resultado(f&amp;quot;{len(acciones) - len(faltan)}/{len(acciones)} acciones auditadas; sin registro: {&amp;#x27;, &amp;#x27;.join(faltan)}&amp;quot;)\n&amp;gt;       assert not faltan, f&amp;quot;Acciones cr\u00edticas sin auditar: {&amp;#x27;, &amp;#x27;.join(faltan)}&amp;quot;\nE       AssertionError: Acciones cr\u00edticas sin auditar: Descargar documento, Crear usuario\nE       assert not [&amp;#x27;Descargar documento&amp;#x27;, &amp;#x27;Crear usuario&amp;#x27;]\n\napi\\test_funcionales.py:315: AssertionError\n&#34;}], &#34;api/test_funcionales.py::test_correo_empresa_unico&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;api/test_funcionales.py::test_correo_empresa_unico&#34;, &#34;duration&#34;: &#34;16 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_funcionales.py::test_correo_empresa_unico&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;16 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;api/test_funcionales.py::test_contrato_un_solo_cliente&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;api/test_funcionales.py::test_contrato_un_solo_cliente&#34;, &#34;duration&#34;: &#34;125 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_funcionales.py::test_contrato_un_solo_cliente&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;125 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;api/test_funcionales.py::test_swagger&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;api/test_funcionales.py::test_swagger&#34;, &#34;duration&#34;: &#34;15 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_funcionales.py::test_swagger&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;15 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;api/test_herramientas.py::test_sca&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_herramientas.py::test_sca&#34;, &#34;duration&#34;: &#34;9 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_herramientas.py::test_sca&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;9 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8BA12D0&amp;gt;\n\n    @pytest.mark.caso(&amp;quot;TC-SEC-21&amp;quot;)\n    def test_sca(ev):\n        resumen, total_alto = {}, 0\n        for proyecto in (&amp;quot;backend&amp;quot;, &amp;quot;frontend&amp;quot;):\n            d = cargar(f&amp;quot;npm_audit_{proyecto}.json&amp;quot;)\n            meta = d.get(&amp;quot;metadata&amp;quot;, {}).get(&amp;quot;vulnerabilities&amp;quot;, {})\n            resumen[proyecto] = meta\n            total_alto += meta.get(&amp;quot;high&amp;quot;, 0) + meta.get(&amp;quot;critical&amp;quot;, 0)\n            ev.nota(f&amp;quot;npm audit {proyecto:&amp;lt;9} -&amp;gt; cr\u00edtica {meta.get(&amp;#x27;critical&amp;#x27;, 0)}, alta {meta.get(&amp;#x27;high&amp;#x27;, 0)}, &amp;quot;\n                    f&amp;quot;moderada {meta.get(&amp;#x27;moderate&amp;#x27;, 0)}, baja {meta.get(&amp;#x27;low&amp;#x27;, 0)}&amp;quot;)\n            for nombre, v in list(d.get(&amp;quot;vulnerabilities&amp;quot;, {}).items()):\n                if v.get(&amp;quot;severity&amp;quot;) in (&amp;quot;critical&amp;quot;, &amp;quot;high&amp;quot;):\n                    titulos = [x.get(&amp;quot;title&amp;quot;, &amp;quot;&amp;quot;) for x in v.get(&amp;quot;via&amp;quot;, []) if isinstance(x, dict)][:1]\n                    ev.nota(f&amp;quot;   \u00b7 {nombre:&amp;lt;22} {v[&amp;#x27;severity&amp;#x27;]:&amp;lt;8} {titulos[0][:70] if titulos else &amp;#x27;(dependencia transitiva)&amp;#x27;}&amp;quot;)\n        t = cargar(&amp;quot;trivy_fs.json&amp;quot;)\n        vulns = [v for r in t.get(&amp;quot;Results&amp;quot;, []) for v in (r.get(&amp;quot;Vulnerabilities&amp;quot;) or [])]\n        sev = {s: sum(v[&amp;quot;Severity&amp;quot;] == s for v in vulns) for s in (&amp;quot;CRITICAL&amp;quot;, &amp;quot;HIGH&amp;quot;, &amp;quot;MEDIUM&amp;quot;, &amp;quot;LOW&amp;quot;)}\n        ev.nota(f&amp;quot;Trivy fs (CVE de dependencias) -&amp;gt; {sev}&amp;quot;)\n        ev.resultado(f&amp;quot;{total_alto} vulnerabilidades altas/cr\u00edticas seg\u00fan npm audit; Trivy reporta {sev[&amp;#x27;CRITICAL&amp;#x27;]} cr\u00edticas y {sev[&amp;#x27;HIGH&amp;#x27;]} altas&amp;quot;)\n&amp;gt;       assert total_alto == 0 and sev[&amp;quot;CRITICAL&amp;quot;] + sev[&amp;quot;HIGH&amp;quot;] == 0, &amp;quot;Dependencias con CVE de severidad alta o cr\u00edtica&amp;quot;\nE       AssertionError: Dependencias con CVE de severidad alta o cr\u00edtica\nE       assert (23 == 0)\n\napi\\test_herramientas.py:39: AssertionError\n&#34;}], &#34;api/test_herramientas.py::test_sast&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_herramientas.py::test_sast&#34;, &#34;duration&#34;: &#34;3 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_herramientas.py::test_sast&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;3 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A89C40D0&amp;gt;\n\n    @pytest.mark.caso(&amp;quot;TC-SEC-22&amp;quot;)\n    def test_sast(ev):\n        d = cargar(&amp;quot;semgrep.json&amp;quot;)\n        res = d.get(&amp;quot;results&amp;quot;, [])\n        por_sev = {}\n        for r in res:\n            por_sev[r[&amp;quot;extra&amp;quot;][&amp;quot;severity&amp;quot;]] = por_sev.get(r[&amp;quot;extra&amp;quot;][&amp;quot;severity&amp;quot;], 0) + 1\n        ev.nota(f&amp;quot;Semgrep: {len(res)} hallazgos -&amp;gt; {por_sev}&amp;quot;)\n        vistos = set()\n        for r in sorted(res, key=lambda x: {&amp;quot;ERROR&amp;quot;: 0, &amp;quot;WARNING&amp;quot;: 1}.get(x[&amp;quot;extra&amp;quot;][&amp;quot;severity&amp;quot;], 2)):\n            regla = r[&amp;quot;check_id&amp;quot;].split(&amp;quot;.&amp;quot;)[-1]\n            if regla in vistos:\n                continue\n            vistos.add(regla)\n            ev.nota(f&amp;quot;  [{r[&amp;#x27;extra&amp;#x27;][&amp;#x27;severity&amp;#x27;]}] {regla} -&amp;gt; {r[&amp;#x27;path&amp;#x27;].removeprefix(&amp;#x27;/src/&amp;#x27;)}:{r[&amp;#x27;start&amp;#x27;][&amp;#x27;line&amp;#x27;]}&amp;quot;)\n            if len(vistos) &amp;gt;= 9:\n                break\n        ev.resultado(f&amp;quot;{len(res)} hallazgos SAST ({por_sev.get(&amp;#x27;ERROR&amp;#x27;, 0)} de severidad ERROR)&amp;quot;)\n&amp;gt;       assert por_sev.get(&amp;quot;ERROR&amp;quot;, 0) == 0, f&amp;quot;Semgrep reporta {por_sev.get(&amp;#x27;ERROR&amp;#x27;, 0)} hallazgos de severidad ERROR&amp;quot;\nE       AssertionError: Semgrep reporta 32 hallazgos de severidad ERROR\nE       assert 32 == 0\nE        +  where 32 = &amp;lt;built-in method get of dict object at 0x00000291A8A12600&amp;gt;(&amp;#x27;ERROR&amp;#x27;, 0)\nE        +    where &amp;lt;built-in method get of dict object at 0x00000291A8A12600&amp;gt; = {&amp;#x27;ERROR&amp;#x27;: 32, &amp;#x27;WARNING&amp;#x27;: 55}.get\n\napi\\test_herramientas.py:60: AssertionError\n&#34;}], &#34;api/test_herramientas.py::test_secretos&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_herramientas.py::test_secretos&#34;, &#34;duration&#34;: &#34;2 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_herramientas.py::test_secretos&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;2 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8C80830&amp;gt;\n\n    @pytest.mark.caso(&amp;quot;TC-SEC-23&amp;quot;)\n    def test_secretos(ev):\n        d = cargar(&amp;quot;gitleaks.json&amp;quot;)\n        ev.nota(f&amp;quot;Gitleaks: {len(d)} secretos detectados&amp;quot;)\n        for x in d[:8]:\n            ev.nota(f&amp;quot;  {x[&amp;#x27;RuleID&amp;#x27;]:&amp;lt;24} {x[&amp;#x27;File&amp;#x27;].removeprefix(&amp;#x27;/src/&amp;#x27;)}:{x[&amp;#x27;StartLine&amp;#x27;]}  {x[&amp;#x27;Secret&amp;#x27;][:6]}\u2026&amp;quot;)\n        ev.resultado(f&amp;quot;{len(d)} secretos expuestos en archivos del proyecto&amp;quot;)\n&amp;gt;       assert not d, f&amp;quot;{len(d)} secretos expuestos en el repositorio&amp;quot;\nE       AssertionError: 3 secretos expuestos en el repositorio\nE       assert not [{&amp;#x27;RuleID&amp;#x27;: &amp;#x27;generic-api-key&amp;#x27;, &amp;#x27;Description&amp;#x27;: &amp;#x27;Detected a Generic API Key, potentially exposing access to various serv... Key, potentially exposing access to various services and sensitive operations.&amp;#x27;, &amp;#x27;StartLine&amp;#x27;: 30, &amp;#x27;EndLine&amp;#x27;: 30, ...}]\n\napi\\test_herramientas.py:70: AssertionError\n&#34;}], &#34;api/test_herramientas.py::test_dast_zap&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_herramientas.py::test_dast_zap&#34;, &#34;duration&#34;: &#34;2 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_herramientas.py::test_dast_zap&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;2 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8C81080&amp;gt;\n\n    @pytest.mark.caso(&amp;quot;TC-SEC-24&amp;quot;)\n    def test_dast_zap(ev):\n        riesgos = {&amp;quot;3&amp;quot;: &amp;quot;Alto&amp;quot;, &amp;quot;2&amp;quot;: &amp;quot;Medio&amp;quot;, &amp;quot;1&amp;quot;: &amp;quot;Bajo&amp;quot;, &amp;quot;0&amp;quot;: &amp;quot;Informativo&amp;quot;}\n        medios_altos = 0\n        for objetivo in (&amp;quot;frontend&amp;quot;, &amp;quot;api&amp;quot;):\n            d = cargar(f&amp;quot;zap_{objetivo}.json&amp;quot;)\n            alertas = [a for s in d.get(&amp;quot;site&amp;quot;, []) for a in s.get(&amp;quot;alerts&amp;quot;, [])]\n            conteo = {}\n            for a in alertas:\n                conteo[riesgos[a[&amp;quot;riskcode&amp;quot;]]] = conteo.get(riesgos[a[&amp;quot;riskcode&amp;quot;]], 0) + 1\n                medios_altos += a[&amp;quot;riskcode&amp;quot;] in (&amp;quot;2&amp;quot;, &amp;quot;3&amp;quot;)\n            ev.nota(f&amp;quot;ZAP baseline {objetivo}: {len(alertas)} alertas -&amp;gt; {conteo}&amp;quot;)\n            for a in sorted(alertas, key=lambda x: -int(x[&amp;quot;riskcode&amp;quot;]))[:5]:\n                ev.nota(f&amp;quot;  [{riesgos[a[&amp;#x27;riskcode&amp;#x27;]]}] {a[&amp;#x27;name&amp;#x27;]} (CWE-{a.get(&amp;#x27;cweid&amp;#x27;)})&amp;quot;)\n        ev.resultado(f&amp;quot;{medios_altos} alertas de riesgo medio o alto&amp;quot;)\n&amp;gt;       assert medios_altos == 0, f&amp;quot;OWASP ZAP reporta {medios_altos} alertas de riesgo medio/alto&amp;quot;\nE       AssertionError: OWASP ZAP reporta 5 alertas de riesgo medio/alto\nE       assert 5 == 0\n\napi\\test_herramientas.py:88: AssertionError\n&#34;}], &#34;api/test_herramientas.py::test_contenedores_bd&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_herramientas.py::test_contenedores_bd&#34;, &#34;duration&#34;: &#34;914 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_herramientas.py::test_contenedores_bd&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;914 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8C92270&amp;gt;\n\n    @pytest.mark.caso(&amp;quot;TC-SEC-25&amp;quot;)\n    def test_contenedores_bd(ev):\n        t = cargar(&amp;quot;trivy_config.json&amp;quot;)\n        mis = [m for r in t.get(&amp;quot;Results&amp;quot;, []) for m in (r.get(&amp;quot;Misconfigurations&amp;quot;) or []) if m.get(&amp;quot;Status&amp;quot;) == &amp;quot;FAIL&amp;quot;]\n        ev.nota(f&amp;quot;Trivy config: {len(mis)} configuraciones inseguras&amp;quot;)\n        for m in mis[:6]:\n            ev.nota(f&amp;quot;  [{m[&amp;#x27;Severity&amp;#x27;]}] {m[&amp;#x27;ID&amp;#x27;]} {m[&amp;#x27;Title&amp;#x27;][:70]}&amp;quot;)\n        r = docker(&amp;quot;run&amp;quot;, &amp;quot;--rm&amp;quot;, &amp;quot;-e&amp;quot;, &amp;quot;PGPASSWORD=postgres&amp;quot;, &amp;quot;postgres:15-alpine&amp;quot;, &amp;quot;psql&amp;quot;, &amp;quot;-h&amp;quot;, &amp;quot;host.docker.internal&amp;quot;,\n                   &amp;quot;-p&amp;quot;, &amp;quot;15432&amp;quot;, &amp;quot;-U&amp;quot;, &amp;quot;postgres&amp;quot;, &amp;quot;-d&amp;quot;, &amp;quot;atlas&amp;quot;, &amp;quot;-t&amp;quot;, &amp;quot;-A&amp;quot;, &amp;quot;-c&amp;quot;,\n                   &amp;quot;SELECT current_user || &amp;#x27; conectado; usuarios=&amp;#x27; || (SELECT count(*) FROM usuarios)&amp;quot;, timeout=180)\n        ev.nota(&amp;quot;$ psql -h &amp;lt;host&amp;gt; -p 15432 -U postgres (contrase\u00f1a por defecto &amp;#x27;postgres&amp;#x27;)&amp;quot;)\n        ev.nota(f&amp;quot;  {r.stdout.strip() or r.stderr.strip()[:150]}&amp;quot;)\n        img = re.search(r&amp;quot;FROM (\\S+)&amp;quot;, (REPORTES.parent.parent / &amp;quot;CodigoFuenteA&amp;quot; / &amp;quot;BACKEND&amp;quot; / &amp;quot;Dockerfile&amp;quot;).read_text())\n        ev.nota(f&amp;quot;Imagen base del backend: {img.group(1) if img else &amp;#x27;?&amp;#x27;} (Node 18: fin de soporte abril 2025)&amp;quot;)\n        expuesta = &amp;quot;conectado&amp;quot; in r.stdout\n        ev.resultado(f&amp;quot;BD accesible desde la red con credenciales por defecto: {&amp;#x27;s\u00ed&amp;#x27; if expuesta else &amp;#x27;no&amp;#x27;}; &amp;quot;\n                     f&amp;quot;{len(mis)} configuraciones inseguras en Dockerfile/compose&amp;quot;)\n&amp;gt;       assert not expuesta and not mis, &amp;quot;Base de datos expuesta con credenciales por defecto y contenedores sin hardening&amp;quot;\nE       AssertionError: Base de datos expuesta con credenciales por defecto y contenedores sin hardening\nE       assert (not True)\n\napi\\test_herramientas.py:108: AssertionError\n&#34;}], &#34;api/test_herramientas.py::test_carga_k6&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_herramientas.py::test_carga_k6&#34;, &#34;duration&#34;: &#34;2 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_herramientas.py::test_carga_k6&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;2 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8C930B0&amp;gt;\n\n    @pytest.mark.caso(&amp;quot;TC-NFR-03&amp;quot;)\n    def test_carga_k6(ev):\n        d = cargar(&amp;quot;k6_resumen.json&amp;quot;)\n        m = d[&amp;quot;metrics&amp;quot;]\n        dur = m[&amp;quot;http_req_duration&amp;quot;][&amp;quot;values&amp;quot;] if &amp;quot;values&amp;quot; in m[&amp;quot;http_req_duration&amp;quot;] else m[&amp;quot;http_req_duration&amp;quot;]\n        fallos = m[&amp;quot;http_req_failed&amp;quot;][&amp;quot;values&amp;quot;][&amp;quot;rate&amp;quot;] if &amp;quot;values&amp;quot; in m[&amp;quot;http_req_failed&amp;quot;] else m[&amp;quot;http_req_failed&amp;quot;][&amp;quot;value&amp;quot;]\n        reqs = m[&amp;quot;http_reqs&amp;quot;][&amp;quot;values&amp;quot;][&amp;quot;count&amp;quot;] if &amp;quot;values&amp;quot; in m[&amp;quot;http_reqs&amp;quot;] else m[&amp;quot;http_reqs&amp;quot;][&amp;quot;count&amp;quot;]\n        vus = m[&amp;quot;vus_max&amp;quot;][&amp;quot;values&amp;quot;][&amp;quot;max&amp;quot;] if &amp;quot;values&amp;quot; in m[&amp;quot;vus_max&amp;quot;] else m[&amp;quot;vus_max&amp;quot;][&amp;quot;max&amp;quot;]\n        rps = m[&amp;quot;http_reqs&amp;quot;][&amp;quot;values&amp;quot;][&amp;quot;rate&amp;quot;] if &amp;quot;values&amp;quot; in m[&amp;quot;http_reqs&amp;quot;] else m[&amp;quot;http_reqs&amp;quot;][&amp;quot;rate&amp;quot;]\n        ev.nota(f&amp;quot;k6: {vus} usuarios virtuales, {reqs} peticiones ({rps:.1f} req/s)&amp;quot;)\n        ev.nota(f&amp;quot;  http_req_duration  p50={dur[&amp;#x27;med&amp;#x27;]:.0f} ms  p90={dur[&amp;#x27;p(90)&amp;#x27;]:.0f} ms  p95={dur[&amp;#x27;p(95)&amp;#x27;]:.0f} ms  m\u00e1x={dur[&amp;#x27;max&amp;#x27;]:.0f} ms&amp;quot;)\n        ev.nota(f&amp;quot;  http_req_failed    {fallos*100:.2f} %&amp;quot;)\n        ev.resultado(f&amp;quot;Con {vus} usuarios concurrentes: p95 = {dur[&amp;#x27;p(95)&amp;#x27;]:.0f} ms y {fallos*100:.2f} % de errores&amp;quot;)\n&amp;gt;       assert dur[&amp;quot;p(95)&amp;quot;] &amp;lt; 300 and fallos &amp;lt; 0.01, f&amp;quot;p95 de {dur[&amp;#x27;p(95)&amp;#x27;]:.0f} ms bajo 200 usuarios (umbral 300 ms)&amp;quot;\nE       AssertionError: p95 de 4027 ms bajo 200 usuarios (umbral 300 ms)\nE       assert (4027.4722635000003 &amp;lt; 300)\n\napi\\test_herramientas.py:124: AssertionError\n&#34;}], &#34;api/test_no_funcionales.py::test_rendimiento_crud&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_no_funcionales.py::test_rendimiento_crud&#34;, &#34;duration&#34;: &#34;00:03:05&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_no_funcionales.py::test_rendimiento_crud&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:03:05&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8C919D0&amp;gt;\n\n    @pytest.mark.caso(&amp;quot;TC-NFR-01&amp;quot;)\n    def test_rendimiento_crud(ev):\n        e = registrar_empresa(&amp;quot;rendimiento&amp;quot;)\n        tok = login(e[&amp;quot;usuario&amp;quot;], e[&amp;quot;clave&amp;quot;])\n        cli = crear_cliente(tok)\n        n = 15\n        ops = {\n            &amp;quot;GET /clientes/:id&amp;quot;: lambda: requests.get(f&amp;quot;{API}/clientes/{cli[&amp;#x27;id&amp;#x27;]}&amp;quot;, headers=h(tok)),\n            &amp;quot;POST /clientes&amp;quot;: lambda: requests.post(f&amp;quot;{API}/clientes&amp;quot;, json=cliente_payload(), headers=h(tok)),\n            &amp;quot;GET /clientes&amp;quot;: lambda: requests.get(f&amp;quot;{API}/clientes&amp;quot;, headers=h(tok)),\n            &amp;quot;GET /contratos&amp;quot;: lambda: requests.get(f&amp;quot;{API}/contratos&amp;quot;, headers=h(tok)),\n            &amp;quot;POST /autenticacion/login&amp;quot;: lambda: requests.post(f&amp;quot;{API}/autenticacion/login&amp;quot;,\n                                                               json={&amp;quot;nombre_usuario&amp;quot;: e[&amp;quot;usuario&amp;quot;], &amp;quot;password&amp;quot;: e[&amp;quot;clave&amp;quot;]}),\n        }\n        resumen = {}\n        ev.nota(f&amp;quot;{&amp;#x27;OPERACI\u00d3N&amp;#x27;:&amp;lt;28}{&amp;#x27;p50 (ms)&amp;#x27;:&amp;gt;10}{&amp;#x27;p95 (ms)&amp;#x27;:&amp;gt;10}{&amp;#x27;m\u00e1x (ms)&amp;#x27;:&amp;gt;10}  \u2264300 ms&amp;quot;)\n        for nombre, fn in ops.items():\n            tiempos = []\n            for _ in range(n):\n                t0 = time.perf_counter()\n                r = fn()\n                tiempos.append((time.perf_counter() - t0) * 1000)\n                assert r.status_code &amp;lt; 400, f&amp;quot;{nombre} respondi\u00f3 {r.status_code}&amp;quot;\n            p50, p95 = percentil(tiempos, 50), percentil(tiempos, 95)\n            resumen[nombre] = {&amp;quot;p50&amp;quot;: round(p50), &amp;quot;p95&amp;quot;: round(p95), &amp;quot;max&amp;quot;: round(max(tiempos)), &amp;quot;muestras&amp;quot;: [round(t) for t in tiempos]}\n            ev.nota(f&amp;quot;{nombre:&amp;lt;28}{p50:&amp;gt;10.0f}{p95:&amp;gt;10.0f}{max(tiempos):&amp;gt;10.0f}  {&amp;#x27;s\u00ed&amp;#x27; if p95 &amp;lt;= 300 else &amp;#x27;NO&amp;#x27;}&amp;quot;)\n        (REPORTES / &amp;quot;rendimiento_crud.json&amp;quot;).write_text(json.dumps(resumen, ensure_ascii=False, indent=2), encoding=&amp;quot;utf-8&amp;quot;)\n        lentos = [k for k, v in resumen.items() if v[&amp;quot;p95&amp;quot;] &amp;gt; 300]\n        ev.resultado(f&amp;quot;{len(lentos)} de {len(ops)} operaciones superan 300 ms (p95): {&amp;#x27;, &amp;#x27;.join(lentos)}&amp;quot;)\n        detalle = &amp;quot;, &amp;quot;.join(f&amp;quot;{k}={resumen[k][&amp;#x27;p95&amp;#x27;]} ms&amp;quot; for k in lentos)\n&amp;gt;       assert not lentos, f&amp;quot;Operaciones sobre el umbral de 300 ms (p95): {detalle}&amp;quot;\nE       AssertionError: Operaciones sobre el umbral de 300 ms (p95): GET /clientes=4028 ms, GET /contratos=4022 ms, POST /autenticacion/login=4028 ms\nE       assert not [&amp;#x27;GET /clientes&amp;#x27;, &amp;#x27;GET /contratos&amp;#x27;, &amp;#x27;POST /autenticacion/login&amp;#x27;]\n\napi\\test_no_funcionales.py:49: AssertionError\n&#34;}], &#34;api/test_no_funcionales.py::test_migraciones_versionadas&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_no_funcionales.py::test_migraciones_versionadas&#34;, &#34;duration&#34;: &#34;3 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_no_funcionales.py::test_migraciones_versionadas&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;3 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8C93230&amp;gt;\n\n    @pytest.mark.caso(&amp;quot;TC-NFR-12&amp;quot;)\n    def test_migraciones_versionadas(ev):\n        pkg = json.loads((REPO / &amp;quot;BACKEND&amp;quot; / &amp;quot;package.json&amp;quot;).read_text(encoding=&amp;quot;utf-8&amp;quot;))\n        deps = {**pkg.get(&amp;quot;dependencies&amp;quot;, {}), **pkg.get(&amp;quot;devDependencies&amp;quot;, {})}\n        herramientas = [d for d in deps if d in (&amp;quot;node-pg-migrate&amp;quot;, &amp;quot;knex&amp;quot;, &amp;quot;sequelize&amp;quot;, &amp;quot;typeorm&amp;quot;, &amp;quot;prisma&amp;quot;, &amp;quot;db-migrate&amp;quot;, &amp;quot;umzug&amp;quot;)]\n        sql = sorted(p.name for p in (REPO / &amp;quot;BACKEND&amp;quot; / &amp;quot;sql&amp;quot;).iterdir())\n        ev.nota(f&amp;quot;Dependencias del backend: {list(deps)}&amp;quot;)\n        ev.nota(f&amp;quot;BACKEND/sql: {sql}&amp;quot;)\n        ev.nota(&amp;quot;init-db.sh s\u00f3lo se ejecuta cuando el volumen de PostgreSQL est\u00e1 vac\u00edo (docker-entrypoint-initdb.d)&amp;quot;)\n        ev.resultado(&amp;quot;Sin herramienta de migraciones ni versiones del esquema: un cambio exige recrear la BD o SQL manual&amp;quot;)\n&amp;gt;       assert herramientas, &amp;quot;No existen migraciones versionadas del esquema&amp;quot;\nE       AssertionError: No existen migraciones versionadas del esquema\nE       assert []\n\napi\\test_no_funcionales.py:62: AssertionError\n&#34;}], &#34;api/test_seguridad.py::test_tls&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_seguridad.py::test_tls&#34;, &#34;duration&#34;: &#34;00:00:04&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_seguridad.py::test_tls&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:04&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8CA4EF0&amp;gt;\n\n    @pytest.mark.caso(&amp;quot;TC-SEC-01&amp;quot;)\n    def test_tls(ev):\n        hallazgos = []\n        for nombre, url in ((&amp;quot;API&amp;quot;, API), (&amp;quot;Frontend&amp;quot;, WEB)):\n            https = url.replace(&amp;quot;http://&amp;quot;, &amp;quot;https://&amp;quot;)\n            try:\n                requests.get(https, timeout=5, verify=False)\n                ev.nota(f&amp;quot;&amp;gt; GET {https}  -&amp;gt; conexi\u00f3n TLS aceptada&amp;quot;)\n            except requests.exceptions.SSLError as e:\n                ev.nota(f&amp;quot;&amp;gt; GET {https}  -&amp;gt; sin TLS ({type(e).__name__})&amp;quot;)\n                hallazgos.append(f&amp;quot;{nombre} no ofrece TLS&amp;quot;)\n            except requests.exceptions.ConnectionError as e:\n                ev.nota(f&amp;quot;&amp;gt; GET {https}  -&amp;gt; sin TLS ({type(e).__name__})&amp;quot;)\n                hallazgos.append(f&amp;quot;{nombre} no ofrece TLS&amp;quot;)\n            r = requests.get(url, timeout=5, allow_redirects=False)\n            ev.nota(f&amp;quot;&amp;gt; GET {url}  -&amp;gt; HTTP {r.status_code}, HSTS: {r.headers.get(&amp;#x27;Strict-Transport-Security&amp;#x27;, &amp;#x27;ausente&amp;#x27;)}&amp;quot;)\n            if r.status_code &amp;lt; 300:\n                hallazgos.append(f&amp;quot;{nombre} responde por HTTP plano sin redirigir&amp;quot;)\n        ssl = psql(&amp;quot;SHOW ssl&amp;quot;)\n        ev.nota(f&amp;quot;$ psql -c &amp;#x27;SHOW ssl&amp;#x27;  -&amp;gt; {ssl}&amp;quot;)\n        if ssl != &amp;quot;on&amp;quot;:\n            hallazgos.append(&amp;quot;PostgreSQL sin SSL&amp;quot;)\n        r = requests.post(f&amp;quot;{API}/autenticacion/login&amp;quot;, json={&amp;quot;nombre_usuario&amp;quot;: &amp;quot;admin&amp;quot;, &amp;quot;password&amp;quot;: &amp;quot;admin&amp;quot;})\n        ev.nota(f&amp;quot;Credenciales del login viajan en claro: {r.request.body.decode()}&amp;quot;)\n        ev.resultado(&amp;quot;; &amp;quot;.join(hallazgos))\n&amp;gt;       assert not hallazgos, &amp;quot;; &amp;quot;.join(hallazgos)\nE       AssertionError: API no ofrece TLS; API responde por HTTP plano sin redirigir; Frontend no ofrece TLS; Frontend responde por HTTP plano sin redirigir; PostgreSQL sin SSL\nE       assert not [&amp;#x27;API no ofrece TLS&amp;#x27;, &amp;#x27;API responde por HTTP plano sin redirigir&amp;#x27;, &amp;#x27;Frontend no ofrece TLS&amp;#x27;, &amp;#x27;Frontend responde por HTTP plano sin redirigir&amp;#x27;, &amp;#x27;PostgreSQL sin SSL&amp;#x27;]\n\napi\\test_seguridad.py:44: AssertionError\n&#34;}], &#34;api/test_seguridad.py::test_bcrypt&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_seguridad.py::test_bcrypt&#34;, &#34;duration&#34;: &#34;00:00:04&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_seguridad.py::test_bcrypt&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:04&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8CA6450&amp;gt;\nvictima = {&amp;#x27;usuario&amp;#x27;: &amp;#x27;victima_92f2bb&amp;#x27;, &amp;#x27;clave&amp;#x27;: &amp;#x27;Qa#Prueba2026!&amp;#x27;, &amp;#x27;usuario_id&amp;#x27;: &amp;#x27;10&amp;#x27;, &amp;#x27;empresa_id&amp;#x27;: &amp;#x27;7&amp;#x27;, ...}\n\n    @pytest.mark.caso(&amp;quot;TC-SEC-02&amp;quot;)\n    def test_bcrypt(ev, victima):\n        filas = psql(f&amp;quot;SELECT nombre_usuario, contrasena_hash FROM usuarios WHERE nombre_usuario IN &amp;quot;\n                     f&amp;quot;(&amp;#x27;admin&amp;#x27;,&amp;#x27;editor&amp;#x27;,&amp;#x27;{victima[&amp;#x27;usuario&amp;#x27;]}&amp;#x27;) ORDER BY id&amp;quot;).splitlines()\n        ev.nota(&amp;quot;$ SELECT nombre_usuario, contrasena_hash FROM usuarios WHERE ...&amp;quot;)\n        planos = 0\n        for f in filas:\n            u, hsh = f.split(&amp;quot;|&amp;quot;)\n            ev.nota(f&amp;quot;  {u:&amp;lt;22} | {hsh}&amp;quot;)\n            planos += not hsh.startswith((&amp;quot;$2a$&amp;quot;, &amp;quot;$2b$&amp;quot;, &amp;quot;$argon2&amp;quot;))\n        ev.resultado(f&amp;quot;{planos} de {len(filas)} contrase\u00f1as almacenadas en texto plano&amp;quot;)\n&amp;gt;       assert planos == 0, f&amp;quot;{planos} contrase\u00f1as almacenadas en texto plano (sin bcrypt)&amp;quot;\nE       AssertionError: 3 contrase\u00f1as almacenadas en texto plano (sin bcrypt)\nE       assert 3 == 0\n\napi\\test_seguridad.py:58: AssertionError\n&#34;}], &#34;api/test_seguridad.py::test_cifrado_reposo&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_seguridad.py::test_cifrado_reposo&#34;, &#34;duration&#34;: &#34;212 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_seguridad.py::test_cifrado_reposo&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;212 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8CA7110&amp;gt;\nvictima = {&amp;#x27;usuario&amp;#x27;: &amp;#x27;victima_92f2bb&amp;#x27;, &amp;#x27;clave&amp;#x27;: &amp;#x27;Qa#Prueba2026!&amp;#x27;, &amp;#x27;usuario_id&amp;#x27;: &amp;#x27;10&amp;#x27;, &amp;#x27;empresa_id&amp;#x27;: &amp;#x27;7&amp;#x27;, ...}\n\n    @pytest.mark.caso(&amp;quot;TC-SEC-03&amp;quot;)\n    def test_cifrado_reposo(ev, victima):\n        fila = psql(f&amp;quot;SELECT rut, nombre_banco, numero_cuenta, titular_cuenta FROM clientes WHERE id={victima[&amp;#x27;cliente&amp;#x27;][&amp;#x27;id&amp;#x27;]}&amp;quot;)\n        ext = psql(&amp;quot;SELECT coalesce(string_agg(extname, &amp;#x27;,&amp;#x27;), &amp;#x27;ninguna&amp;#x27;) FROM pg_extension WHERE extname=&amp;#x27;pgcrypto&amp;#x27;&amp;quot;)\n        ev.nota(f&amp;quot;$ SELECT rut, nombre_banco, numero_cuenta, titular_cuenta FROM clientes WHERE id={victima[&amp;#x27;cliente&amp;#x27;][&amp;#x27;id&amp;#x27;]}&amp;quot;)\n        ev.nota(f&amp;quot;  {fila}&amp;quot;)\n        ev.nota(f&amp;quot;Extensi\u00f3n pgcrypto: {ext}&amp;quot;)\n        legible = victima[&amp;quot;cliente&amp;quot;][&amp;quot;numero_cuenta&amp;quot;] in fila\n        ev.resultado(f&amp;quot;N\u00famero de cuenta, titular y RUT legibles en la BD ({&amp;#x27;sin cifrar&amp;#x27; if legible else &amp;#x27;cifrados&amp;#x27;})&amp;quot;)\n&amp;gt;       assert not legible, &amp;quot;Datos bancarios almacenados en texto plano&amp;quot;\nE       AssertionError: Datos bancarios almacenados en texto plano\nE       assert not True\n\napi\\test_seguridad.py:70: AssertionError\n&#34;}], &#34;api/test_seguridad.py::test_editor_no_escribe&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_seguridad.py::test_editor_no_escribe&#34;, &#34;duration&#34;: &#34;00:00:04&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_seguridad.py::test_editor_no_escribe&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:04&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8C91190&amp;gt;\ntok_editor = &amp;#x27;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvSWQiOiIyIiwibm9tYnJlVXN1YXJpbyI6ImVkaXRvciIsImVtcHJlc2FVc3VhcmlvSWQiOiIyIiwiZW1wcmVzYUlkIjoiMSIsImlhdCI6MTc5NTY3MTczNSwiZXhwIjoxNzk1Njc4OTM1fQ.36jB6EcrMtDllqg8K-VzmbMUbBGfPQ8d1QYJSnQB5f4&amp;#x27;\n\n    @pytest.mark.caso(&amp;quot;TC-SEC-04&amp;quot;)\n    def test_editor_no_escribe(ev, tok_editor):\n        claims = decodificar_jwt(tok_editor)\n        ev.nota(f&amp;quot;Token del editor (rol 2) no incluye rol: {claims}&amp;quot;)\n        c = requests.post(f&amp;quot;{API}/clientes&amp;quot;, json={&amp;quot;nombre&amp;quot;: f&amp;quot;Creado por editor {sufijo()}&amp;quot;, &amp;quot;correo&amp;quot;: f&amp;quot;ed_{sufijo()}@qa.test&amp;quot;},\n                          headers=h(tok_editor))\n        ev.http(c, cuerpo_max=120, etiqueta=&amp;quot;Editor crea cliente&amp;quot;)\n        cid = c.json().get(&amp;quot;id&amp;quot;)\n        u = requests.put(f&amp;quot;{API}/clientes/{cid}&amp;quot;, json={&amp;quot;nombre&amp;quot;: &amp;quot;Editado por editor&amp;quot;, &amp;quot;correo&amp;quot;: f&amp;quot;ed2_{sufijo()}@qa.test&amp;quot;},\n                         headers=h(tok_editor))\n        ev.http(u, cuerpo_max=80, etiqueta=&amp;quot;Editor edita cliente&amp;quot;)\n        d = requests.delete(f&amp;quot;{API}/clientes/{cid}&amp;quot;, headers=h(tok_editor))\n        ev.http(d, etiqueta=&amp;quot;Editor elimina cliente&amp;quot;)\n        codigos = (c.status_code, u.status_code, d.status_code)\n        ev.resultado(f&amp;quot;El editor crea, edita y elimina: HTTP {codigos}&amp;quot;)\n&amp;gt;       assert codigos == (403, 403, 403), f&amp;quot;El rol editor ejecuta escrituras (HTTP {codigos}); el backend no valida roles&amp;quot;\nE       AssertionError: El rol editor ejecuta escrituras (HTTP (201, 200, 200)); el backend no valida roles\nE       assert (201, 200, 200) == (403, 403, 403)\nE         \nE         At index 0 diff: 201 != 403\nE         Use -v to get more diff\n\napi\\test_seguridad.py:88: AssertionError\n&#34;}], &#34;api/test_seguridad.py::test_endpoints_sin_autenticacion&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_seguridad.py::test_endpoints_sin_autenticacion&#34;, &#34;duration&#34;: &#34;00:00:04&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_seguridad.py::test_endpoints_sin_autenticacion&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:04&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8C924B0&amp;gt;\nvictima = {&amp;#x27;usuario&amp;#x27;: &amp;#x27;victima_92f2bb&amp;#x27;, &amp;#x27;clave&amp;#x27;: &amp;#x27;Qa#Prueba2026!&amp;#x27;, &amp;#x27;usuario_id&amp;#x27;: &amp;#x27;10&amp;#x27;, &amp;#x27;empresa_id&amp;#x27;: &amp;#x27;7&amp;#x27;, ...}\natacante = {&amp;#x27;usuario&amp;#x27;: &amp;#x27;atacante_a4f5fc&amp;#x27;, &amp;#x27;clave&amp;#x27;: &amp;#x27;Qa#Prueba2026!&amp;#x27;, &amp;#x27;usuario_id&amp;#x27;: &amp;#x27;11&amp;#x27;, &amp;#x27;empresa_id&amp;#x27;: &amp;#x27;8&amp;#x27;, ...}\n\n    @pytest.mark.caso(&amp;quot;TC-SEC-05&amp;quot;)\n    def test_endpoints_sin_autenticacion(ev, victima, atacante):\n        link = decodificar_jwt(victima[&amp;quot;token&amp;quot;])[&amp;quot;empresaUsuarioId&amp;quot;]\n        rol_anonimo = f&amp;quot;rol_anonimo_{sufijo()}&amp;quot;\n        nuevo_nombre = f&amp;quot;Renombrada por anonimo {sufijo()}&amp;quot;\n        # Para escrituras se verifica el efecto en la BD: la API responde 500 s\u00f3lo porque falla el\n        # INSERT de auditor\u00eda (usuario NULL) DESPU\u00c9S de haber aplicado el cambio.\n        efecto = {\n            &amp;quot;POST /roles&amp;quot;: lambda: psql(f&amp;quot;SELECT count(*) FROM roles WHERE nombre=&amp;#x27;{rol_anonimo}&amp;#x27;&amp;quot;) == &amp;quot;1&amp;quot;,\n            f&amp;quot;PUT /empresas/{atacante[&amp;#x27;empresa_id&amp;#x27;]}&amp;quot;: lambda: psql(\n                f&amp;quot;SELECT nombre FROM empresas WHERE id={atacante[&amp;#x27;empresa_id&amp;#x27;]}&amp;quot;) == nuevo_nombre,\n        }\n        pruebas = [\n            (&amp;quot;GET&amp;quot;, f&amp;quot;/contratos/{victima[&amp;#x27;contrato&amp;#x27;][&amp;#x27;id&amp;#x27;]}&amp;quot;, None),\n            (&amp;quot;GET&amp;quot;, f&amp;quot;/contratos/{victima[&amp;#x27;contrato&amp;#x27;][&amp;#x27;id&amp;#x27;]}/file&amp;quot;, None),\n            (&amp;quot;GET&amp;quot;, &amp;quot;/auditoria&amp;quot;, None),\n            (&amp;quot;GET&amp;quot;, &amp;quot;/empresas&amp;quot;, None),\n            (&amp;quot;GET&amp;quot;, f&amp;quot;/empresas/{victima[&amp;#x27;empresa_id&amp;#x27;]}&amp;quot;, None),\n            (&amp;quot;GET&amp;quot;, f&amp;quot;/usuarios/{victima[&amp;#x27;usuario_id&amp;#x27;]}&amp;quot;, None),\n            (&amp;quot;GET&amp;quot;, f&amp;quot;/empresa-usuarios/{link}&amp;quot;, None),\n            (&amp;quot;GET&amp;quot;, &amp;quot;/roles&amp;quot;, None),\n            (&amp;quot;POST&amp;quot;, &amp;quot;/roles&amp;quot;, {&amp;quot;nombre&amp;quot;: rol_anonimo}),\n            (&amp;quot;PUT&amp;quot;, f&amp;quot;/empresas/{atacante[&amp;#x27;empresa_id&amp;#x27;]}&amp;quot;, {&amp;quot;nombre&amp;quot;: nuevo_nombre, &amp;quot;correo&amp;quot;: atacante[&amp;quot;empresa&amp;quot;][&amp;quot;correo&amp;quot;]}),\n        ]\n        expuestos = []\n        ev.nota(f&amp;quot;{&amp;#x27;M\u00c9TODO&amp;#x27;:&amp;lt;7}{&amp;#x27;RUTA&amp;#x27;:&amp;lt;30}{&amp;#x27;HTTP&amp;#x27;:&amp;lt;6}RESULTADO&amp;quot;)\n        for metodo, ruta, cuerpo in pruebas:\n            r = requests.request(metodo, f&amp;quot;{API}{ruta}&amp;quot;, json=cuerpo, timeout=30)\n            tipo = r.headers.get(&amp;quot;Content-Type&amp;quot;, &amp;quot;&amp;quot;)\n            clave = f&amp;quot;{metodo} {ruta}&amp;quot;\n            if clave in efecto:\n                aplicado = efecto[clave]()\n                muestra = f&amp;quot;cambio {&amp;#x27;APLICADO en la BD&amp;#x27; if aplicado else &amp;#x27;no aplicado&amp;#x27;} (falla luego la auditor\u00eda)&amp;quot;\n            else:\n                aplicado = r.status_code &amp;lt; 400\n                muestra = r.text[:52].replace(&amp;quot;\\n&amp;quot;, &amp;quot; &amp;quot;) if &amp;quot;json&amp;quot; in tipo else f&amp;quot;&amp;lt;{len(r.content)} bytes {tipo.split(&amp;#x27;;&amp;#x27;)[0]}&amp;gt;&amp;quot;\n            ev.nota(f&amp;quot;{metodo:&amp;lt;7}{ruta:&amp;lt;30}{r.status_code:&amp;lt;6}{muestra}&amp;quot;)\n            if aplicado:\n                expuestos.append(clave)\n        ev.resultado(f&amp;quot;{len(expuestos)} de {len(pruebas)} operaciones aceptadas sin autenticaci\u00f3n&amp;quot;)\n&amp;gt;       assert not expuestos, f&amp;quot;{len(expuestos)}/{len(pruebas)} endpoints responden sin token: {&amp;#x27;, &amp;#x27;.join(expuestos)}&amp;quot;\nE       AssertionError: 10/10 endpoints responden sin token: GET /contratos/11, GET /contratos/11/file, GET /auditoria, GET /empresas, GET /empresas/7, GET /usuarios/10, GET /empresa-usuarios/8, GET /roles, POST /roles, PUT /empresas/8\nE       assert not [&amp;#x27;GET /contratos/11&amp;#x27;, &amp;#x27;GET /contratos/11/file&amp;#x27;, &amp;#x27;GET /auditoria&amp;#x27;, &amp;#x27;GET /empresas&amp;#x27;, &amp;#x27;GET /empresas/7&amp;#x27;, &amp;#x27;GET /usuarios/10&amp;#x27;, ...]\n\napi\\test_seguridad.py:131: AssertionError\n&#34;}], &#34;api/test_seguridad.py::test_borrado_anonimo_contrato&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_seguridad.py::test_borrado_anonimo_contrato&#34;, &#34;duration&#34;: &#34;487 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_seguridad.py::test_borrado_anonimo_contrato&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;487 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8C904D0&amp;gt;\nvictima = {&amp;#x27;usuario&amp;#x27;: &amp;#x27;victima_92f2bb&amp;#x27;, &amp;#x27;clave&amp;#x27;: &amp;#x27;Qa#Prueba2026!&amp;#x27;, &amp;#x27;usuario_id&amp;#x27;: &amp;#x27;10&amp;#x27;, &amp;#x27;empresa_id&amp;#x27;: &amp;#x27;7&amp;#x27;, ...}\n\n    @pytest.mark.caso(&amp;quot;TC-SEC-06&amp;quot;)\n    def test_borrado_anonimo_contrato(ev, victima):\n        r = crear_contrato(victima[&amp;quot;token&amp;quot;], victima[&amp;quot;cliente&amp;quot;][&amp;quot;id&amp;quot;], archivo=pdf_minimo(&amp;quot;Contrato a proteger&amp;quot;))\n        kid = r.json()[&amp;quot;id&amp;quot;]\n        antes = psql(f&amp;quot;SELECT count(*) FROM contratos WHERE id={kid}&amp;quot;)\n        d = requests.delete(f&amp;quot;{API}/contratos/{kid}&amp;quot;)\n        ev.http(d, cuerpo_max=300, etiqueta=&amp;quot;DELETE an\u00f3nimo de un contrato de la v\u00edctima&amp;quot;)\n        despues = psql(f&amp;quot;SELECT count(*) FROM contratos WHERE id={kid}&amp;quot;)\n        docs = psql(f&amp;quot;SELECT count(*) FROM documentos_contrato WHERE contract_id={kid}&amp;quot;)\n        aud = psql(f&amp;quot;SELECT count(*) FROM auditoria WHERE accion LIKE &amp;#x27;CONTRATOS_ELIMINAR: elimin\u00f3 contrato ID {kid}&amp;#x27;&amp;quot;)\n        ev.nota(f&amp;quot;$ contratos id={kid}: antes={antes} despu\u00e9s={despues}; documentos={docs}; eventos de auditor\u00eda={aud}&amp;quot;)\n        ev.resultado(f&amp;quot;Contrato y documento borrados por un an\u00f3nimo sin rastro en auditor\u00eda (HTTP {d.status_code})&amp;quot;)\n&amp;gt;       assert despues == &amp;quot;1&amp;quot;, &amp;quot;Un usuario an\u00f3nimo elimin\u00f3 el contrato y su documento; el borrado no qued\u00f3 auditado&amp;quot;\nE       AssertionError: Un usuario an\u00f3nimo elimin\u00f3 el contrato y su documento; el borrado no qued\u00f3 auditado\nE       assert &amp;#x27;0&amp;#x27; == &amp;#x27;1&amp;#x27;\nE         \nE         - 1\nE         + 0\n\napi\\test_seguridad.py:146: AssertionError\n&#34;}], &#34;api/test_seguridad.py::test_toma_control_entre_empresas&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_seguridad.py::test_toma_control_entre_empresas&#34;, &#34;duration&#34;: &#34;00:00:08&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_seguridad.py::test_toma_control_entre_empresas&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:08&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8C90950&amp;gt;\nvictima = {&amp;#x27;usuario&amp;#x27;: &amp;#x27;victima_92f2bb&amp;#x27;, &amp;#x27;clave&amp;#x27;: &amp;#x27;Qa#Prueba2026!&amp;#x27;, &amp;#x27;usuario_id&amp;#x27;: &amp;#x27;10&amp;#x27;, &amp;#x27;empresa_id&amp;#x27;: &amp;#x27;7&amp;#x27;, ...}\n\n    @pytest.mark.caso(&amp;quot;TC-SEC-07&amp;quot;)\n    def test_toma_control_entre_empresas(ev, victima):\n        atk = registrar_empresa(&amp;quot;intruso&amp;quot;)\n        tok = login(atk[&amp;quot;usuario&amp;quot;], atk[&amp;quot;clave&amp;quot;])\n        claims = decodificar_jwt(tok)\n        ev.nota(f&amp;quot;1) Atacante registrado; su JWT revela empresaUsuarioId={claims[&amp;#x27;empresaUsuarioId&amp;#x27;]}&amp;quot;)\n        empresas = requests.get(f&amp;quot;{API}/empresas&amp;quot;).json()\n        objetivo = next(e for e in empresas if e[&amp;quot;id&amp;quot;] == victima[&amp;quot;empresa_id&amp;quot;])\n        ev.nota(f&amp;quot;2) GET /empresas (sin token) lista {len(empresas)} empresas; objetivo: id={objetivo[&amp;#x27;id&amp;#x27;]} &amp;#x27;{objetivo[&amp;#x27;nombre&amp;#x27;]}&amp;#x27;&amp;quot;)\n        p = requests.put(f&amp;quot;{API}/empresa-usuarios/{claims[&amp;#x27;empresaUsuarioId&amp;#x27;]}&amp;quot;,\n                         json={&amp;quot;empresa_id&amp;quot;: victima[&amp;quot;empresa_id&amp;quot;], &amp;quot;usuario_id&amp;quot;: atk[&amp;quot;usuario_id&amp;quot;], &amp;quot;rol_id&amp;quot;: 1})\n        ev.http(p, etiqueta=&amp;quot;3) PUT /empresa-usuarios/{propio} SIN token -&amp;gt; empresa v\u00edctima, rol administrador&amp;quot;)\n        tok2 = login(atk[&amp;quot;usuario&amp;quot;], atk[&amp;quot;clave&amp;quot;])\n        ev.nota(f&amp;quot;4) Nuevo login del atacante: empresaId={decodificar_jwt(tok2)[&amp;#x27;empresaId&amp;#x27;]}&amp;quot;)\n        robo = requests.get(f&amp;quot;{API}/clientes/search?name=&amp;quot;, headers=h(tok2))\n        datos = [(c[&amp;quot;nombre&amp;quot;], c[&amp;quot;rut&amp;quot;], c[&amp;quot;nombre_banco&amp;quot;], c[&amp;quot;numero_cuenta&amp;quot;]) for c in robo.json()] if robo.ok else []\n        ev.nota(f&amp;quot;5) GET /clientes de la v\u00edctima -&amp;gt; HTTP {robo.status_code}: {datos}&amp;quot;)\n        ev.resultado(&amp;quot;El atacante se convirti\u00f3 en administrador de otra empresa y obtuvo sus datos bancarios&amp;quot;)\n&amp;gt;       assert p.status_code in (401, 403), &amp;quot;Modificaci\u00f3n an\u00f3nima del v\u00ednculo empresa-usuario&amp;quot;\nE       AssertionError: Modificaci\u00f3n an\u00f3nima del v\u00ednculo empresa-usuario\nE       assert 500 in (401, 403)\nE        +  where 500 = &amp;lt;Response [500]&amp;gt;.status_code\n\napi\\test_seguridad.py:167: AssertionError\n&#34;}], &#34;api/test_seguridad.py::test_contratos_a_clientes_ajenos&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_seguridad.py::test_contratos_a_clientes_ajenos&#34;, &#34;duration&#34;: &#34;00:00:04&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_seguridad.py::test_contratos_a_clientes_ajenos&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:04&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8C15730&amp;gt;\nvictima = {&amp;#x27;usuario&amp;#x27;: &amp;#x27;victima_92f2bb&amp;#x27;, &amp;#x27;clave&amp;#x27;: &amp;#x27;Qa#Prueba2026!&amp;#x27;, &amp;#x27;usuario_id&amp;#x27;: &amp;#x27;10&amp;#x27;, &amp;#x27;empresa_id&amp;#x27;: &amp;#x27;7&amp;#x27;, ...}\natacante = {&amp;#x27;usuario&amp;#x27;: &amp;#x27;atacante_a4f5fc&amp;#x27;, &amp;#x27;clave&amp;#x27;: &amp;#x27;Qa#Prueba2026!&amp;#x27;, &amp;#x27;usuario_id&amp;#x27;: &amp;#x27;11&amp;#x27;, &amp;#x27;empresa_id&amp;#x27;: &amp;#x27;8&amp;#x27;, ...}\n\n    @pytest.mark.caso(&amp;quot;TC-SEC-08&amp;quot;)\n    def test_contratos_a_clientes_ajenos(ev, victima, atacante):\n        r = crear_contrato(atacante[&amp;quot;token&amp;quot;], victima[&amp;quot;cliente&amp;quot;][&amp;quot;id&amp;quot;], titulo=&amp;quot;Contrato inyectado por otra empresa&amp;quot;)\n        ev.http(r, cuerpo_max=200, etiqueta=&amp;quot;Atacante crea contrato para cliente de la v\u00edctima&amp;quot;)\n        propio_cli = crear_cliente(atacante[&amp;quot;token&amp;quot;])\n        propio = crear_contrato(atacante[&amp;quot;token&amp;quot;], propio_cli[&amp;quot;id&amp;quot;], titulo=&amp;quot;Contrato propio&amp;quot;).json()\n        from conftest import multipart\n        u = requests.put(f&amp;quot;{API}/contratos/{propio[&amp;#x27;id&amp;#x27;]}&amp;quot;, files=multipart({&amp;quot;cliente_id&amp;quot;: victima[&amp;quot;cliente&amp;quot;][&amp;quot;id&amp;quot;]}),\n                         headers=h(atacante[&amp;quot;token&amp;quot;]))\n        ev.http(u, cuerpo_max=200, etiqueta=&amp;quot;Atacante mueve su contrato a un cliente de la v\u00edctima&amp;quot;)\n        vis = [c[&amp;quot;titulo&amp;quot;] for c in requests.get(f&amp;quot;{API}/contratos&amp;quot;, headers=h(victima[&amp;quot;token&amp;quot;])).json()\n               if c[&amp;quot;id&amp;quot;] in (r.json().get(&amp;quot;id&amp;quot;), propio[&amp;quot;id&amp;quot;])]\n        ev.nota(f&amp;quot;Contratos ajenos visibles ahora en la empresa v\u00edctima: {vis}&amp;quot;)\n        ev.resultado(f&amp;quot;Creaci\u00f3n HTTP {r.status_code} y reasignaci\u00f3n HTTP {u.status_code}; la v\u00edctima ve {len(vis)} contratos ajenos&amp;quot;)\n&amp;gt;       assert r.status_code in (403, 404) and u.status_code in (403, 404), \\\n            &amp;quot;La API acepta cliente_id de otra empresa en POST y PUT /contratos&amp;quot;\nE       AssertionError: La API acepta cliente_id de otra empresa en POST y PUT /contratos\nE       assert (201 in (403, 404))\nE        +  where 201 = &amp;lt;Response [201]&amp;gt;.status_code\n\napi\\test_seguridad.py:185: AssertionError\n&#34;}], &#34;api/test_seguridad.py::test_xss_almacenado&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_seguridad.py::test_xss_almacenado&#34;, &#34;duration&#34;: &#34;131 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_seguridad.py::test_xss_almacenado&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;131 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8C153D0&amp;gt;\nvictima = {&amp;#x27;usuario&amp;#x27;: &amp;#x27;victima_92f2bb&amp;#x27;, &amp;#x27;clave&amp;#x27;: &amp;#x27;Qa#Prueba2026!&amp;#x27;, &amp;#x27;usuario_id&amp;#x27;: &amp;#x27;10&amp;#x27;, &amp;#x27;empresa_id&amp;#x27;: &amp;#x27;7&amp;#x27;, ...}\n\n    @pytest.mark.caso(&amp;quot;TC-SEC-09&amp;quot;)\n    def test_xss_almacenado(ev, victima):\n        payload = &amp;quot;&amp;lt;img src=x onerror=alert(document.domain)&amp;gt;&amp;quot;\n        r = requests.post(f&amp;quot;{API}/clientes&amp;quot;, json={&amp;quot;nombre&amp;quot;: payload, &amp;quot;correo&amp;quot;: f&amp;quot;xss_{sufijo()}@qa.test&amp;quot;}, headers=h(victima[&amp;quot;token&amp;quot;]))\n        ev.http(r, cuerpo_max=160)\n        guardado = psql(f&amp;quot;SELECT nombre FROM clientes WHERE id={r.json().get(&amp;#x27;id&amp;#x27;, 0)}&amp;quot;)\n        ev.nota(f&amp;quot;Valor almacenado en BD: {guardado}&amp;quot;)\n        victima[&amp;quot;xss_cliente&amp;quot;] = r.json().get(&amp;quot;id&amp;quot;)\n        ev.resultado(f&amp;quot;El backend almacen\u00f3 el payload sin sanear (HTTP {r.status_code}); React lo escapa al mostrarlo &amp;quot;\n                     f&amp;quot;(ver evidencia de interfaz), por lo que el riesgo queda latente para otros consumidores de la API&amp;quot;)\n&amp;gt;       assert r.status_code == 400 or guardado != payload, &amp;quot;Entrada con HTML/JS aceptada y almacenada sin saneamiento&amp;quot;\nE       AssertionError: Entrada con HTML/JS aceptada y almacenada sin saneamiento\nE       assert (201 == 400 or &amp;#x27;&amp;lt;img src=x onerror=alert(document.domain)&amp;gt;&amp;#x27; != &amp;#x27;&amp;lt;img src=x onerror=alert(document.domain)&amp;gt;&amp;#x27;)\nE        +  where 201 = &amp;lt;Response [201]&amp;gt;.status_code\n\napi\\test_seguridad.py:199: AssertionError\n&#34;}], &#34;api/test_seguridad.py::test_inyeccion_sql&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;api/test_seguridad.py::test_inyeccion_sql&#34;, &#34;duration&#34;: &#34;00:00:04&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_seguridad.py::test_inyeccion_sql&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:04&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;api/test_seguridad.py::test_cors&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_seguridad.py::test_cors&#34;, &#34;duration&#34;: &#34;8 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_seguridad.py::test_cors&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;8 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8C17DD0&amp;gt;\n\n    @pytest.mark.caso(&amp;quot;TC-SEC-11&amp;quot;)\n    def test_cors(ev):\n        r = requests.options(f&amp;quot;{API}/clientes&amp;quot;, headers={&amp;quot;Origin&amp;quot;: &amp;quot;https://sitio-malicioso.example&amp;quot;,\n                                                         &amp;quot;Access-Control-Request-Method&amp;quot;: &amp;quot;DELETE&amp;quot;,\n                                                         &amp;quot;Access-Control-Request-Headers&amp;quot;: &amp;quot;authorization&amp;quot;})\n        acao = r.headers.get(&amp;quot;Access-Control-Allow-Origin&amp;quot;)\n        ev.nota(&amp;quot;&amp;gt; OPTIONS /clientes  Origin: https://sitio-malicioso.example&amp;quot;)\n        for k in (&amp;quot;Access-Control-Allow-Origin&amp;quot;, &amp;quot;Access-Control-Allow-Methods&amp;quot;, &amp;quot;Access-Control-Allow-Headers&amp;quot;):\n            ev.nota(f&amp;quot;&amp;lt; {k}: {r.headers.get(k)}&amp;quot;)\n        ev.resultado(f&amp;quot;La API autoriza cualquier origen (Access-Control-Allow-Origin: {acao})&amp;quot;)\n&amp;gt;       assert acao not in (&amp;quot;*&amp;quot;, &amp;quot;https://sitio-malicioso.example&amp;quot;), f&amp;quot;CORS abierto: Access-Control-Allow-Origin: {acao}&amp;quot;\nE       AssertionError: CORS abierto: Access-Control-Allow-Origin: *\nE       assert &amp;#x27;*&amp;#x27; not in (&amp;#x27;*&amp;#x27;, &amp;#x27;https://sitio-malicioso.example&amp;#x27;)\n\napi\\test_seguridad.py:225: AssertionError\n&#34;}], &#34;api/test_seguridad.py::test_cabeceras_seguridad&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_seguridad.py::test_cabeceras_seguridad&#34;, &#34;duration&#34;: &#34;10 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_seguridad.py::test_cabeceras_seguridad&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;10 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8C160F0&amp;gt;\n\n    @pytest.mark.caso(&amp;quot;TC-SEC-12&amp;quot;)\n    def test_cabeceras_seguridad(ev):\n        requeridas = [&amp;quot;Content-Security-Policy&amp;quot;, &amp;quot;X-Frame-Options&amp;quot;, &amp;quot;X-Content-Type-Options&amp;quot;, &amp;quot;Referrer-Policy&amp;quot;,\n                      &amp;quot;Strict-Transport-Security&amp;quot;]\n        faltan = {}\n        for nombre, url in ((&amp;quot;API&amp;quot;, API + &amp;quot;/&amp;quot;), (&amp;quot;Frontend&amp;quot;, WEB + &amp;quot;/&amp;quot;)):\n            r = requests.get(url)\n            aus = [c for c in requeridas if c not in r.headers]\n            faltan[nombre] = aus\n            ev.nota(f&amp;quot;{nombre}: faltan {aus}; X-Powered-By: {r.headers.get(&amp;#x27;X-Powered-By&amp;#x27;, &amp;#x27;no&amp;#x27;)}; Server: {r.headers.get(&amp;#x27;Server&amp;#x27;, &amp;#x27;-&amp;#x27;)}&amp;quot;)\n        ev.resultado(f&amp;quot;API sin {len(faltan[&amp;#x27;API&amp;#x27;])}/5 y frontend sin {len(faltan[&amp;#x27;Frontend&amp;#x27;])}/5 cabeceras; la API revela &amp;#x27;X-Powered-By: Express&amp;#x27;&amp;quot;)\n&amp;gt;       assert not faltan[&amp;quot;API&amp;quot;] and not faltan[&amp;quot;Frontend&amp;quot;]\nE       AssertionError: assert (not [&amp;#x27;Content-Security-Policy&amp;#x27;, &amp;#x27;X-Frame-Options&amp;#x27;, &amp;#x27;X-Content-Type-Options&amp;#x27;, &amp;#x27;Referrer-Policy&amp;#x27;, &amp;#x27;Strict-Transport-Security&amp;#x27;])\n\napi\\test_seguridad.py:239: AssertionError\n&#34;}], &#34;api/test_seguridad.py::test_errores_y_logs&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_seguridad.py::test_errores_y_logs&#34;, &#34;duration&#34;: &#34;138 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_seguridad.py::test_errores_y_logs&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;138 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8C144D0&amp;gt;\nvictima = {&amp;#x27;usuario&amp;#x27;: &amp;#x27;victima_92f2bb&amp;#x27;, &amp;#x27;clave&amp;#x27;: &amp;#x27;Qa#Prueba2026!&amp;#x27;, &amp;#x27;usuario_id&amp;#x27;: &amp;#x27;10&amp;#x27;, &amp;#x27;empresa_id&amp;#x27;: &amp;#x27;7&amp;#x27;, ...}\n\n    @pytest.mark.caso(&amp;quot;TC-SEC-13&amp;quot;)\n    def test_errores_y_logs(ev, victima):\n        dup = requests.post(f&amp;quot;{API}/clientes&amp;quot;, json={&amp;quot;nombre&amp;quot;: &amp;quot;Duplicado&amp;quot;, &amp;quot;correo&amp;quot;: victima[&amp;quot;cliente&amp;quot;][&amp;quot;correo&amp;quot;]},\n                            headers=h(victima[&amp;quot;token&amp;quot;]))\n        ev.http(dup, cuerpo_max=260, etiqueta=&amp;quot;Correo duplicado&amp;quot;)\n        inv = requests.get(f&amp;quot;{API}/clientes/abc&amp;quot;, headers=h(victima[&amp;quot;token&amp;quot;]))\n        ev.http(inv, cuerpo_max=200, etiqueta=&amp;quot;Identificador inv\u00e1lido&amp;quot;)\n        logs = docker(&amp;quot;logs&amp;quot;, &amp;quot;--tail&amp;quot;, &amp;quot;400&amp;quot;, &amp;quot;atlas-backend&amp;quot;).stdout + docker(&amp;quot;logs&amp;quot;, &amp;quot;--tail&amp;quot;, &amp;quot;400&amp;quot;, &amp;quot;atlas-backend&amp;quot;).stderr\n        sensibles = [l for l in logs.splitlines() if &amp;quot;authUser&amp;quot; in l or &amp;quot;nombreUsuario&amp;quot; in l][:3]\n        ev.nota(&amp;quot;$ docker logs atlas-backend | grep authUser&amp;quot;)\n        for l in sensibles:\n            ev.nota(f&amp;quot;  {l[:150]}&amp;quot;)\n        fuga = &amp;quot;glosa&amp;quot; in dup.text and (&amp;quot;duplicate key&amp;quot; in dup.text or &amp;quot;violates&amp;quot; in dup.text)\n        ev.resultado(f&amp;quot;HTTP {dup.status_code} con detalle interno de PostgreSQL en &amp;#x27;glosa&amp;#x27;; los logs imprimen el contenido del token&amp;quot;)\n&amp;gt;       assert dup.status_code &amp;lt; 500 and not fuga, &amp;quot;Las respuestas exponen mensajes internos de la base de datos&amp;quot;\nE       AssertionError: Las respuestas exponen mensajes internos de la base de datos\nE       assert (500 &amp;lt; 500)\nE        +  where 500 = &amp;lt;Response [500]&amp;gt;.status_code\n\napi\\test_seguridad.py:256: AssertionError\n&#34;}], &#34;api/test_seguridad.py::test_auditoria_confidencial_integra&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_seguridad.py::test_auditoria_confidencial_integra&#34;, &#34;duration&#34;: &#34;29 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_seguridad.py::test_auditoria_confidencial_integra&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;29 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8C17A70&amp;gt;\ntok_editor = &amp;#x27;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvSWQiOiIyIiwibm9tYnJlVXN1YXJpbyI6ImVkaXRvciIsImVtcHJlc2FVc3VhcmlvSWQiOiIyIiwiZW1wcmVzYUlkIjoiMSIsImlhdCI6MTc5NTY3MTczNSwiZXhwIjoxNzk1Njc4OTM1fQ.36jB6EcrMtDllqg8K-VzmbMUbBGfPQ8d1QYJSnQB5f4&amp;#x27;\nvictima = {&amp;#x27;usuario&amp;#x27;: &amp;#x27;victima_92f2bb&amp;#x27;, &amp;#x27;clave&amp;#x27;: &amp;#x27;Qa#Prueba2026!&amp;#x27;, &amp;#x27;usuario_id&amp;#x27;: &amp;#x27;10&amp;#x27;, &amp;#x27;empresa_id&amp;#x27;: &amp;#x27;7&amp;#x27;, ...}\n\n    @pytest.mark.caso(&amp;quot;TC-SEC-14&amp;quot;)\n    def test_auditoria_confidencial_integra(ev, tok_editor, victima):\n        r = requests.get(f&amp;quot;{API}/auditoria&amp;quot;)\n        ev.http(r, cuerpo_max=200, etiqueta=&amp;quot;GET /auditoria sin token&amp;quot;)\n        usuarios = {x[&amp;quot;usuario_id&amp;quot;] for x in r.json()} if r.ok else set()\n        ev.nota(f&amp;quot;Usuarios distintos visibles en la auditor\u00eda: {len(usuarios)} (incluye &amp;#x27;{victima[&amp;#x27;usuario&amp;#x27;]}&amp;#x27;: {victima[&amp;#x27;usuario&amp;#x27;] in usuarios})&amp;quot;)\n        falso = requests.post(f&amp;quot;{API}/auditoria&amp;quot;, headers=h(tok_editor),\n                              json={&amp;quot;accion&amp;quot;: &amp;quot;CLIENTES_ELIMINAR&amp;quot;, &amp;quot;detalles&amp;quot;: &amp;quot;elimin\u00f3 cliente ID 9999 (evento fabricado)&amp;quot;})\n        ev.http(falso, cuerpo_max=200, etiqueta=&amp;quot;Editor inserta un evento falso&amp;quot;)\n        ev.resultado(f&amp;quot;Auditor\u00eda p\u00fablica con eventos de {len(usuarios)} usuarios de distintas empresas; &amp;quot;\n                     f&amp;quot;se aceptan eventos fabricados (HTTP {falso.status_code})&amp;quot;)\n&amp;gt;       assert r.status_code == 401, &amp;quot;La auditor\u00eda completa es legible sin autenticaci\u00f3n&amp;quot;\nE       AssertionError: La auditor\u00eda completa es legible sin autenticaci\u00f3n\nE       assert 200 == 401\nE        +  where 200 = &amp;lt;Response [200]&amp;gt;.status_code\n\napi\\test_seguridad.py:271: AssertionError\n&#34;}], &#34;api/test_seguridad.py::test_respaldo&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_seguridad.py::test_respaldo&#34;, &#34;duration&#34;: &#34;8 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_seguridad.py::test_respaldo&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;8 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8C17B90&amp;gt;\n\n    @pytest.mark.caso(&amp;quot;TC-SEC-15&amp;quot;)\n    def test_respaldo(ev):\n        compose = (REPO / &amp;quot;docker-compose.yml&amp;quot;).read_text(encoding=&amp;quot;utf-8&amp;quot;)\n        archivos = [p.name for p in REPO.rglob(&amp;quot;*&amp;quot;) if p.is_file() and &amp;quot;node_modules&amp;quot; not in p.parts\n                    and re.search(r&amp;quot;backup|respaldo|pg_dump|restore&amp;quot;, p.name, re.I)]\n        menciones = re.findall(r&amp;quot;pg_dump|backup|respaldo&amp;quot;, compose, re.I)\n        ev.nota(f&amp;quot;docker-compose.yml: servicios {re.findall(r&amp;#x27;^  ([a-z-]+):&amp;#x27;, compose, re.M)}; menciones a respaldo: {menciones or &amp;#x27;ninguna&amp;#x27;}&amp;quot;)\n        ev.nota(f&amp;quot;Archivos de respaldo/restauraci\u00f3n en el repositorio: {archivos or &amp;#x27;ninguno&amp;#x27;}&amp;quot;)\n        ev.nota(&amp;quot;Datos en volumen &amp;#x27;postgres_data&amp;#x27; y documentos dentro de la BD: un fallo del volumen pierde todo&amp;quot;)\n        ev.resultado(&amp;quot;No existe respaldo automatizado ni procedimiento de restauraci\u00f3n&amp;quot;)\n&amp;gt;       assert archivos or menciones, &amp;quot;No hay pol\u00edtica ni mecanismo de respaldo y recuperaci\u00f3n&amp;quot;\nE       AssertionError: No hay pol\u00edtica ni mecanismo de respaldo y recuperaci\u00f3n\nE       assert ([] or [])\n\napi\\test_seguridad.py:285: AssertionError\n&#34;}], &#34;api/test_seguridad.py::test_minimizacion_datos&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_seguridad.py::test_minimizacion_datos&#34;, &#34;duration&#34;: &#34;11 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_seguridad.py::test_minimizacion_datos&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;11 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8C16BD0&amp;gt;\ntok_editor = &amp;#x27;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvSWQiOiIyIiwibm9tYnJlVXN1YXJpbyI6ImVkaXRvciIsImVtcHJlc2FVc3VhcmlvSWQiOiIyIiwiZW1wcmVzYUlkIjoiMSIsImlhdCI6MTc5NTY3MTczNSwiZXhwIjoxNzk1Njc4OTM1fQ.36jB6EcrMtDllqg8K-VzmbMUbBGfPQ8d1QYJSnQB5f4&amp;#x27;\n\n    @pytest.mark.caso(&amp;quot;TC-SEC-16&amp;quot;)\n    def test_minimizacion_datos(ev, tok_editor):\n        r = requests.get(f&amp;quot;{API}/clientes/search?name=&amp;quot;, headers=h(tok_editor))\n        ev.http(r, cuerpo_max=10, etiqueta=&amp;quot;Editor lista clientes&amp;quot;)\n        for c in r.json()[:2]:\n            ev.nota(f&amp;quot;  {c[&amp;#x27;nombre&amp;#x27;]}: RUT {c[&amp;#x27;rut&amp;#x27;]} | {c[&amp;#x27;nombre_banco&amp;#x27;]} cta {c[&amp;#x27;numero_cuenta&amp;#x27;]} | titular {c[&amp;#x27;titular_cuenta&amp;#x27;]}&amp;quot;)\n        completos = [c for c in r.json() if c.get(&amp;quot;numero_cuenta&amp;quot;) and &amp;quot;*&amp;quot; not in c[&amp;quot;numero_cuenta&amp;quot;]]\n        ev.resultado(f&amp;quot;El editor recibe {len(completos)} n\u00fameros de cuenta completos sin enmascarar&amp;quot;)\n&amp;gt;       assert not completos, &amp;quot;La API entrega datos bancarios completos a un perfil de s\u00f3lo lectura&amp;quot;\nE       AssertionError: La API entrega datos bancarios completos a un perfil de s\u00f3lo lectura\nE       assert not [{&amp;#x27;id&amp;#x27;: &amp;#x27;1&amp;#x27;, &amp;#x27;nombre&amp;#x27;: &amp;#x27;Mar\u00eda Gonz\u00e1lez&amp;#x27;, &amp;#x27;correo&amp;#x27;: &amp;#x27;maria.gonzalez@biotec.cl&amp;#x27;, &amp;#x27;telefono&amp;#x27;: &amp;#x27;987654321&amp;#x27;, ...}, {&amp;#x27;id&amp;#x27;: &amp;#x27;2&amp;#x27;, &amp;#x27;nombre&amp;#x27;: &amp;#x27;Pedro Morales&amp;#x27;, &amp;#x27;correo&amp;#x27;: &amp;#x27;pedro.morales@constructoraandes.cl&amp;#x27;, &amp;#x27;telefono&amp;#x27;: &amp;#x27;998877665&amp;#x27;, ...}]\n\napi\\test_seguridad.py:296: AssertionError\n&#34;}], &#34;api/test_seguridad.py::test_secreto_jwt_publicado&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_seguridad.py::test_secreto_jwt_publicado&#34;, &#34;duration&#34;: &#34;8 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_seguridad.py::test_secreto_jwt_publicado&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;8 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8C16330&amp;gt;\nvictima = {&amp;#x27;usuario&amp;#x27;: &amp;#x27;victima_92f2bb&amp;#x27;, &amp;#x27;clave&amp;#x27;: &amp;#x27;Qa#Prueba2026!&amp;#x27;, &amp;#x27;usuario_id&amp;#x27;: &amp;#x27;10&amp;#x27;, &amp;#x27;empresa_id&amp;#x27;: &amp;#x27;7&amp;#x27;, ...}\n\n    @pytest.mark.caso(&amp;quot;TC-SEC-17&amp;quot;)\n    def test_secreto_jwt_publicado(ev, victima):\n        readme = (REPO / &amp;quot;README.md&amp;quot;).read_text(encoding=&amp;quot;utf-8&amp;quot;)\n        m = re.search(r&amp;quot;JWT_SECRET: `([0-9a-f]{32,})`&amp;quot;, readme)\n        assert m, &amp;quot;No se encontr\u00f3 secreto en el README&amp;quot;\n        secreto = m.group(1)\n        ev.nota(f&amp;quot;README.md publica JWT_SECRET = {secreto[:10]}\u2026{secreto[-6:]}&amp;quot;)\n        ahora = int(time.time())\n        falso = firmar_jwt({&amp;quot;usuarioId&amp;quot;: 99999, &amp;quot;nombreUsuario&amp;quot;: &amp;quot;token_falsificado&amp;quot;, &amp;quot;empresaUsuarioId&amp;quot;: None,\n                            &amp;quot;empresaId&amp;quot;: victima[&amp;quot;empresa_id&amp;quot;], &amp;quot;iat&amp;quot;: ahora, &amp;quot;exp&amp;quot;: ahora + 3600}, secreto)\n        ev.nota(f&amp;quot;Token fabricado para empresaId={victima[&amp;#x27;empresa_id&amp;#x27;]}: {falso[:48]}\u2026&amp;quot;)\n        r = requests.get(f&amp;quot;{API}/clientes/search?name=&amp;quot;, headers=h(falso))\n        ev.http(r, cuerpo_max=180, etiqueta=&amp;quot;GET /clientes con el token falsificado&amp;quot;)\n        ev.resultado(f&amp;quot;La API acepta el token falsificado (HTTP {r.status_code}) y entrega {len(r.json()) if r.ok else 0} clientes de la v\u00edctima&amp;quot;)\n&amp;gt;       assert r.status_code == 401, &amp;quot;Con el secreto publicado cualquiera puede fabricar tokens v\u00e1lidos de cualquier empresa&amp;quot;\nE       AssertionError: Con el secreto publicado cualquiera puede fabricar tokens v\u00e1lidos de cualquier empresa\nE       assert 200 == 401\nE        +  where 200 = &amp;lt;Response [200]&amp;gt;.status_code\n\napi\\test_seguridad.py:313: AssertionError\n&#34;}], &#34;api/test_seguridad.py::test_politica_contrasenas&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_seguridad.py::test_politica_contrasenas&#34;, &#34;duration&#34;: &#34;65 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_seguridad.py::test_politica_contrasenas&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;65 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8C15910&amp;gt;\n\n    @pytest.mark.caso(&amp;quot;TC-SEC-18&amp;quot;)\n    def test_politica_contrasenas(ev):\n        aceptadas = []\n        for clave in (&amp;quot;123&amp;quot;, &amp;quot;password&amp;quot;, &amp;quot;abcdefghijkl&amp;quot;):\n            s = sufijo()\n            r = requests.post(f&amp;quot;{API}/empresas&amp;quot;, json={\n                &amp;quot;usuario&amp;quot;: {&amp;quot;nombre_usuario&amp;quot;: f&amp;quot;debil_{s}&amp;quot;, &amp;quot;contrasena_hash&amp;quot;: clave, &amp;quot;correo&amp;quot;: f&amp;quot;debil_{s}@qa.test&amp;quot;},\n                &amp;quot;empresa&amp;quot;: {&amp;quot;nombre&amp;quot;: f&amp;quot;D\u00e9bil {s}&amp;quot;, &amp;quot;correo&amp;quot;: f&amp;quot;debil_emp_{s}@qa.test&amp;quot;}})\n            ev.nota(f&amp;quot;&amp;gt; registro con contrase\u00f1a &amp;#x27;{clave}&amp;#x27; -&amp;gt; HTTP {r.status_code}&amp;quot;)\n            if r.status_code == 201:\n                aceptadas.append(clave)\n        ev.resultado(f&amp;quot;Se aceptaron {len(aceptadas)}/3 contrase\u00f1as d\u00e9biles: {aceptadas}&amp;quot;)\n&amp;gt;       assert not aceptadas, f&amp;quot;Contrase\u00f1as que incumplen la pol\u00edtica aceptadas: {aceptadas}&amp;quot;\nE       AssertionError: Contrase\u00f1as que incumplen la pol\u00edtica aceptadas: [&amp;#x27;123&amp;#x27;, &amp;#x27;password&amp;#x27;, &amp;#x27;abcdefghijkl&amp;#x27;]\nE       assert not [&amp;#x27;123&amp;#x27;, &amp;#x27;password&amp;#x27;, &amp;#x27;abcdefghijkl&amp;#x27;]\n\napi\\test_seguridad.py:328: AssertionError\n&#34;}], &#34;api/test_seguridad.py::test_archivos_peligrosos&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_seguridad.py::test_archivos_peligrosos&#34;, &#34;duration&#34;: &#34;492 ms&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_seguridad.py::test_archivos_peligrosos&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;492 ms&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8C14FB0&amp;gt;\nvictima = {&amp;#x27;usuario&amp;#x27;: &amp;#x27;victima_92f2bb&amp;#x27;, &amp;#x27;clave&amp;#x27;: &amp;#x27;Qa#Prueba2026!&amp;#x27;, &amp;#x27;usuario_id&amp;#x27;: &amp;#x27;10&amp;#x27;, &amp;#x27;empresa_id&amp;#x27;: &amp;#x27;7&amp;#x27;, ...}\n\n    @pytest.mark.caso(&amp;quot;TC-SEC-19&amp;quot;)\n    def test_archivos_peligrosos(ev, victima):\n        casos = [(&amp;quot;malware.exe&amp;quot;, b&amp;quot;MZ\\x90\\x00&amp;quot; + b&amp;quot;\\x00&amp;quot; * 60 + b&amp;quot;ARCHIVO DE PRUEBA INOFENSIVO&amp;quot;),\n                 (&amp;quot;pagina.html&amp;quot;, b&amp;quot;&amp;lt;html&amp;gt;&amp;lt;script&amp;gt;alert(&amp;#x27;xss&amp;#x27;)&amp;lt;/script&amp;gt;&amp;lt;/html&amp;gt;&amp;quot;),\n                 (&amp;quot;grande.pdf&amp;quot;, b&amp;quot;%PDF-1.4\\n&amp;quot; + b&amp;quot;0&amp;quot; * (25 * 1024 * 1024))]\n        aceptados = []\n        for nombre, contenido in casos:\n            t0 = time.perf_counter()\n            r = crear_contrato(victima[&amp;quot;token&amp;quot;], victima[&amp;quot;cliente&amp;quot;][&amp;quot;id&amp;quot;], archivo=contenido, nombre_archivo=nombre)\n            ev.nota(f&amp;quot;&amp;gt; adjuntar {nombre:&amp;lt;12} ({len(contenido)/1024:,.0f} KB) -&amp;gt; HTTP {r.status_code} en {time.perf_counter()-t0:.1f} s&amp;quot;)\n            if r.status_code == 201:\n                aceptados.append(nombre)\n        ev.resultado(f&amp;quot;Archivos no permitidos aceptados: {aceptados}&amp;quot;)\n&amp;gt;       assert not aceptados, f&amp;quot;Se aceptaron archivos no permitidos: {aceptados}&amp;quot;\nE       AssertionError: Se aceptaron archivos no permitidos: [&amp;#x27;malware.exe&amp;#x27;, &amp;#x27;pagina.html&amp;#x27;, &amp;#x27;grande.pdf&amp;#x27;]\nE       assert not [&amp;#x27;malware.exe&amp;#x27;, &amp;#x27;pagina.html&amp;#x27;, &amp;#x27;grande.pdf&amp;#x27;]\n\napi\\test_seguridad.py:344: AssertionError\n&#34;}], &#34;api/test_seguridad.py::test_fuerza_bruta&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;api/test_seguridad.py::test_fuerza_bruta&#34;, &#34;duration&#34;: &#34;00:00:16&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;api/test_seguridad.py::test_fuerza_bruta&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:16&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x00000291A8C916D0&amp;gt;\n\n    @pytest.mark.caso(&amp;quot;TC-SEC-20&amp;quot;)\n    def test_fuerza_bruta(ev):\n        def intento(i):\n            return requests.post(f&amp;quot;{API}/autenticacion/login&amp;quot;,\n                                 json={&amp;quot;nombre_usuario&amp;quot;: &amp;quot;admin&amp;quot;, &amp;quot;password&amp;quot;: f&amp;quot;incorrecta{i}&amp;quot;}, timeout=60).status_code\n        t0 = time.perf_counter()\n        with cf.ThreadPoolExecutor(max_workers=10) as ex:\n            codigos = list(ex.map(intento, range(30)))\n        dur = time.perf_counter() - t0\n        bloqueos = sum(c in (423, 429) for c in codigos)\n        ok = requests.post(f&amp;quot;{API}/autenticacion/login&amp;quot;, json={&amp;quot;nombre_usuario&amp;quot;: &amp;quot;admin&amp;quot;, &amp;quot;password&amp;quot;: &amp;quot;admin&amp;quot;})\n        ev.nota(f&amp;quot;30 intentos fallidos en {dur:.1f} s con 10 hilos -&amp;gt; c\u00f3digos: { {c: codigos.count(c) for c in set(codigos)} }&amp;quot;)\n        ev.nota(f&amp;quot;Login correcto inmediatamente despu\u00e9s: HTTP {ok.status_code}&amp;quot;)\n        ev.resultado(f&amp;quot;Sin limitaci\u00f3n de intentos: {bloqueos} respuestas 429/423 de 30&amp;quot;)\n&amp;gt;       assert bloqueos &amp;gt; 0, &amp;quot;No existe limitaci\u00f3n de intentos ni bloqueo de cuenta&amp;quot;\nE       AssertionError: No existe limitaci\u00f3n de intentos ni bloqueo de cuenta\nE       assert 0 &amp;gt; 0\n\napi\\test_seguridad.py:361: AssertionError\n&#34;}]}, &#34;renderCollapsed&#34;: [&#34;passed&#34;], &#34;initialSort&#34;: &#34;result&#34;, &#34;title&#34;: &#34;reporte_api.html&#34;}"></div>
+    <script>
+      (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+const { getCollapsedCategory, setCollapsedIds } = require('./storage.js')
+
+class DataManager {
+    setManager(data) {
+        const collapsedCategories = [...getCollapsedCategory(data.renderCollapsed)]
+        const collapsedIds = []
+        const tests = Object.values(data.tests).flat().map((test, index) => {
+            const collapsed = collapsedCategories.includes(test.result.toLowerCase())
+            const id = `test_${index}`
+            if (collapsed) {
+                collapsedIds.push(id)
+            }
+            return {
+                ...test,
+                id,
+                collapsed,
+            }
+        })
+        const dataBlob = { ...data, tests }
+        this.data = { ...dataBlob }
+        this.renderData = { ...dataBlob }
+        setCollapsedIds(collapsedIds)
+    }
+
+    get allData() {
+        return { ...this.data }
+    }
+
+    resetRender() {
+        this.renderData = { ...this.data }
+    }
+
+    setRender(data) {
+        this.renderData.tests = [...data]
+    }
+
+    toggleCollapsedItem(id) {
+        this.renderData.tests = this.renderData.tests.map((test) =>
+            test.id === id ? { ...test, collapsed: !test.collapsed } : test,
+        )
+    }
+
+    set allCollapsed(collapsed) {
+        this.renderData = { ...this.renderData, tests: [...this.renderData.tests.map((test) => (
+            { ...test, collapsed }
+        ))] }
+    }
+
+    get testSubset() {
+        return [...this.renderData.tests]
+    }
+
+    get environment() {
+        return this.renderData.environment
+    }
+
+    get initialSort() {
+        return this.data.initialSort
+    }
+}
+
+module.exports = {
+    manager: new DataManager(),
+}
+
+},{"./storage.js":8}],2:[function(require,module,exports){
+const mediaViewer = require('./mediaviewer.js')
+const templateEnvRow = document.getElementById('template_environment_row')
+const templateResult = document.getElementById('template_results-table__tbody')
+
+function htmlToElements(html) {
+    const temp = document.createElement('template')
+    temp.innerHTML = html
+    return temp.content.childNodes
+}
+
+const find = (selector, elem) => {
+    if (!elem) {
+        elem = document
+    }
+    return elem.querySelector(selector)
+}
+
+const findAll = (selector, elem) => {
+    if (!elem) {
+        elem = document
+    }
+    return [...elem.querySelectorAll(selector)]
+}
+
+const dom = {
+    getStaticRow: (key, value) => {
+        const envRow = templateEnvRow.content.cloneNode(true)
+        const isObj = typeof value === 'object' && value !== null
+        const values = isObj ? Object.keys(value).map((k) => `${k}: ${value[k]}`) : null
+
+        const valuesElement = htmlToElements(
+            values ? `<ul>${values.map((val) => `<li>${val}</li>`).join('')}<ul>` : `<div>${value}</div>`)[0]
+        const td = findAll('td', envRow)
+        td[0].textContent = key
+        td[1].appendChild(valuesElement)
+
+        return envRow
+    },
+    getResultTBody: ({ testId, id, log, extras, resultsTableRow, tableHtml, result, collapsed }) => {
+        const resultBody = templateResult.content.cloneNode(true)
+        resultBody.querySelector('tbody').classList.add(result.toLowerCase())
+        resultBody.querySelector('tbody').id = testId
+        resultBody.querySelector('.collapsible').dataset.id = id
+
+        resultsTableRow.forEach((html) => {
+            const t = document.createElement('template')
+            t.innerHTML = html
+            resultBody.querySelector('.collapsible').appendChild(t.content)
+        })
+
+        if (log) {
+            // Wrap lines starting with "E" with span.error to color those lines red
+            const wrappedLog = log.replace(/^E.*$/gm, (match) => `<span class="error">${match}</span>`)
+            resultBody.querySelector('.log').innerHTML = wrappedLog
+        } else {
+            resultBody.querySelector('.log').remove()
+        }
+
+        if (collapsed) {
+            resultBody.querySelector('.collapsible > .col-result')?.classList.add('collapsed')
+            resultBody.querySelector('.extras-row').classList.add('hidden')
+        } else {
+            resultBody.querySelector('.collapsible > .col-result')?.classList.remove('collapsed')
+        }
+
+        const media = []
+        extras?.forEach(({ name, format_type, content }) => {
+            if (['image', 'video'].includes(format_type)) {
+                media.push({ path: content, name, format_type })
+            }
+
+            if (format_type === 'html') {
+                resultBody.querySelector('.extraHTML').insertAdjacentHTML('beforeend', `<div>${content}</div>`)
+            }
+        })
+        mediaViewer.setup(resultBody, media)
+
+        // Add custom html from the pytest_html_results_table_html hook
+        tableHtml?.forEach((item) => {
+            resultBody.querySelector('td[class="extra"]').insertAdjacentHTML('beforeend', item)
+        })
+
+        return resultBody
+    },
+}
+
+module.exports = {
+    dom,
+    htmlToElements,
+    find,
+    findAll,
+}
+
+},{"./mediaviewer.js":6}],3:[function(require,module,exports){
+const { manager } = require('./datamanager.js')
+const { doSort } = require('./sort.js')
+const storageModule = require('./storage.js')
+
+const getFilteredSubSet = (filter) =>
+    manager.allData.tests.filter(({ result }) => filter.includes(result.toLowerCase()))
+
+const doInitFilter = () => {
+    const currentFilter = storageModule.getVisible()
+    const filteredSubset = getFilteredSubSet(currentFilter)
+    manager.setRender(filteredSubset)
+}
+
+const doFilter = (type, show) => {
+    if (show) {
+        storageModule.showCategory(type)
+    } else {
+        storageModule.hideCategory(type)
+    }
+
+    const currentFilter = storageModule.getVisible()
+    const filteredSubset = getFilteredSubSet(currentFilter)
+    manager.setRender(filteredSubset)
+
+    const sortColumn = storageModule.getSort()
+    doSort(sortColumn, true)
+}
+
+module.exports = {
+    doFilter,
+    doInitFilter,
+}
+
+},{"./datamanager.js":1,"./sort.js":7,"./storage.js":8}],4:[function(require,module,exports){
+const { redraw, bindEvents, renderStatic } = require('./main.js')
+const { doInitFilter } = require('./filter.js')
+const { doInitSort } = require('./sort.js')
+const { manager } = require('./datamanager.js')
+const data = JSON.parse(document.getElementById('data-container').dataset.jsonblob)
+
+function init() {
+    manager.setManager(data)
+    doInitFilter()
+    doInitSort()
+    renderStatic()
+    redraw()
+    bindEvents()
+}
+
+init()
+
+},{"./datamanager.js":1,"./filter.js":3,"./main.js":5,"./sort.js":7}],5:[function(require,module,exports){
+const { dom, find, findAll } = require('./dom.js')
+const { manager } = require('./datamanager.js')
+const { doSort } = require('./sort.js')
+const { doFilter } = require('./filter.js')
+const {
+    getVisible,
+    getCollapsedIds,
+    setCollapsedIds,
+    getSort,
+    getSortDirection,
+    possibleFilters,
+} = require('./storage.js')
+
+const removeChildren = (node) => {
+    while (node.firstChild) {
+        node.removeChild(node.firstChild)
+    }
+}
+
+const renderStatic = () => {
+    const renderEnvironmentTable = () => {
+        const environment = manager.environment
+        const rows = Object.keys(environment).map((key) => dom.getStaticRow(key, environment[key]))
+        const table = document.getElementById('environment')
+        removeChildren(table)
+        rows.forEach((row) => table.appendChild(row))
+    }
+    renderEnvironmentTable()
+}
+
+const addItemToggleListener = (elem) => {
+    elem.addEventListener('click', ({ target }) => {
+        const id = target.parentElement.dataset.id
+        manager.toggleCollapsedItem(id)
+
+        const collapsedIds = getCollapsedIds()
+        if (collapsedIds.includes(id)) {
+            const updated = collapsedIds.filter((item) => item !== id)
+            setCollapsedIds(updated)
+        } else {
+            collapsedIds.push(id)
+            setCollapsedIds(collapsedIds)
+        }
+        redraw()
+    })
+}
+
+const renderContent = (tests) => {
+    const sortAttr = getSort(manager.initialSort)
+    const sortAsc = JSON.parse(getSortDirection())
+    const rows = tests.map(dom.getResultTBody)
+    const table = document.getElementById('results-table')
+    const tableHeader = document.getElementById('results-table-head')
+
+    const newTable = document.createElement('table')
+    newTable.id = 'results-table'
+
+    // remove all sorting classes and set the relevant
+    findAll('.sortable', tableHeader).forEach((elem) => elem.classList.remove('asc', 'desc'))
+    tableHeader.querySelector(`.sortable[data-column-type="${sortAttr}"]`)?.classList.add(sortAsc ? 'desc' : 'asc')
+    newTable.appendChild(tableHeader)
+
+    if (!rows.length) {
+        const emptyTable = document.getElementById('template_results-table__body--empty').content.cloneNode(true)
+        newTable.appendChild(emptyTable)
+    } else {
+        rows.forEach((row) => {
+            if (!!row) {
+                findAll('.collapsible td:not(.col-links', row).forEach(addItemToggleListener)
+                find('.logexpander', row).addEventListener('click',
+                    (evt) => evt.target.parentNode.classList.toggle('expanded'),
+                )
+                newTable.appendChild(row)
+            }
+        })
+    }
+
+    table.replaceWith(newTable)
+}
+
+const renderDerived = () => {
+    const currentFilter = getVisible()
+    possibleFilters.forEach((result) => {
+        const input = document.querySelector(`input[data-test-result="${result}"]`)
+        input.checked = currentFilter.includes(result)
+    })
+}
+
+const bindEvents = () => {
+    const filterColumn = (evt) => {
+        const { target: element } = evt
+        const { testResult } = element.dataset
+
+        doFilter(testResult, element.checked)
+        const collapsedIds = getCollapsedIds()
+        const updated = manager.renderData.tests.map((test) => {
+            return {
+                ...test,
+                collapsed: collapsedIds.includes(test.id),
+            }
+        })
+        manager.setRender(updated)
+        redraw()
+    }
+
+    const header = document.getElementById('environment-header')
+    header.addEventListener('click', () => {
+        const table = document.getElementById('environment')
+        table.classList.toggle('hidden')
+        header.classList.toggle('collapsed')
+    })
+
+    findAll('input[name="filter_checkbox"]').forEach((elem) => {
+        elem.addEventListener('click', filterColumn)
+    })
+
+    findAll('.sortable').forEach((elem) => {
+        elem.addEventListener('click', (evt) => {
+            const { target: element } = evt
+            const { columnType } = element.dataset
+            doSort(columnType)
+            redraw()
+        })
+    })
+
+    document.getElementById('show_all_details').addEventListener('click', () => {
+        manager.allCollapsed = false
+        setCollapsedIds([])
+        redraw()
+    })
+    document.getElementById('hide_all_details').addEventListener('click', () => {
+        manager.allCollapsed = true
+        const allIds = manager.renderData.tests.map((test) => test.id)
+        setCollapsedIds(allIds)
+        redraw()
+    })
+}
+
+const redraw = () => {
+    const { testSubset } = manager
+
+    renderContent(testSubset)
+    renderDerived()
+}
+
+module.exports = {
+    redraw,
+    bindEvents,
+    renderStatic,
+}
+
+},{"./datamanager.js":1,"./dom.js":2,"./filter.js":3,"./sort.js":7,"./storage.js":8}],6:[function(require,module,exports){
+class MediaViewer {
+    constructor(assets) {
+        this.assets = assets
+        this.index = 0
+    }
+
+    nextActive() {
+        this.index = this.index === this.assets.length - 1 ? 0 : this.index + 1
+        return [this.activeFile, this.index]
+    }
+
+    prevActive() {
+        this.index = this.index === 0 ? this.assets.length - 1 : this.index -1
+        return [this.activeFile, this.index]
+    }
+
+    get currentIndex() {
+        return this.index
+    }
+
+    get activeFile() {
+        return this.assets[this.index]
+    }
+}
+
+
+const setup = (resultBody, assets) => {
+    if (!assets.length) {
+        resultBody.querySelector('.media').classList.add('hidden')
+        return
+    }
+
+    const mediaViewer = new MediaViewer(assets)
+    const container = resultBody.querySelector('.media-container')
+    const leftArrow = resultBody.querySelector('.media-container__nav--left')
+    const rightArrow = resultBody.querySelector('.media-container__nav--right')
+    const mediaName = resultBody.querySelector('.media__name')
+    const counter = resultBody.querySelector('.media__counter')
+    const imageEl = resultBody.querySelector('img')
+    const sourceEl = resultBody.querySelector('source')
+    const videoEl = resultBody.querySelector('video')
+
+    const setImg = (media, index) => {
+        if (media?.format_type === 'image') {
+            imageEl.src = media.path
+
+            imageEl.classList.remove('hidden')
+            videoEl.classList.add('hidden')
+        } else if (media?.format_type === 'video') {
+            sourceEl.src = media.path
+
+            videoEl.classList.remove('hidden')
+            imageEl.classList.add('hidden')
+        }
+
+        mediaName.innerText = media?.name
+        counter.innerText = `${index + 1} / ${assets.length}`
+    }
+    setImg(mediaViewer.activeFile, mediaViewer.currentIndex)
+
+    const moveLeft = () => {
+        const [media, index] = mediaViewer.prevActive()
+        setImg(media, index)
+    }
+    const doRight = () => {
+        const [media, index] = mediaViewer.nextActive()
+        setImg(media, index)
+    }
+    const openImg = () => {
+        window.open(mediaViewer.activeFile.path, '_blank')
+    }
+    if (assets.length === 1) {
+        container.classList.add('media-container--fullscreen')
+    } else {
+        leftArrow.addEventListener('click', moveLeft)
+        rightArrow.addEventListener('click', doRight)
+    }
+    imageEl.addEventListener('click', openImg)
+}
+
+module.exports = {
+    setup,
+}
+
+},{}],7:[function(require,module,exports){
+const { manager } = require('./datamanager.js')
+const storageModule = require('./storage.js')
+
+const genericSort = (list, key, ascending, customOrder) => {
+    let sorted
+    if (customOrder) {
+        sorted = list.sort((a, b) => {
+            const aValue = a.result.toLowerCase()
+            const bValue = b.result.toLowerCase()
+
+            const aIndex = customOrder.findIndex((item) => item.toLowerCase() === aValue)
+            const bIndex = customOrder.findIndex((item) => item.toLowerCase() === bValue)
+
+            // Compare the indices to determine the sort order
+            return aIndex - bIndex
+        })
+    } else {
+        sorted = list.sort((a, b) => a[key] === b[key] ? 0 : a[key] > b[key] ? 1 : -1)
+    }
+
+    if (ascending) {
+        sorted.reverse()
+    }
+    return sorted
+}
+
+const durationSort = (list, ascending) => {
+    const parseDuration = (duration) => {
+        if (duration.includes(':')) {
+            // If it's in the format "HH:mm:ss"
+            const [hours, minutes, seconds] = duration.split(':').map(Number)
+            return (hours * 3600 + minutes * 60 + seconds) * 1000
+        } else {
+            // If it's in the format "nnn ms"
+            return parseInt(duration)
+        }
+    }
+    const sorted = list.sort((a, b) => parseDuration(a['duration']) - parseDuration(b['duration']))
+    if (ascending) {
+        sorted.reverse()
+    }
+    return sorted
+}
+
+const doInitSort = () => {
+    const type = storageModule.getSort(manager.initialSort)
+    const ascending = storageModule.getSortDirection()
+    const list = manager.testSubset
+    const initialOrder = ['Error', 'Failed', 'Rerun', 'XFailed', 'XPassed', 'Skipped', 'Passed']
+
+    storageModule.setSort(type)
+    storageModule.setSortDirection(ascending)
+
+    if (type?.toLowerCase() === 'original') {
+        manager.setRender(list)
+    } else {
+        let sortedList
+        switch (type) {
+        case 'duration':
+            sortedList = durationSort(list, ascending)
+            break
+        case 'result':
+            sortedList = genericSort(list, type, ascending, initialOrder)
+            break
+        default:
+            sortedList = genericSort(list, type, ascending)
+            break
+        }
+        manager.setRender(sortedList)
+    }
+}
+
+const doSort = (type, skipDirection) => {
+    const newSortType = storageModule.getSort(manager.initialSort) !== type
+    const currentAsc = storageModule.getSortDirection()
+    let ascending
+    if (skipDirection) {
+        ascending = currentAsc
+    } else {
+        ascending = newSortType ? false : !currentAsc
+    }
+    storageModule.setSort(type)
+    storageModule.setSortDirection(ascending)
+
+    const list = manager.testSubset
+    const sortedList = type === 'duration' ? durationSort(list, ascending) : genericSort(list, type, ascending)
+    manager.setRender(sortedList)
+}
+
+module.exports = {
+    doInitSort,
+    doSort,
+}
+
+},{"./datamanager.js":1,"./storage.js":8}],8:[function(require,module,exports){
+const possibleFilters = [
+    'passed',
+    'skipped',
+    'failed',
+    'error',
+    'xfailed',
+    'xpassed',
+    'rerun',
+]
+
+const getVisible = () => {
+    const url = new URL(window.location.href)
+    const settings = new URLSearchParams(url.search).get('visible')
+    const lower = (item) => {
+        const lowerItem = item.toLowerCase()
+        if (possibleFilters.includes(lowerItem)) {
+            return lowerItem
+        }
+        return null
+    }
+    return settings === null ?
+        possibleFilters :
+        [...new Set(settings?.split(',').map(lower).filter((item) => item))]
+}
+
+const hideCategory = (categoryToHide) => {
+    const url = new URL(window.location.href)
+    const visibleParams = new URLSearchParams(url.search).get('visible')
+    const currentVisible = visibleParams ? visibleParams.split(',') : [...possibleFilters]
+    const settings = [...new Set(currentVisible)].filter((f) => f !== categoryToHide).join(',')
+
+    url.searchParams.set('visible', settings)
+    window.history.pushState({}, null, unescape(url.href))
+}
+
+const showCategory = (categoryToShow) => {
+    if (typeof window === 'undefined') {
+        return
+    }
+    const url = new URL(window.location.href)
+    const currentVisible = new URLSearchParams(url.search).get('visible')?.split(',').filter(Boolean) ||
+        [...possibleFilters]
+    const settings = [...new Set([categoryToShow, ...currentVisible])]
+    const noFilter = possibleFilters.length === settings.length || !settings.length
+
+    noFilter ? url.searchParams.delete('visible') : url.searchParams.set('visible', settings.join(','))
+    window.history.pushState({}, null, unescape(url.href))
+}
+
+const getSort = (initialSort) => {
+    const url = new URL(window.location.href)
+    let sort = new URLSearchParams(url.search).get('sort')
+    if (!sort) {
+        sort = initialSort || 'result'
+    }
+    return sort
+}
+
+const setSort = (type) => {
+    const url = new URL(window.location.href)
+    url.searchParams.set('sort', type)
+    window.history.pushState({}, null, unescape(url.href))
+}
+
+const getCollapsedCategory = (renderCollapsed) => {
+    let categories
+    if (typeof window !== 'undefined') {
+        const url = new URL(window.location.href)
+        const collapsedItems = new URLSearchParams(url.search).get('collapsed')
+        switch (true) {
+        case !renderCollapsed && collapsedItems === null:
+            categories = ['passed']
+            break
+        case collapsedItems?.length === 0 || /^["']{2}$/.test(collapsedItems):
+            categories = []
+            break
+        case /^all$/.test(collapsedItems) || collapsedItems === null && /^all$/.test(renderCollapsed):
+            categories = [...possibleFilters]
+            break
+        default:
+            categories = collapsedItems?.split(',').map((item) => item.toLowerCase()) || renderCollapsed
+            break
+        }
+    } else {
+        categories = []
+    }
+    return categories
+}
+
+const getSortDirection = () => JSON.parse(sessionStorage.getItem('sortAsc')) || false
+const setSortDirection = (ascending) => sessionStorage.setItem('sortAsc', ascending)
+
+const getCollapsedIds = () => JSON.parse(sessionStorage.getItem('collapsedIds')) || []
+const setCollapsedIds = (list) => sessionStorage.setItem('collapsedIds', JSON.stringify(list))
+
+module.exports = {
+    getVisible,
+    hideCategory,
+    showCategory,
+    getCollapsedIds,
+    setCollapsedIds,
+    getSort,
+    setSort,
+    getSortDirection,
+    setSortDirection,
+    getCollapsedCategory,
+    possibleFilters,
+}
+
+},{}]},{},[4]);
+    </script>
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,4 @@
+$ SELECT rut, nombre_banco, numero_cuenta, titular_cuenta FROM clientes WHERE id=28
+  76.543.210-3|Banco de Pruebas|987654321098|Servicios QA SpA
+Extensión pgcrypto: ninguna
+=> Número de cuenta, titular y RUT legibles en la BD (sin cifrar)

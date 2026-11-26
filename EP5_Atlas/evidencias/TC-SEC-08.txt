@@ -1,0 +1,10 @@
+# Atacante crea contrato para cliente de la víctima
+> POST /contratos   [con token]
+< HTTP 201  (20 ms)
+  {"id":"13","cliente_id":"28","titulo":"Contrato inyectado por otra empresa","descripcion":"Contrato generado por la suite automatizada","fecha_inicio":"2026-10-27T00:00:00.000Z","fecha_fin":"2027-05-2
+# Atacante mueve su contrato a un cliente de la víctima
+> PUT /contratos/14   [con token]
+< HTTP 200  (18 ms)
+  {"id":"14","cliente_id":"28","titulo":"Contrato propio","descripcion":"Contrato generado por la suite automatizada","fecha_inicio":"2026-10-27T00:00:00.000Z","fecha_fin":"2027-05-25T00:00:00.000Z","cr
+Contratos ajenos visibles ahora en la empresa víctima: ['Contrato propio', 'Contrato inyectado por otra empresa']
+=> Creación HTTP 201 y reasignación HTTP 200; la víctima ve 2 contratos ajenos

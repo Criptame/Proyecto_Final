@@ -1,0 +1,13 @@
+ZAP baseline frontend: 12 alertas -> {'Medio': 3, 'Bajo': 7, 'Informativo': 2}
+  [Medio] Content Security Policy (CSP) Header Not Set (CWE-693)
+  [Medio] Missing Anti-clickjacking Header (CWE-1021)
+  [Medio] Sub Resource Integrity Attribute Missing (CWE-345)
+  [Bajo] Cross-Origin-Embedder-Policy Header Missing or Invalid (CWE-693)
+  [Bajo] Cross-Origin-Opener-Policy Header Missing or Invalid (CWE-693)
+ZAP baseline api: 6 alertas -> {'Medio': 2, 'Bajo': 3, 'Informativo': 1}
+  [Medio] CSP: Failure to Define Directive with No Fallback (CWE-693)
+  [Medio] Cross-Domain Misconfiguration (CWE-264)
+  [Bajo] Permissions Policy Header Not Set (CWE-693)
+  [Bajo] Server Leaks Information via "X-Powered-By" HTTP Response Header Field(s) (CWE-497)
+  [Bajo] X-Content-Type-Options Header Missing (CWE-693)
+=> 5 alertas de riesgo medio o alto

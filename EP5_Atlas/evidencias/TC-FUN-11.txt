@@ -1,0 +1,6 @@
+> DELETE /clientes/7   [con token]
+< HTTP 200  (20 ms)
+  {"deleted":true}
+$ SELECT count(*) FROM clientes WHERE id=7  ->  0
+columnas de borrado lógico en clientes: ninguna
+=> Borrado físico: quedan 0 filas; la interfaz sí pide confirmación (diálogo 'Confirmar eliminación')

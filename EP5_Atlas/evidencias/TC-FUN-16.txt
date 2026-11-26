@@ -1,0 +1,3 @@
+$ columna documentos_contrato.document -> tipo bytea; tamaño de la tabla 32 kB
+$ find /app/uploads -type f | wc -l  ->  0
+=> Los documentos se guardan como bytea dentro de PostgreSQL; el storage interno tiene 0 archivos

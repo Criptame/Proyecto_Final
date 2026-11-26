@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title id="head-title">reporte_ui.html</title>
+      <style type="text/css">body {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  /* do not increase min-width as some may use split screens */
+  min-width: 800px;
+  color: #999;
+}
+
+h1 {
+  font-size: 24px;
+  color: black;
+}
+
+h2 {
+  font-size: 16px;
+  color: black;
+}
+
+p {
+  color: black;
+}
+
+a {
+  color: #999;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+/******************************
+ * SUMMARY INFORMATION
+ ******************************/
+#environment td {
+  padding: 5px;
+  border: 1px solid #e6e6e6;
+  vertical-align: top;
+}
+#environment tr:nth-child(odd) {
+  background-color: #f6f6f6;
+}
+#environment ul {
+  margin: 0;
+  padding: 0 20px;
+}
+
+/******************************
+ * TEST RESULT COLORS
+ ******************************/
+span.passed,
+.passed .col-result {
+  color: green;
+}
+
+span.skipped,
+span.xfailed,
+span.rerun,
+.skipped .col-result,
+.xfailed .col-result,
+.rerun .col-result {
+  color: orange;
+}
+
+span.error,
+span.failed,
+span.xpassed,
+.error .col-result,
+.failed .col-result,
+.xpassed .col-result {
+  color: red;
+}
+
+.col-links__extra {
+  margin-right: 3px;
+}
+
+/******************************
+ * RESULTS TABLE
+ *
+ * 1. Table Layout
+ * 2. Extra
+ * 3. Sorting items
+ *
+ ******************************/
+/*------------------
+ * 1. Table Layout
+ *------------------*/
+#results-table {
+  border: 1px solid #e6e6e6;
+  color: #999;
+  font-size: 12px;
+  width: 100%;
+}
+#results-table th,
+#results-table td {
+  padding: 5px;
+  border: 1px solid #e6e6e6;
+  text-align: left;
+}
+#results-table th {
+  font-weight: bold;
+}
+
+/*------------------
+ * 2. Extra
+ *------------------*/
+.logwrapper {
+  max-height: 230px;
+  overflow-y: scroll;
+  background-color: #e6e6e6;
+}
+.logwrapper.expanded {
+  max-height: none;
+}
+.logwrapper.expanded .logexpander:after {
+  content: "collapse [-]";
+}
+.logwrapper .logexpander {
+  z-index: 1;
+  position: sticky;
+  top: 10px;
+  width: max-content;
+  border: 1px solid;
+  border-radius: 3px;
+  padding: 5px 7px;
+  margin: 10px 0 10px calc(100% - 80px);
+  cursor: pointer;
+  background-color: #e6e6e6;
+}
+.logwrapper .logexpander:after {
+  content: "expand [+]";
+}
+.logwrapper .logexpander:hover {
+  color: #000;
+  border-color: #000;
+}
+.logwrapper .log {
+  min-height: 40px;
+  position: relative;
+  top: -50px;
+  height: calc(100% + 50px);
+  border: 1px solid #e6e6e6;
+  color: black;
+  display: block;
+  font-family: "Courier New", Courier, monospace;
+  padding: 5px;
+  padding-right: 80px;
+  white-space: pre-wrap;
+}
+
+div.media {
+  border: 1px solid #e6e6e6;
+  float: right;
+  height: 240px;
+  margin: 0 5px;
+  overflow: hidden;
+  width: 320px;
+}
+
+.media-container {
+  display: grid;
+  grid-template-columns: 25px auto 25px;
+  align-items: center;
+  flex: 1 1;
+  overflow: hidden;
+  height: 200px;
+}
+
+.media-container--fullscreen {
+  grid-template-columns: 0px auto 0px;
+}
+
+.media-container__nav--right,
+.media-container__nav--left {
+  text-align: center;
+  cursor: pointer;
+}
+
+.media-container__viewport {
+  cursor: pointer;
+  text-align: center;
+  height: inherit;
+}
+.media-container__viewport img,
+.media-container__viewport video {
+  object-fit: cover;
+  width: 100%;
+  max-height: 100%;
+}
+
+.media__name,
+.media__counter {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex: 0 0 25px;
+  align-items: center;
+}
+
+.collapsible td:not(.col-links) {
+  cursor: pointer;
+}
+.collapsible td:not(.col-links):hover::after {
+  color: #bbb;
+  font-style: italic;
+  cursor: pointer;
+}
+
+.col-result {
+  width: 130px;
+}
+.col-result:hover::after {
+  content: " (hide details)";
+}
+
+.col-result.collapsed:hover::after {
+  content: " (show details)";
+}
+
+#environment-header h2:hover::after {
+  content: " (hide details)";
+  color: #bbb;
+  font-style: italic;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+#environment-header.collapsed h2:hover::after {
+  content: " (show details)";
+  color: #bbb;
+  font-style: italic;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/*------------------
+ * 3. Sorting items
+ *------------------*/
+.sortable {
+  cursor: pointer;
+}
+.sortable.desc:after {
+  content: " ";
+  position: relative;
+  left: 5px;
+  bottom: -12.5px;
+  border: 10px solid #4caf50;
+  border-bottom: 0;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+.sortable.asc:after {
+  content: " ";
+  position: relative;
+  left: 5px;
+  bottom: 12.5px;
+  border: 10px solid #4caf50;
+  border-top: 0;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+
+.hidden, .summary__reload__button.hidden {
+  display: none;
+}
+
+.summary__data {
+  flex: 0 0 550px;
+}
+.summary__reload {
+  flex: 1 1;
+  display: flex;
+  justify-content: center;
+}
+.summary__reload__button {
+  flex: 0 0 300px;
+  display: flex;
+  color: white;
+  font-weight: bold;
+  background-color: #4caf50;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.summary__reload__button:hover {
+  background-color: #46a049;
+}
+.summary__spacer {
+  flex: 0 0 550px;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+}
+
+.filters,
+.collapse {
+  display: flex;
+  align-items: center;
+}
+.filters button,
+.collapse button {
+  color: #999;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.filters button:hover,
+.collapse button:hover {
+  color: #ccc;
+}
+
+.filter__label {
+  margin-right: 10px;
+}
+
+      </style>
+    
+  </head>
+  <body>
+    <h1 id="title">reporte_ui.html</h1>
+    <p>Report generated on 26-Nov-2026 at 02:46:23 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a>
+        v4.2.0</p>
+    <div id="environment-header">
+      <h2>Environment</h2>
+    </div>
+    <table id="environment"></table>
+    <!-- TEMPLATES -->
+      <template id="template_environment_row">
+      <tr>
+        <td></td>
+        <td></td>
+      </tr>
+    </template>
+    <template id="template_results-table__body--empty">
+      <tbody class="results-table-row">
+        <tr id="not-found-message">
+          <td colspan="4">No results found. Check the filters.</td>
+        </tr>
+      </tbody>
+    </template>
+    <template id="template_results-table__tbody">
+      <tbody class="results-table-row">
+        <tr class="collapsible">
+        </tr>
+        <tr class="extras-row">
+          <td class="extra" colspan="4">
+            <div class="extraHTML"></div>
+            <div class="media">
+              <div class="media-container">
+                  <div class="media-container__nav--left">&lt;</div>
+                  <div class="media-container__viewport">
+                    <img src="" />
+                    <video controls>
+                      <source src="" type="video/mp4">
+                    </video>
+                  </div>
+                  <div class="media-container__nav--right">&gt;</div>
+                </div>
+                <div class="media__name"></div>
+                <div class="media__counter"></div>
+            </div>
+            <div class="logwrapper">
+              <div class="logexpander"></div>
+              <div class="log"></div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </template>
+    <!-- END TEMPLATES -->
+    <div class="summary">
+      <div class="summary__data">
+        <h2>Summary</h2>
+        <div class="additional-summary prefix">
+        </div>
+        <p class="run-count">10 tests took 00:03:28.</p>
+        <p class="filter">(Un)check the boxes to filter the results.</p>
+        <div class="summary__reload">
+          <div class="summary__reload__button hidden" onclick="location.reload()">
+            <div>There are still tests running. <br />Reload this page to get the latest results!</div>
+          </div>
+        </div>
+        <div class="summary__spacer"></div>
+        <div class="controls">
+          <div class="filters">
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="failed" >
+            <span class="failed">6 Failed,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="passed" >
+            <span class="passed">4 Passed,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="skipped" disabled>
+            <span class="skipped">0 Skipped,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="xfailed" disabled>
+            <span class="xfailed">0 Expected failures,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="xpassed" disabled>
+            <span class="xpassed">0 Unexpected passes,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="error" disabled>
+            <span class="error">0 Errors,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="rerun" disabled>
+            <span class="rerun">0 Reruns</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="retried" disabled>
+            <span class="retried">0 Retried,</span>
+          </div>
+          <div class="collapse">
+            <button id="show_all_details">Show all details</button>&nbsp;/&nbsp;<button id="hide_all_details">Hide all details</button>
+          </div>
+        </div>
+      </div>
+      <div class="additional-summary summary">
+      </div>
+      <div class="additional-summary postfix">
+      </div>
+    </div>
+    <table id="results-table">
+      <thead id="results-table-head">
+        <tr>
+          <th class="sortable" data-column-type="result">Result</th>
+          <th class="sortable" data-column-type="testId">Test</th>
+          <th class="sortable" data-column-type="duration">Duration</th>
+          <th>Links</th>
+        </tr>
+      </thead>
+    </table>
+  <footer>
+    <div id="data-container" data-jsonblob="{&#34;environment&#34;: {&#34;Python&#34;: &#34;3.13.14&#34;, &#34;Platform&#34;: &#34;Windows-11-10.0.26300-SP0&#34;, &#34;Packages&#34;: {&#34;pytest&#34;: &#34;9.2.0&#34;, &#34;pluggy&#34;: &#34;1.7.0&#34;}, &#34;Plugins&#34;: {&#34;html&#34;: &#34;4.2.0&#34;, &#34;metadata&#34;: &#34;3.1.1&#34;}}, &#34;tests&#34;: {&#34;ui/test_ui.py::test_capturas_generales&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;ui/test_ui.py::test_capturas_generales&#34;, &#34;duration&#34;: &#34;00:00:24&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;ui/test_ui.py::test_capturas_generales&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:24&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;ui/test_ui.py::test_xss_no_se_ejecuta_en_ui&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;ui/test_ui.py::test_xss_no_se_ejecuta_en_ui&#34;, &#34;duration&#34;: &#34;00:00:19&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;ui/test_ui.py::test_xss_no_se_ejecuta_en_ui&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:19&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;ui/test_ui.py::test_carga_movil&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;ui/test_ui.py::test_carga_movil&#34;, &#34;duration&#34;: &#34;00:00:13&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;ui/test_ui.py::test_carga_movil&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:13&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x0000015A6DE51BE0&amp;gt;\nchromium = &amp;lt;Browser type=&amp;lt;BrowserType name=chromium executable_path=C:\\Users\\memos\\AppData\\Local\\ms-playwright\\chromium-1255\\chrome-win64\\chrome.exe&amp;gt; version=159.0.8154.6&amp;gt;\n\n    @pytest.mark.caso(&amp;quot;TC-NFR-02&amp;quot;)\n    def test_carga_movil(ev, chromium):\n        ctx = chromium.new_context(viewport={&amp;quot;width&amp;quot;: 390, &amp;quot;height&amp;quot;: 844}, device_scale_factor=2, is_mobile=True, has_touch=True)\n        page = ctx.new_page()\n        cdp = ctx.new_cdp_session(page)\n        cdp.send(&amp;quot;Network.enable&amp;quot;)\n        cdp.send(&amp;quot;Network.setCacheDisabled&amp;quot;, {&amp;quot;cacheDisabled&amp;quot;: True})\n        cdp.send(&amp;quot;Network.emulateNetworkConditions&amp;quot;, {&amp;quot;offline&amp;quot;: False, &amp;quot;latency&amp;quot;: 150,\n                                                       &amp;quot;downloadThroughput&amp;quot;: 1.6 * 1024 * 1024 / 8,\n                                                       &amp;quot;uploadThroughput&amp;quot;: 750 * 1024 / 8})\n        cdp.send(&amp;quot;Emulation.setCPUThrottlingRate&amp;quot;, {&amp;quot;rate&amp;quot;: 4})\n        t0 = time.perf_counter()\n        page.goto(f&amp;quot;{WEB}/login&amp;quot;, wait_until=&amp;quot;load&amp;quot;)\n        page.get_by_test_id(&amp;quot;button-login&amp;quot;).wait_for()\n        t_login = time.perf_counter() - t0\n        nav = page.evaluate(&amp;quot;JSON.stringify(performance.getEntriesByType(&amp;#x27;navigation&amp;#x27;)[0])&amp;quot;)\n        nav = json.loads(nav)\n        page.get_by_test_id(&amp;quot;input-nombre-usuario&amp;quot;).fill(&amp;quot;admin&amp;quot;)\n        page.get_by_test_id(&amp;quot;input-password&amp;quot;).fill(&amp;quot;admin&amp;quot;)\n        t1 = time.perf_counter()\n        with page.expect_response(lambda r: &amp;quot;/metricas&amp;quot; in r.url, timeout=60000):\n            page.get_by_test_id(&amp;quot;button-login&amp;quot;).click()\n        page.wait_for_timeout(200)\n        t_dash = time.perf_counter() - t1\n        captura(page, &amp;quot;TC-NFR-02_dashboard_movil&amp;quot;)\n        ev.nota(&amp;quot;Emulaci\u00f3n: 390\u00d7844, 4G lenta (1,6 Mbps / 150 ms RTT), CPU 4\u00d7 m\u00e1s lenta, cach\u00e9 deshabilitada&amp;quot;)\n        ev.nota(f&amp;quot;Login visible (interactivo): {t_login:.2f} s | DOMContentLoaded {nav[&amp;#x27;domContentLoadedEventEnd&amp;#x27;]/1000:.2f} s | &amp;quot;\n                f&amp;quot;transferido {nav[&amp;#x27;transferSize&amp;#x27;]/1024:.0f} KB (documento)&amp;quot;)\n        ev.nota(f&amp;quot;Desde &amp;#x27;Ingresar&amp;#x27; hasta dashboard con m\u00e9tricas: {t_dash:.2f} s&amp;quot;)\n        ev.resultado(f&amp;quot;Login listo en {t_login:.2f} s; dashboard (p\u00e1gina principal) en {t_dash:.2f} s&amp;quot;)\n        (REPORTES / &amp;quot;carga_movil.json&amp;quot;).write_text(json.dumps({&amp;quot;login_s&amp;quot;: t_login, &amp;quot;dashboard_s&amp;quot;: t_dash}), encoding=&amp;quot;utf-8&amp;quot;)\n        ctx.close()\n&amp;gt;       assert t_login &amp;lt; 2 and t_dash &amp;lt; 2, f&amp;quot;P\u00e1gina principal en {t_dash:.1f} s (umbral 2 s)&amp;quot;\nE       AssertionError: P\u00e1gina principal en 8.9 s (umbral 2 s)\nE       assert (3.4321770000005927 &amp;lt; 2)\n\nui\\test_ui.py:118: AssertionError\n&#34;}], &#34;ui/test_ui.py::test_accesibilidad_axe&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;ui/test_ui.py::test_accesibilidad_axe&#34;, &#34;duration&#34;: &#34;00:00:21&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;ui/test_ui.py::test_accesibilidad_axe&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:21&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x0000015A6DECBED0&amp;gt;\nchromium = &amp;lt;Browser type=&amp;lt;BrowserType name=chromium executable_path=C:\\Users\\memos\\AppData\\Local\\ms-playwright\\chromium-1255\\chrome-win64\\chrome.exe&amp;gt; version=159.0.8154.6&amp;gt;\n\n    @pytest.mark.caso(&amp;quot;TC-NFR-04&amp;quot;)\n    def test_accesibilidad_axe(ev, chromium):\n        ctx = chromium.new_context(viewport={&amp;quot;width&amp;quot;: 1366, &amp;quot;height&amp;quot;: 768})\n        page = ctx.new_page()\n        axe = Axe()\n        vistas = {&amp;quot;Login&amp;quot;: &amp;quot;/login&amp;quot;, &amp;quot;Registro&amp;quot;: &amp;quot;/registro&amp;quot;}\n        resultados = {}\n        for nombre, ruta in vistas.items():\n            page.goto(WEB + ruta)\n            page.wait_for_load_state(&amp;quot;networkidle&amp;quot;)\n            resultados[nombre] = axe.run(page, options=WCAG).response[&amp;quot;violations&amp;quot;]\n        iniciar_sesion(page)\n        resultados[&amp;quot;Dashboard&amp;quot;] = axe.run(page, options=WCAG).response[&amp;quot;violations&amp;quot;]\n        for nombre, ruta in ((&amp;quot;Clientes&amp;quot;, &amp;quot;/clientes&amp;quot;), (&amp;quot;Contratos&amp;quot;, &amp;quot;/contratos&amp;quot;)):\n            with page.expect_response(lambda r: r.url.startswith(API) and r.url.endswith(ruta), timeout=30000):\n                page.goto(WEB + ruta)\n            page.wait_for_timeout(800)\n            resultados[nombre] = axe.run(page, options=WCAG).response[&amp;quot;violations&amp;quot;]\n        ctx.close()\n        serias = 0\n        ev.nota(f&amp;quot;{&amp;#x27;VISTA&amp;#x27;:&amp;lt;11}{&amp;#x27;cr\u00edtica&amp;#x27;:&amp;gt;8}{&amp;#x27;seria&amp;#x27;:&amp;gt;7}{&amp;#x27;moderada&amp;#x27;:&amp;gt;10}{&amp;#x27;menor&amp;#x27;:&amp;gt;7}   reglas&amp;quot;)\n        for vista, viol in resultados.items():\n            c = {k: sum(1 for v in viol if v[&amp;quot;impact&amp;quot;] == k) for k in (&amp;quot;critical&amp;quot;, &amp;quot;serious&amp;quot;, &amp;quot;moderate&amp;quot;, &amp;quot;minor&amp;quot;)}\n            serias += c[&amp;quot;critical&amp;quot;] + c[&amp;quot;serious&amp;quot;]\n            ev.nota(f&amp;quot;{vista:&amp;lt;11}{c[&amp;#x27;critical&amp;#x27;]:&amp;gt;8}{c[&amp;#x27;serious&amp;#x27;]:&amp;gt;7}{c[&amp;#x27;moderate&amp;#x27;]:&amp;gt;10}{c[&amp;#x27;minor&amp;#x27;]:&amp;gt;7}   &amp;quot;\n                    f&amp;quot;{&amp;#x27;, &amp;#x27;.join(sorted({v[&amp;#x27;id&amp;#x27;] for v in viol}))[:80]}&amp;quot;)\n        reglas = {}\n        for viol in resultados.values():\n            for v in viol:\n                reglas.setdefault(v[&amp;quot;id&amp;quot;], (v[&amp;quot;impact&amp;quot;], v[&amp;quot;help&amp;quot;], 0))\n                reglas[v[&amp;quot;id&amp;quot;]] = (v[&amp;quot;impact&amp;quot;], v[&amp;quot;help&amp;quot;], reglas[v[&amp;quot;id&amp;quot;]][2] + len(v[&amp;quot;nodes&amp;quot;]))\n        for rid, (imp, ayuda, n) in sorted(reglas.items(), key=lambda x: x[1][0] != &amp;quot;critical&amp;quot;):\n            ev.nota(f&amp;quot;  \u00b7 {rid} [{imp}] {ayuda} ({n} elementos)&amp;quot;)\n        (REPORTES / &amp;quot;axe.json&amp;quot;).write_text(json.dumps(resultados, ensure_ascii=False)[:2_000_000], encoding=&amp;quot;utf-8&amp;quot;)\n        ev.resultado(f&amp;quot;{serias} violaciones de impacto cr\u00edtico o serio en 5 vistas ({len(reglas)} reglas WCAG incumplidas)&amp;quot;)\n&amp;gt;       assert serias == 0, f&amp;quot;{serias} violaciones WCAG 2.1 AA de impacto cr\u00edtico/serio&amp;quot;\nE       AssertionError: 8 violaciones WCAG 2.1 AA de impacto cr\u00edtico/serio\nE       assert 8 == 0\n\nui\\test_ui.py:157: AssertionError\n&#34;}], &#34;ui/test_ui.py::test_tipografia_y_objetivos&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;ui/test_ui.py::test_tipografia_y_objetivos&#34;, &#34;duration&#34;: &#34;00:00:10&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;ui/test_ui.py::test_tipografia_y_objetivos&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:10&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x0000015A6DECAAD0&amp;gt;\nchromium = &amp;lt;Browser type=&amp;lt;BrowserType name=chromium executable_path=C:\\Users\\memos\\AppData\\Local\\ms-playwright\\chromium-1255\\chrome-win64\\chrome.exe&amp;gt; version=159.0.8154.6&amp;gt;\n\n    @pytest.mark.caso(&amp;quot;TC-NFR-05&amp;quot;)\n    def test_tipografia_y_objetivos(ev, chromium):\n        ctx = chromium.new_context(viewport={&amp;quot;width&amp;quot;: 390, &amp;quot;height&amp;quot;: 844}, is_mobile=True, has_touch=True)\n        page = ctx.new_page()\n        page.goto(WEB + &amp;quot;/login&amp;quot;)\n        page.wait_for_load_state(&amp;quot;networkidle&amp;quot;)\n        m_login = page.evaluate(JS_MEDIDAS)\n        iniciar_sesion(page)\n        m_dash = page.evaluate(JS_MEDIDAS)\n        ctx.close()\n        for nombre, m in ((&amp;quot;Login&amp;quot;, m_login), (&amp;quot;Dashboard&amp;quot;, m_dash)):\n            ev.nota(f&amp;quot;{nombre}: fuente m\u00ednima {m[&amp;#x27;min&amp;#x27;]:.1f} px; textos &amp;lt; 12 px: {m[&amp;#x27;npeq&amp;#x27;]}; &amp;quot;\n                    f&amp;quot;controles &amp;lt; 24\u00d724 px: {m[&amp;#x27;nchicos&amp;#x27;]} de {m[&amp;#x27;ninter&amp;#x27;]}&amp;quot;)\n            for x in m[&amp;quot;peq&amp;quot;][:3]:\n                ev.nota(f&amp;quot;   texto {x[&amp;#x27;fs&amp;#x27;]:.1f} px: &amp;#x27;{x[&amp;#x27;t&amp;#x27;]}&amp;#x27;&amp;quot;)\n            for x in m[&amp;quot;chicos&amp;quot;][:3]:\n                ev.nota(f&amp;quot;   control {x[&amp;#x27;w&amp;#x27;]}\u00d7{x[&amp;#x27;h&amp;#x27;]} px: &amp;#x27;{x[&amp;#x27;t&amp;#x27;]}&amp;#x27;&amp;quot;)\n        problemas = m_login[&amp;quot;npeq&amp;quot;] + m_dash[&amp;quot;npeq&amp;quot;] + m_login[&amp;quot;nchicos&amp;quot;] + m_dash[&amp;quot;nchicos&amp;quot;]\n        ev.resultado(f&amp;quot;Fuente m\u00ednima {min(m_login[&amp;#x27;min&amp;#x27;], m_dash[&amp;#x27;min&amp;#x27;]):.1f} px; &amp;quot;\n                     f&amp;quot;{m_login[&amp;#x27;npeq&amp;#x27;] + m_dash[&amp;#x27;npeq&amp;#x27;]} textos &amp;lt; 12 px y {m_login[&amp;#x27;nchicos&amp;#x27;] + m_dash[&amp;#x27;nchicos&amp;#x27;]} controles &amp;lt; 24 px&amp;quot;)\n&amp;gt;       assert problemas == 0, &amp;quot;Hay textos menores a 12 px o controles t\u00e1ctiles menores a 24\u00d724 px&amp;quot;\nE       AssertionError: Hay textos menores a 12 px o controles t\u00e1ctiles menores a 24\u00d724 px\nE       assert 2 == 0\n\nui\\test_ui.py:197: AssertionError\n&#34;}], &#34;ui/test_ui.py::test_flujo_registro_ui&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;ui/test_ui.py::test_flujo_registro_ui&#34;, &#34;duration&#34;: &#34;00:00:10&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;ui/test_ui.py::test_flujo_registro_ui&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:10&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;ui/test_ui.py::test_mensajes_error_ui&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;ui/test_ui.py::test_mensajes_error_ui&#34;, &#34;duration&#34;: &#34;00:00:01&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;ui/test_ui.py::test_mensajes_error_ui&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:01&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x0000015A6DDF89D0&amp;gt;\nchromium = &amp;lt;Browser type=&amp;lt;BrowserType name=chromium executable_path=C:\\Users\\memos\\AppData\\Local\\ms-playwright\\chromium-1255\\chrome-win64\\chrome.exe&amp;gt; version=159.0.8154.6&amp;gt;\n\n    @pytest.mark.caso(&amp;quot;TC-NFR-07&amp;quot;)\n    def test_mensajes_error_ui(ev, chromium):\n        ctx = chromium.new_context(viewport={&amp;quot;width&amp;quot;: 1366, &amp;quot;height&amp;quot;: 768}, device_scale_factor=2)\n        page = ctx.new_page()\n        page.goto(WEB + &amp;quot;/registro&amp;quot;)\n        page.get_by_test_id(&amp;quot;input-registro-nombre-usuario&amp;quot;).fill(&amp;quot;admin&amp;quot;)\n        page.get_by_test_id(&amp;quot;input-registro-correo&amp;quot;).fill(f&amp;quot;otro_{sufijo()}@qa.test&amp;quot;)\n        page.get_by_test_id(&amp;quot;input-registro-password&amp;quot;).fill(CLAVE_QA)\n        page.get_by_test_id(&amp;quot;button-registro-continuar&amp;quot;).click()\n        page.get_by_test_id(&amp;quot;input-registro-nombre-empresa&amp;quot;).fill(&amp;quot;Empresa repetida&amp;quot;)\n        page.get_by_test_id(&amp;quot;input-registro-calle&amp;quot;).fill(&amp;quot;Calle 1&amp;quot;)\n        page.get_by_test_id(&amp;quot;input-registro-comuna&amp;quot;).fill(&amp;quot;Santiago&amp;quot;)\n        page.get_by_test_id(&amp;quot;input-registro-region&amp;quot;).fill(&amp;quot;RM&amp;quot;)\n        page.get_by_test_id(&amp;quot;input-registro-telefono&amp;quot;).fill(&amp;quot;+56911112222&amp;quot;)\n        page.get_by_test_id(&amp;quot;input-registro-correo-empresa&amp;quot;).fill(f&amp;quot;rep_{sufijo()}@qa.test&amp;quot;)\n        page.get_by_test_id(&amp;quot;button-registro-crear-cuenta&amp;quot;).click()\n        toast = page.locator(&amp;quot;[data-sonner-toast]&amp;quot;).first\n        toast.wait_for(timeout=15000)\n        page.wait_for_timeout(400)\n        texto = toast.inner_text().replace(&amp;quot;\\n&amp;quot;, &amp;quot; | &amp;quot;)\n        captura(page, &amp;quot;TC-NFR-07_toast&amp;quot;)\n        ctx.close()\n        tecnico = any(t in texto.lower() for t in (&amp;quot;duplicate key&amp;quot;, &amp;quot;violates&amp;quot;, &amp;quot;constraint&amp;quot;, &amp;quot;unique&amp;quot;, &amp;quot;sql&amp;quot;))\n        ev.nota(f&amp;quot;Mensaje mostrado al usuario: &amp;#x27;{texto}&amp;#x27;&amp;quot;)\n        ev.resultado(f&amp;quot;La interfaz muestra el error {&amp;#x27;t\u00e9cnico de PostgreSQL&amp;#x27; if tecnico else &amp;#x27;en lenguaje de negocio&amp;#x27;}&amp;quot;)\n&amp;gt;       assert not tecnico, &amp;quot;El mensaje de error expone t\u00e9rminos t\u00e9cnicos de la base de datos al usuario&amp;quot;\nE       AssertionError: El mensaje de error expone t\u00e9rminos t\u00e9cnicos de la base de datos al usuario\nE       assert not True\n\nui\\test_ui.py:260: AssertionError\n&#34;}], &#34;ui/test_ui.py::test_flujo_cliente_contratos&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;ui/test_ui.py::test_flujo_cliente_contratos&#34;, &#34;duration&#34;: &#34;00:00:22&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;ui/test_ui.py::test_flujo_cliente_contratos&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:22&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x0000015A6DCCB1D0&amp;gt;\nchromium = &amp;lt;Browser type=&amp;lt;BrowserType name=chromium executable_path=C:\\Users\\memos\\AppData\\Local\\ms-playwright\\chromium-1255\\chrome-win64\\chrome.exe&amp;gt; version=159.0.8154.6&amp;gt;\n\n    @pytest.mark.caso(&amp;quot;TC-NFR-08&amp;quot;)\n    def test_flujo_cliente_contratos(ev, chromium):\n        tok = login(&amp;quot;admin&amp;quot;, &amp;quot;admin&amp;quot;)\n        clientes = requests.get(f&amp;quot;{API}/clientes/search?name=&amp;quot;, headers=h(tok)).json()\n        objetivo = clientes[-1]\n        r = requests.get(f&amp;quot;{API}/contratos&amp;quot;, params={&amp;quot;cliente_id&amp;quot;: objetivo[&amp;quot;id&amp;quot;]}, headers=h(tok))\n        ajenos = [c for c in r.json() if c[&amp;quot;cliente_nombre&amp;quot;] != objetivo[&amp;quot;nombre&amp;quot;]]\n        ev.nota(f&amp;quot;GET /contratos?cliente_id={objetivo[&amp;#x27;id&amp;#x27;]} -&amp;gt; {len(r.json())} contratos, {len(ajenos)} de otros clientes (filtro ignorado)&amp;quot;)\n        ctx = chromium.new_context(viewport={&amp;quot;width&amp;quot;: 1366, &amp;quot;height&amp;quot;: 768}, device_scale_factor=2)\n        page = ctx.new_page()\n        iniciar_sesion(page)\n        with page.expect_response(lambda x: x.url.startswith(API) and x.url.endswith(&amp;quot;/clientes&amp;quot;), timeout=30000):\n            page.goto(WEB + &amp;quot;/clientes&amp;quot;)\n        page.wait_for_timeout(800)\n        acciones = page.locator(&amp;quot;table tbody tr&amp;quot;).first.locator(&amp;quot;button, a&amp;quot;).all_inner_texts() if page.locator(&amp;quot;table tbody tr&amp;quot;).count() else []\n        enlaces = page.get_by_text(&amp;quot;contratos&amp;quot;, exact=False).count()\n        captura(page, &amp;quot;TC-NFR-08_clientes&amp;quot;)\n        ctx.close()\n        ev.nota(f&amp;quot;Acciones disponibles en la fila del cliente: {acciones or &amp;#x27;(iconos sin texto)&amp;#x27;}; enlaces a contratos: {max(enlaces - 1, 0)}&amp;quot;)\n        ev.resultado(&amp;quot;No existe navegaci\u00f3n cliente \u2192 contratos y la API ignora el filtro por cliente&amp;quot;)\n&amp;gt;       assert not ajenos and enlaces &amp;gt; 1, &amp;quot;No hay flujo escalonado cliente \u2192 contratos del cliente&amp;quot;\nE       AssertionError: No hay flujo escalonado cliente \u2192 contratos del cliente\nE       assert (not [{&amp;#x27;id&amp;#x27;: &amp;#x27;1&amp;#x27;, &amp;#x27;titulo&amp;#x27;: &amp;#x27;Contrato de Servicios&amp;#x27;, &amp;#x27;descripcion&amp;#x27;: &amp;#x27;Contrato de servicios de Biotec Solutions&amp;#x27;, &amp;#x27;fecha_inicio&amp;#x27;: &amp;#x27;2026-01-01T00:00:00.000Z&amp;#x27;, ...}])\n\nui\\test_ui.py:284: AssertionError\n&#34;}], &#34;ui/test_ui.py::test_compatibilidad&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Passed&#34;, &#34;testId&#34;: &#34;ui/test_ui.py::test_compatibilidad&#34;, &#34;duration&#34;: &#34;00:00:42&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Passed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;ui/test_ui.py::test_compatibilidad&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:42&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;No log output captured.&#34;}], &#34;ui/test_ui.py::test_responsivo&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;ui/test_ui.py::test_responsivo&#34;, &#34;duration&#34;: &#34;00:00:44&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;ui/test_ui.py::test_responsivo&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:44&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;ev = &amp;lt;conftest.Evidencia object at 0x0000015A6DF33240&amp;gt;\nchromium = &amp;lt;Browser type=&amp;lt;BrowserType name=chromium executable_path=C:\\Users\\memos\\AppData\\Local\\ms-playwright\\chromium-1255\\chrome-win64\\chrome.exe&amp;gt; version=159.0.8154.6&amp;gt;\n\n    @pytest.mark.caso(&amp;quot;TC-NFR-10&amp;quot;)\n    def test_responsivo(ev, chromium):\n        tamanos = [(&amp;quot;M\u00f3vil&amp;quot;, 390, 844), (&amp;quot;Tablet&amp;quot;, 768, 1024), (&amp;quot;Escritorio&amp;quot;, 1366, 768)]\n        desbordes = []\n        ev.nota(&amp;quot;Criterio: sin desplazamiento horizontal y sin textos visibles recortados fuera del viewport&amp;quot;)\n        ev.nota(f&amp;quot;{&amp;#x27;VISTA&amp;#x27;:&amp;lt;11}{&amp;#x27;M\u00f3vil&amp;#x27;:&amp;gt;14}{&amp;#x27;Tablet&amp;#x27;:&amp;gt;14}{&amp;#x27;Escritorio&amp;#x27;:&amp;gt;14}   (textos recortados \u00b7 desborde)&amp;quot;)\n        filas = {&amp;quot;Login&amp;quot;: [], &amp;quot;Dashboard&amp;quot;: [], &amp;quot;Clientes&amp;quot;: []}\n        # scrollWidth no basta: con overflow:hidden el contenido se recorta sin generar desplazamiento.\n        # Se cuentan los elementos con texto propio visibles cuyo borde derecho sale del viewport.\n        medir = &amp;quot;&amp;quot;&amp;quot;() =&amp;gt; {\n          const vw = document.documentElement.clientWidth;\n          // Un elemento dentro de un contenedor con scroll horizontal propio (p. ej. una tabla) sigue siendo alcanzable.\n          const alcanzable = e =&amp;gt; { for (let a = e.parentElement; a &amp;amp;&amp;amp; a !== document.body; a = a.parentElement) {\n              const ox = getComputedStyle(a).overflowX;\n              if ((ox === &amp;#x27;auto&amp;#x27; || ox === &amp;#x27;scroll&amp;#x27;) &amp;amp;&amp;amp; a.scrollWidth &amp;gt; a.clientWidth) return true; } return false; };\n          const recortados = [...document.querySelectorAll(&amp;#x27;body *&amp;#x27;)].filter(e =&amp;gt; {\n            const r = e.getBoundingClientRect(); const s = getComputedStyle(e);\n            return r.width &amp;gt; 0 &amp;amp;&amp;amp; r.height &amp;gt; 0 &amp;amp;&amp;amp; s.visibility !== &amp;#x27;hidden&amp;#x27; &amp;amp;&amp;amp;\n              [...e.childNodes].some(n =&amp;gt; n.nodeType === 3 &amp;amp;&amp;amp; n.textContent.trim().length &amp;gt; 1) &amp;amp;&amp;amp;\n              (r.right &amp;gt; vw + 2 || r.left &amp;lt; -2) &amp;amp;&amp;amp; !alcanzable(e);\n          });\n          return [document.documentElement.scrollWidth, vw, recortados.length,\n                  recortados.slice(0, 2).map(e =&amp;gt; e.textContent.trim().slice(0, 24))];\n        }&amp;quot;&amp;quot;&amp;quot;\n        for disp, w, hgt in tamanos:\n            ctx = chromium.new_context(viewport={&amp;quot;width&amp;quot;: w, &amp;quot;height&amp;quot;: hgt}, device_scale_factor=2, is_mobile=w &amp;lt; 768, has_touch=w &amp;lt; 1024)\n            page = ctx.new_page()\n            page.goto(WEB + &amp;quot;/login&amp;quot;)\n            page.wait_for_load_state(&amp;quot;networkidle&amp;quot;)\n            filas[&amp;quot;Login&amp;quot;].append(tuple(page.evaluate(medir)))\n            if disp != &amp;quot;Escritorio&amp;quot;:\n                captura(page, f&amp;quot;TC-NFR-10_login_{disp.lower()}&amp;quot;)\n            iniciar_sesion(page)\n            filas[&amp;quot;Dashboard&amp;quot;].append(tuple(page.evaluate(medir)))\n            with page.expect_response(lambda r: r.url.startswith(API) and r.url.endswith(&amp;quot;/clientes&amp;quot;), timeout=30000):\n                page.goto(WEB + &amp;quot;/clientes&amp;quot;)\n            page.wait_for_timeout(600)\n            filas[&amp;quot;Clientes&amp;quot;].append(tuple(page.evaluate(medir)))\n            if disp == &amp;quot;M\u00f3vil&amp;quot;:\n                captura(page, &amp;quot;TC-NFR-10_clientes_movil&amp;quot;)\n            ctx.close()\n        ejemplos = []\n        for vista, vals in filas.items():\n            celdas = []\n            for (sw, cw, rec, muestra), (disp, _, _) in zip(vals, tamanos):\n                malo = sw &amp;gt; cw + 1 or rec &amp;gt; 0\n                celdas.append(f&amp;quot;{rec} \u00b7 {&amp;#x27;s\u00ed&amp;#x27; if sw &amp;gt; cw + 1 else &amp;#x27;no&amp;#x27;}{&amp;#x27; \u2717&amp;#x27; if malo else &amp;#x27; \u2713&amp;#x27;}&amp;quot;)\n                if malo:\n                    desbordes.append(f&amp;quot;{vista} en {disp}&amp;quot;)\n                    ejemplos += [f&amp;quot;{vista}/{disp}: &amp;#x27;{m}&amp;#x27;&amp;quot; for m in muestra[:1]]\n            ev.nota(f&amp;quot;{vista:&amp;lt;11}&amp;quot; + &amp;quot;&amp;quot;.join(f&amp;quot;{c:&amp;gt;14}&amp;quot; for c in celdas))\n        for e in ejemplos[:4]:\n            ev.nota(f&amp;quot;  texto recortado -&amp;gt; {e}&amp;quot;)\n        ev.resultado(f&amp;quot;Contenido recortado en: {&amp;#x27;, &amp;#x27;.join(desbordes) or &amp;#x27;ninguna combinaci\u00f3n&amp;#x27;}&amp;quot;\n                     + (&amp;quot; (el men\u00fa lateral no se colapsa en pantallas peque\u00f1as)&amp;quot; if desbordes else &amp;quot;&amp;quot;))\n&amp;gt;       assert not desbordes, f&amp;quot;Contenido recortado o desbordado en {&amp;#x27;, &amp;#x27;.join(desbordes)}&amp;quot;\nE       AssertionError: Contenido recortado o desbordado en Dashboard en M\u00f3vil, Clientes en M\u00f3vil\nE       assert not [&amp;#x27;Dashboard en M\u00f3vil&amp;#x27;, &amp;#x27;Clientes en M\u00f3vil&amp;#x27;]\n\nui\\test_ui.py:376: AssertionError\n&#34;}]}, &#34;renderCollapsed&#34;: [&#34;passed&#34;], &#34;initialSort&#34;: &#34;result&#34;, &#34;title&#34;: &#34;reporte_ui.html&#34;}"></div>
+    <script>
+      (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+const { getCollapsedCategory, setCollapsedIds } = require('./storage.js')
+
+class DataManager {
+    setManager(data) {
+        const collapsedCategories = [...getCollapsedCategory(data.renderCollapsed)]
+        const collapsedIds = []
+        const tests = Object.values(data.tests).flat().map((test, index) => {
+            const collapsed = collapsedCategories.includes(test.result.toLowerCase())
+            const id = `test_${index}`
+            if (collapsed) {
+                collapsedIds.push(id)
+            }
+            return {
+                ...test,
+                id,
+                collapsed,
+            }
+        })
+        const dataBlob = { ...data, tests }
+        this.data = { ...dataBlob }
+        this.renderData = { ...dataBlob }
+        setCollapsedIds(collapsedIds)
+    }
+
+    get allData() {
+        return { ...this.data }
+    }
+
+    resetRender() {
+        this.renderData = { ...this.data }
+    }
+
+    setRender(data) {
+        this.renderData.tests = [...data]
+    }
+
+    toggleCollapsedItem(id) {
+        this.renderData.tests = this.renderData.tests.map((test) =>
+            test.id === id ? { ...test, collapsed: !test.collapsed } : test,
+        )
+    }
+
+    set allCollapsed(collapsed) {
+        this.renderData = { ...this.renderData, tests: [...this.renderData.tests.map((test) => (
+            { ...test, collapsed }
+        ))] }
+    }
+
+    get testSubset() {
+        return [...this.renderData.tests]
+    }
+
+    get environment() {
+        return this.renderData.environment
+    }
+
+    get initialSort() {
+        return this.data.initialSort
+    }
+}
+
+module.exports = {
+    manager: new DataManager(),
+}
+
+},{"./storage.js":8}],2:[function(require,module,exports){
+const mediaViewer = require('./mediaviewer.js')
+const templateEnvRow = document.getElementById('template_environment_row')
+const templateResult = document.getElementById('template_results-table__tbody')
+
+function htmlToElements(html) {
+    const temp = document.createElement('template')
+    temp.innerHTML = html
+    return temp.content.childNodes
+}
+
+const find = (selector, elem) => {
+    if (!elem) {
+        elem = document
+    }
+    return elem.querySelector(selector)
+}
+
+const findAll = (selector, elem) => {
+    if (!elem) {
+        elem = document
+    }
+    return [...elem.querySelectorAll(selector)]
+}
+
+const dom = {
+    getStaticRow: (key, value) => {
+        const envRow = templateEnvRow.content.cloneNode(true)
+        const isObj = typeof value === 'object' && value !== null
+        const values = isObj ? Object.keys(value).map((k) => `${k}: ${value[k]}`) : null
+
+        const valuesElement = htmlToElements(
+            values ? `<ul>${values.map((val) => `<li>${val}</li>`).join('')}<ul>` : `<div>${value}</div>`)[0]
+        const td = findAll('td', envRow)
+        td[0].textContent = key
+        td[1].appendChild(valuesElement)
+
+        return envRow
+    },
+    getResultTBody: ({ testId, id, log, extras, resultsTableRow, tableHtml, result, collapsed }) => {
+        const resultBody = templateResult.content.cloneNode(true)
+        resultBody.querySelector('tbody').classList.add(result.toLowerCase())
+        resultBody.querySelector('tbody').id = testId
+        resultBody.querySelector('.collapsible').dataset.id = id
+
+        resultsTableRow.forEach((html) => {
+            const t = document.createElement('template')
+            t.innerHTML = html
+            resultBody.querySelector('.collapsible').appendChild(t.content)
+        })
+
+        if (log) {
+            // Wrap lines starting with "E" with span.error to color those lines red
+            const wrappedLog = log.replace(/^E.*$/gm, (match) => `<span class="error">${match}</span>`)
+            resultBody.querySelector('.log').innerHTML = wrappedLog
+        } else {
+            resultBody.querySelector('.log').remove()
+        }
+
+        if (collapsed) {
+            resultBody.querySelector('.collapsible > .col-result')?.classList.add('collapsed')
+            resultBody.querySelector('.extras-row').classList.add('hidden')
+        } else {
+            resultBody.querySelector('.collapsible > .col-result')?.classList.remove('collapsed')
+        }
+
+        const media = []
+        extras?.forEach(({ name, format_type, content }) => {
+            if (['image', 'video'].includes(format_type)) {
+                media.push({ path: content, name, format_type })
+            }
+
+            if (format_type === 'html') {
+                resultBody.querySelector('.extraHTML').insertAdjacentHTML('beforeend', `<div>${content}</div>`)
+            }
+        })
+        mediaViewer.setup(resultBody, media)
+
+        // Add custom html from the pytest_html_results_table_html hook
+        tableHtml?.forEach((item) => {
+            resultBody.querySelector('td[class="extra"]').insertAdjacentHTML('beforeend', item)
+        })
+
+        return resultBody
+    },
+}
+
+module.exports = {
+    dom,
+    htmlToElements,
+    find,
+    findAll,
+}
+
+},{"./mediaviewer.js":6}],3:[function(require,module,exports){
+const { manager } = require('./datamanager.js')
+const { doSort } = require('./sort.js')
+const storageModule = require('./storage.js')
+
+const getFilteredSubSet = (filter) =>
+    manager.allData.tests.filter(({ result }) => filter.includes(result.toLowerCase()))
+
+const doInitFilter = () => {
+    const currentFilter = storageModule.getVisible()
+    const filteredSubset = getFilteredSubSet(currentFilter)
+    manager.setRender(filteredSubset)
+}
+
+const doFilter = (type, show) => {
+    if (show) {
+        storageModule.showCategory(type)
+    } else {
+        storageModule.hideCategory(type)
+    }
+
+    const currentFilter = storageModule.getVisible()
+    const filteredSubset = getFilteredSubSet(currentFilter)
+    manager.setRender(filteredSubset)
+
+    const sortColumn = storageModule.getSort()
+    doSort(sortColumn, true)
+}
+
+module.exports = {
+    doFilter,
+    doInitFilter,
+}
+
+},{"./datamanager.js":1,"./sort.js":7,"./storage.js":8}],4:[function(require,module,exports){
+const { redraw, bindEvents, renderStatic } = require('./main.js')
+const { doInitFilter } = require('./filter.js')
+const { doInitSort } = require('./sort.js')
+const { manager } = require('./datamanager.js')
+const data = JSON.parse(document.getElementById('data-container').dataset.jsonblob)
+
+function init() {
+    manager.setManager(data)
+    doInitFilter()
+    doInitSort()
+    renderStatic()
+    redraw()
+    bindEvents()
+}
+
+init()
+
+},{"./datamanager.js":1,"./filter.js":3,"./main.js":5,"./sort.js":7}],5:[function(require,module,exports){
+const { dom, find, findAll } = require('./dom.js')
+const { manager } = require('./datamanager.js')
+const { doSort } = require('./sort.js')
+const { doFilter } = require('./filter.js')
+const {
+    getVisible,
+    getCollapsedIds,
+    setCollapsedIds,
+    getSort,
+    getSortDirection,
+    possibleFilters,
+} = require('./storage.js')
+
+const removeChildren = (node) => {
+    while (node.firstChild) {
+        node.removeChild(node.firstChild)
+    }
+}
+
+const renderStatic = () => {
+    const renderEnvironmentTable = () => {
+        const environment = manager.environment
+        const rows = Object.keys(environment).map((key) => dom.getStaticRow(key, environment[key]))
+        const table = document.getElementById('environment')
+        removeChildren(table)
+        rows.forEach((row) => table.appendChild(row))
+    }
+    renderEnvironmentTable()
+}
+
+const addItemToggleListener = (elem) => {
+    elem.addEventListener('click', ({ target }) => {
+        const id = target.parentElement.dataset.id
+        manager.toggleCollapsedItem(id)
+
+        const collapsedIds = getCollapsedIds()
+        if (collapsedIds.includes(id)) {
+            const updated = collapsedIds.filter((item) => item !== id)
+            setCollapsedIds(updated)
+        } else {
+            collapsedIds.push(id)
+            setCollapsedIds(collapsedIds)
+        }
+        redraw()
+    })
+}
+
+const renderContent = (tests) => {
+    const sortAttr = getSort(manager.initialSort)
+    const sortAsc = JSON.parse(getSortDirection())
+    const rows = tests.map(dom.getResultTBody)
+    const table = document.getElementById('results-table')
+    const tableHeader = document.getElementById('results-table-head')
+
+    const newTable = document.createElement('table')
+    newTable.id = 'results-table'
+
+    // remove all sorting classes and set the relevant
+    findAll('.sortable', tableHeader).forEach((elem) => elem.classList.remove('asc', 'desc'))
+    tableHeader.querySelector(`.sortable[data-column-type="${sortAttr}"]`)?.classList.add(sortAsc ? 'desc' : 'asc')
+    newTable.appendChild(tableHeader)
+
+    if (!rows.length) {
+        const emptyTable = document.getElementById('template_results-table__body--empty').content.cloneNode(true)
+        newTable.appendChild(emptyTable)
+    } else {
+        rows.forEach((row) => {
+            if (!!row) {
+                findAll('.collapsible td:not(.col-links', row).forEach(addItemToggleListener)
+                find('.logexpander', row).addEventListener('click',
+                    (evt) => evt.target.parentNode.classList.toggle('expanded'),
+                )
+                newTable.appendChild(row)
+            }
+        })
+    }
+
+    table.replaceWith(newTable)
+}
+
+const renderDerived = () => {
+    const currentFilter = getVisible()
+    possibleFilters.forEach((result) => {
+        const input = document.querySelector(`input[data-test-result="${result}"]`)
+        input.checked = currentFilter.includes(result)
+    })
+}
+
+const bindEvents = () => {
+    const filterColumn = (evt) => {
+        const { target: element } = evt
+        const { testResult } = element.dataset
+
+        doFilter(testResult, element.checked)
+        const collapsedIds = getCollapsedIds()
+        const updated = manager.renderData.tests.map((test) => {
+            return {
+                ...test,
+                collapsed: collapsedIds.includes(test.id),
+            }
+        })
+        manager.setRender(updated)
+        redraw()
+    }
+
+    const header = document.getElementById('environment-header')
+    header.addEventListener('click', () => {
+        const table = document.getElementById('environment')
+        table.classList.toggle('hidden')
+        header.classList.toggle('collapsed')
+    })
+
+    findAll('input[name="filter_checkbox"]').forEach((elem) => {
+        elem.addEventListener('click', filterColumn)
+    })
+
+    findAll('.sortable').forEach((elem) => {
+        elem.addEventListener('click', (evt) => {
+            const { target: element } = evt
+            const { columnType } = element.dataset
+            doSort(columnType)
+            redraw()
+        })
+    })
+
+    document.getElementById('show_all_details').addEventListener('click', () => {
+        manager.allCollapsed = false
+        setCollapsedIds([])
+        redraw()
+    })
+    document.getElementById('hide_all_details').addEventListener('click', () => {
+        manager.allCollapsed = true
+        const allIds = manager.renderData.tests.map((test) => test.id)
+        setCollapsedIds(allIds)
+        redraw()
+    })
+}
+
+const redraw = () => {
+    const { testSubset } = manager
+
+    renderContent(testSubset)
+    renderDerived()
+}
+
+module.exports = {
+    redraw,
+    bindEvents,
+    renderStatic,
+}
+
+},{"./datamanager.js":1,"./dom.js":2,"./filter.js":3,"./sort.js":7,"./storage.js":8}],6:[function(require,module,exports){
+class MediaViewer {
+    constructor(assets) {
+        this.assets = assets
+        this.index = 0
+    }
+
+    nextActive() {
+        this.index = this.index === this.assets.length - 1 ? 0 : this.index + 1
+        return [this.activeFile, this.index]
+    }
+
+    prevActive() {
+        this.index = this.index === 0 ? this.assets.length - 1 : this.index -1
+        return [this.activeFile, this.index]
+    }
+
+    get currentIndex() {
+        return this.index
+    }
+
+    get activeFile() {
+        return this.assets[this.index]
+    }
+}
+
+
+const setup = (resultBody, assets) => {
+    if (!assets.length) {
+        resultBody.querySelector('.media').classList.add('hidden')
+        return
+    }
+
+    const mediaViewer = new MediaViewer(assets)
+    const container = resultBody.querySelector('.media-container')
+    const leftArrow = resultBody.querySelector('.media-container__nav--left')
+    const rightArrow = resultBody.querySelector('.media-container__nav--right')
+    const mediaName = resultBody.querySelector('.media__name')
+    const counter = resultBody.querySelector('.media__counter')
+    const imageEl = resultBody.querySelector('img')
+    const sourceEl = resultBody.querySelector('source')
+    const videoEl = resultBody.querySelector('video')
+
+    const setImg = (media, index) => {
+        if (media?.format_type === 'image') {
+            imageEl.src = media.path
+
+            imageEl.classList.remove('hidden')
+            videoEl.classList.add('hidden')
+        } else if (media?.format_type === 'video') {
+            sourceEl.src = media.path
+
+            videoEl.classList.remove('hidden')
+            imageEl.classList.add('hidden')
+        }
+
+        mediaName.innerText = media?.name
+        counter.innerText = `${index + 1} / ${assets.length}`
+    }
+    setImg(mediaViewer.activeFile, mediaViewer.currentIndex)
+
+    const moveLeft = () => {
+        const [media, index] = mediaViewer.prevActive()
+        setImg(media, index)
+    }
+    const doRight = () => {
+        const [media, index] = mediaViewer.nextActive()
+        setImg(media, index)
+    }
+    const openImg = () => {
+        window.open(mediaViewer.activeFile.path, '_blank')
+    }
+    if (assets.length === 1) {
+        container.classList.add('media-container--fullscreen')
+    } else {
+        leftArrow.addEventListener('click', moveLeft)
+        rightArrow.addEventListener('click', doRight)
+    }
+    imageEl.addEventListener('click', openImg)
+}
+
+module.exports = {
+    setup,
+}
+
+},{}],7:[function(require,module,exports){
+const { manager } = require('./datamanager.js')
+const storageModule = require('./storage.js')
+
+const genericSort = (list, key, ascending, customOrder) => {
+    let sorted
+    if (customOrder) {
+        sorted = list.sort((a, b) => {
+            const aValue = a.result.toLowerCase()
+            const bValue = b.result.toLowerCase()
+
+            const aIndex = customOrder.findIndex((item) => item.toLowerCase() === aValue)
+            const bIndex = customOrder.findIndex((item) => item.toLowerCase() === bValue)
+
+            // Compare the indices to determine the sort order
+            return aIndex - bIndex
+        })
+    } else {
+        sorted = list.sort((a, b) => a[key] === b[key] ? 0 : a[key] > b[key] ? 1 : -1)
+    }
+
+    if (ascending) {
+        sorted.reverse()
+    }
+    return sorted
+}
+
+const durationSort = (list, ascending) => {
+    const parseDuration = (duration) => {
+        if (duration.includes(':')) {
+            // If it's in the format "HH:mm:ss"
+            const [hours, minutes, seconds] = duration.split(':').map(Number)
+            return (hours * 3600 + minutes * 60 + seconds) * 1000
+        } else {
+            // If it's in the format "nnn ms"
+            return parseInt(duration)
+        }
+    }
+    const sorted = list.sort((a, b) => parseDuration(a['duration']) - parseDuration(b['duration']))
+    if (ascending) {
+        sorted.reverse()
+    }
+    return sorted
+}
+
+const doInitSort = () => {
+    const type = storageModule.getSort(manager.initialSort)
+    const ascending = storageModule.getSortDirection()
+    const list = manager.testSubset
+    const initialOrder = ['Error', 'Failed', 'Rerun', 'XFailed', 'XPassed', 'Skipped', 'Passed']
+
+    storageModule.setSort(type)
+    storageModule.setSortDirection(ascending)
+
+    if (type?.toLowerCase() === 'original') {
+        manager.setRender(list)
+    } else {
+        let sortedList
+        switch (type) {
+        case 'duration':
+            sortedList = durationSort(list, ascending)
+            break
+        case 'result':
+            sortedList = genericSort(list, type, ascending, initialOrder)
+            break
+        default:
+            sortedList = genericSort(list, type, ascending)
+            break
+        }
+        manager.setRender(sortedList)
+    }
+}
+
+const doSort = (type, skipDirection) => {
+    const newSortType = storageModule.getSort(manager.initialSort) !== type
+    const currentAsc = storageModule.getSortDirection()
+    let ascending
+    if (skipDirection) {
+        ascending = currentAsc
+    } else {
+        ascending = newSortType ? false : !currentAsc
+    }
+    storageModule.setSort(type)
+    storageModule.setSortDirection(ascending)
+
+    const list = manager.testSubset
+    const sortedList = type === 'duration' ? durationSort(list, ascending) : genericSort(list, type, ascending)
+    manager.setRender(sortedList)
+}
+
+module.exports = {
+    doInitSort,
+    doSort,
+}
+
+},{"./datamanager.js":1,"./storage.js":8}],8:[function(require,module,exports){
+const possibleFilters = [
+    'passed',
+    'skipped',
+    'failed',
+    'error',
+    'xfailed',
+    'xpassed',
+    'rerun',
+]
+
+const getVisible = () => {
+    const url = new URL(window.location.href)
+    const settings = new URLSearchParams(url.search).get('visible')
+    const lower = (item) => {
+        const lowerItem = item.toLowerCase()
+        if (possibleFilters.includes(lowerItem)) {
+            return lowerItem
+        }
+        return null
+    }
+    return settings === null ?
+        possibleFilters :
+        [...new Set(settings?.split(',').map(lower).filter((item) => item))]
+}
+
+const hideCategory = (categoryToHide) => {
+    const url = new URL(window.location.href)
+    const visibleParams = new URLSearchParams(url.search).get('visible')
+    const currentVisible = visibleParams ? visibleParams.split(',') : [...possibleFilters]
+    const settings = [...new Set(currentVisible)].filter((f) => f !== categoryToHide).join(',')
+
+    url.searchParams.set('visible', settings)
+    window.history.pushState({}, null, unescape(url.href))
+}
+
+const showCategory = (categoryToShow) => {
+    if (typeof window === 'undefined') {
+        return
+    }
+    const url = new URL(window.location.href)
+    const currentVisible = new URLSearchParams(url.search).get('visible')?.split(',').filter(Boolean) ||
+        [...possibleFilters]
+    const settings = [...new Set([categoryToShow, ...currentVisible])]
+    const noFilter = possibleFilters.length === settings.length || !settings.length
+
+    noFilter ? url.searchParams.delete('visible') : url.searchParams.set('visible', settings.join(','))
+    window.history.pushState({}, null, unescape(url.href))
+}
+
+const getSort = (initialSort) => {
+    const url = new URL(window.location.href)
+    let sort = new URLSearchParams(url.search).get('sort')
+    if (!sort) {
+        sort = initialSort || 'result'
+    }
+    return sort
+}
+
+const setSort = (type) => {
+    const url = new URL(window.location.href)
+    url.searchParams.set('sort', type)
+    window.history.pushState({}, null, unescape(url.href))
+}
+
+const getCollapsedCategory = (renderCollapsed) => {
+    let categories
+    if (typeof window !== 'undefined') {
+        const url = new URL(window.location.href)
+        const collapsedItems = new URLSearchParams(url.search).get('collapsed')
+        switch (true) {
+        case !renderCollapsed && collapsedItems === null:
+            categories = ['passed']
+            break
+        case collapsedItems?.length === 0 || /^["']{2}$/.test(collapsedItems):
+            categories = []
+            break
+        case /^all$/.test(collapsedItems) || collapsedItems === null && /^all$/.test(renderCollapsed):
+            categories = [...possibleFilters]
+            break
+        default:
+            categories = collapsedItems?.split(',').map((item) => item.toLowerCase()) || renderCollapsed
+            break
+        }
+    } else {
+        categories = []
+    }
+    return categories
+}
+
+const getSortDirection = () => JSON.parse(sessionStorage.getItem('sortAsc')) || false
+const setSortDirection = (ascending) => sessionStorage.setItem('sortAsc', ascending)
+
+const getCollapsedIds = () => JSON.parse(sessionStorage.getItem('collapsedIds')) || []
+const setCollapsedIds = (list) => sessionStorage.setItem('collapsedIds', JSON.stringify(list))
+
+module.exports = {
+    getVisible,
+    hideCategory,
+    showCategory,
+    getCollapsedIds,
+    setCollapsedIds,
+    getSort,
+    setSort,
+    getSortDirection,
+    setSortDirection,
+    getCollapsedCategory,
+    possibleFilters,
+}
+
+},{}]},{},[4]);
+    </script>
+  </footer>
+  </body>
+</html>

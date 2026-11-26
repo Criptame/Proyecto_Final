@@ -1,0 +1,6 @@
+$ restricción contratos_cliente_id_fkey -> FOREIGN KEY (cliente_id) REFERENCES clientes(id)
+# cliente_id con dos valores
+> POST /contratos   [con token]
+< HTTP 500  (14 ms)
+  {"error":"Error al crear contrato","glosa":"invalid input syntax for type bigint: \"NaN\""}
+=> cliente_id es referencia simple; la API no admite dos clientes

@@ -1,0 +1,5 @@
+> POST /clientes   [con token]
+  {"nombre": "Cliente QA 77672d", "correo": "cliente_77672d@qa.test", "telefono": "+56987654321", "direccion": "Calle Falsa 742, Valpara\u00edso", "es_empresa": true, "rut": "76.543.210-3", "nombre_fantasia": "Servicios QA", "giro_actividad_economica": "Consultor\u00eda", "nombre_banco": "Banco de Pru
+< HTTP 201  (27 ms)
+  {"id":"4","nombre":"Cliente QA 77672d","correo":"cliente_77672d@qa.test","telefono":"+56987654321","direccion":"Calle Falsa 742, Valparaíso","es_empresa":true,"rut":"76.543.210-3","nombre_fantasia":"Servicios QA","giro_actividad_economica":"Consultor
+=> HTTP 201; datos recuperados coinciden con lo enviado

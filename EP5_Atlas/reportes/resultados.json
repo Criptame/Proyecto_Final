@@ -1,0 +1,474 @@
+{
+  "TC-FUN-01": {
+    "estado": "PASÓ",
+    "obtenido": "HTTP 200 con JWT (usuarioId=1, empresaId=1, vigencia 2 h) y evento LOGIN auditado",
+    "detalle": "",
+    "duracion_s": 4.15,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_funcionales.py::test_login_emite_jwt"
+  },
+  "TC-FUN-02": {
+    "estado": "PASÓ",
+    "obtenido": "HTTP 401 / 401 con mensajes idénticos",
+    "detalle": "",
+    "duracion_s": 8.03,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_funcionales.py::test_credenciales_invalidas_genericas"
+  },
+  "TC-FUN-03": {
+    "estado": "FALLÓ",
+    "obtenido": "No existe servicio de logout (HTTP 404); el token sigue aceptado (HTTP 200)",
+    "detalle": "No existe servicio de cierre de sesión (HTTP 404); el logout del frontend sólo borra localStorage",
+    "duracion_s": 4.04,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_funcionales.py::test_logout_revoca_token"
+  },
+  "TC-FUN-04": {
+    "estado": "FALLÓ",
+    "obtenido": "Sin refresh token (HTTP 404 en /refresh); access token de 120 min",
+    "detalle": "El login no entrega refresh token",
+    "duracion_s": 4.03,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_funcionales.py::test_refresh_token"
+  },
+  "TC-FUN-05": {
+    "estado": "PASÓ",
+    "obtenido": "HTTP 201: usuario y empresa creados con nombre, dirección, teléfono y correo; login exitoso",
+    "detalle": "",
+    "duracion_s": 4.05,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_funcionales.py::test_registro_y_empresa"
+  },
+  "TC-FUN-06": {
+    "estado": "PASÓ",
+    "obtenido": "El creador quedó vinculado con rol 'administrador'",
+    "detalle": "",
+    "duracion_s": 0.11,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_funcionales.py::test_primer_usuario_admin"
+  },
+  "TC-FUN-07": {
+    "estado": "PASÓ",
+    "obtenido": "HTTP 201; usuario listado con rol 'editor'",
+    "detalle": "",
+    "duracion_s": 0.03,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_funcionales.py::test_admin_crea_usuario_con_rol"
+  },
+  "TC-FUN-08": {
+    "estado": "FALLÓ",
+    "obtenido": "Modificación HTTP 200; eliminación HTTP 500",
+    "detalle": "La eliminación falla con HTTP 500: la clave foránea de empresa_usuarios impide borrar a cualquier usuario vinculado a una empresa",
+    "duracion_s": 0.03,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_funcionales.py::test_admin_modifica_y_elimina_usuario"
+  },
+  "TC-FUN-09": {
+    "estado": "PASÓ",
+    "obtenido": "HTTP 201; datos recuperados coinciden con lo enviado",
+    "detalle": "",
+    "duracion_s": 0.03,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_funcionales.py::test_crear_cliente"
+  },
+  "TC-FUN-10": {
+    "estado": "FALLÓ",
+    "obtenido": "Filtro correcto; paginación devuelve 4 registros con limit=1; edición HTTP 200",
+    "detalle": "No hay paginación: limit=1 devolvió 4 clientes",
+    "duracion_s": 4.08,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_funcionales.py::test_listar_filtrar_paginar_editar"
+  },
+  "TC-FUN-11": {
+    "estado": "FALLÓ",
+    "obtenido": "Borrado físico: quedan 0 filas; la interfaz sí pide confirmación (diálogo 'Confirmar eliminación')",
+    "detalle": "El cliente se eliminó físicamente de la base de datos (no hay eliminación lógica)",
+    "duracion_s": 0.29,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_funcionales.py::test_eliminacion_logica"
+  },
+  "TC-FUN-12": {
+    "estado": "FALLÓ",
+    "obtenido": "Formato inválido aceptado con HTTP 201; campo obligatorio ausente -> HTTP 500",
+    "detalle": "El backend aceptó correo, RUT y teléfono inválidos (HTTP 201)",
+    "duracion_s": 0.02,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_funcionales.py::test_validacion_campos"
+  },
+  "TC-FUN-13": {
+    "estado": "PASÓ",
+    "obtenido": "HTTP 201/201; ambos contratos presentes en el listado: True",
+    "detalle": "",
+    "duracion_s": 4.06,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_funcionales.py::test_multiples_contratos"
+  },
+  "TC-FUN-14": {
+    "estado": "PASÓ",
+    "obtenido": "Subida 0.03 s, descarga 0.01 s; SHA-256 idéntico",
+    "detalle": "",
+    "duracion_s": 0.05,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_funcionales.py::test_adjuntar_descargar_pdf"
+  },
+  "TC-FUN-15": {
+    "estado": "FALLÓ",
+    "obtenido": "Un PNG se entrega como application/pdf con nombre 'contrato.pdf'",
+    "detalle": "El PNG se descarga como application/pdf y nombre contrato.pdf (archivo inutilizable)",
+    "duracion_s": 0.03,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_funcionales.py::test_formatos_conservan_tipo"
+  },
+  "TC-FUN-16": {
+    "estado": "FALLÓ",
+    "obtenido": "Los documentos se guardan como bytea dentro de PostgreSQL; el storage interno tiene 0 archivos",
+    "detalle": "El archivo se almacena dentro de la BD (bytea) en vez de storage interno referenciado",
+    "duracion_s": 0.37,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_funcionales.py::test_storage_interno"
+  },
+  "TC-FUN-17": {
+    "estado": "FALLÓ",
+    "obtenido": "GET /contratos no incluye 'estado'; /estados sólo informa ['por_vencer', 'vencido'] (sin 'activo', máximo 3 por grupo)",
+    "detalle": "El listado de contratos no informa el estado calculado de cada contrato",
+    "duracion_s": 4.08,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_funcionales.py::test_estado_contrato"
+  },
+  "TC-FUN-18": {
+    "estado": "FALLÓ",
+    "obtenido": "No existe servicio para compartir documentos (HTTP 404/404)",
+    "detalle": "RF-5.5 no implementado: no existe generación de enlace para compartir",
+    "duracion_s": 0.01,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_funcionales.py::test_enlace_compartir"
+  },
+  "TC-FUN-19": {
+    "estado": "FALLÓ",
+    "obtenido": "8/10 acciones auditadas; sin registro: Descargar documento, Crear usuario",
+    "detalle": "Acciones críticas sin auditar: Descargar documento, Crear usuario",
+    "duracion_s": 4.6,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_funcionales.py::test_auditoria_acciones_criticas"
+  },
+  "TC-FUN-20": {
+    "estado": "PASÓ",
+    "obtenido": "Segunda empresa con el mismo correo rechazada (HTTP 500)",
+    "detalle": "",
+    "duracion_s": 0.01,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_funcionales.py::test_correo_empresa_unico"
+  },
+  "TC-FUN-21": {
+    "estado": "PASÓ",
+    "obtenido": "cliente_id es referencia simple; la API no admite dos clientes",
+    "detalle": "",
+    "duracion_s": 0.12,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_funcionales.py::test_contrato_un_solo_cliente"
+  },
+  "TC-FUN-22": {
+    "estado": "PASÓ",
+    "obtenido": "Swagger disponible; rutas críticas sin documentar: ninguna",
+    "detalle": "",
+    "duracion_s": 0.01,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_funcionales.py::test_swagger"
+  },
+  "TC-SEC-21": {
+    "estado": "FALLÓ",
+    "obtenido": "23 vulnerabilidades altas/críticas según npm audit; Trivy reporta 1 críticas y 34 altas",
+    "detalle": "Dependencias con CVE de severidad alta o crítica",
+    "duracion_s": 0.01,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_herramientas.py::test_sca"
+  },
+  "TC-SEC-22": {
+    "estado": "FALLÓ",
+    "obtenido": "87 hallazgos SAST (32 de severidad ERROR)",
+    "detalle": "Semgrep reporta 32 hallazgos de severidad ERROR",
+    "duracion_s": 0.0,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_herramientas.py::test_sast"
+  },
+  "TC-SEC-23": {
+    "estado": "FALLÓ",
+    "obtenido": "3 secretos expuestos en archivos del proyecto",
+    "detalle": "3 secretos expuestos en el repositorio",
+    "duracion_s": 0.0,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_herramientas.py::test_secretos"
+  },
+  "TC-SEC-24": {
+    "estado": "FALLÓ",
+    "obtenido": "5 alertas de riesgo medio o alto",
+    "detalle": "OWASP ZAP reporta 5 alertas de riesgo medio/alto",
+    "duracion_s": 0.0,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_herramientas.py::test_dast_zap"
+  },
+  "TC-SEC-25": {
+    "estado": "FALLÓ",
+    "obtenido": "BD accesible desde la red con credenciales por defecto: sí; 4 configuraciones inseguras en Dockerfile/compose",
+    "detalle": "Base de datos expuesta con credenciales por defecto y contenedores sin hardening",
+    "duracion_s": 0.91,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_herramientas.py::test_contenedores_bd"
+  },
+  "TC-NFR-03": {
+    "estado": "FALLÓ",
+    "obtenido": "Con 200 usuarios concurrentes: p95 = 4027 ms y 0.00 % de errores",
+    "detalle": "p95 de 4027 ms bajo 200 usuarios (umbral 300 ms)",
+    "duracion_s": 0.0,
+    "fecha": "26/11/2026 02:38",
+    "test": "api/test_herramientas.py::test_carga_k6"
+  },
+  "TC-NFR-01": {
+    "estado": "FALLÓ",
+    "obtenido": "3 de 5 operaciones superan 300 ms (p95): GET /clientes, GET /contratos, POST /autenticacion/login",
+    "detalle": "Operaciones sobre el umbral de 300 ms (p95): GET /clientes=4028 ms, GET /contratos=4022 ms, POST /autenticacion/login=4028 ms",
+    "duracion_s": 185.37,
+    "fecha": "26/11/2026 02:42",
+    "test": "api/test_no_funcionales.py::test_rendimiento_crud"
+  },
+  "TC-NFR-12": {
+    "estado": "FALLÓ",
+    "obtenido": "Sin herramienta de migraciones ni versiones del esquema: un cambio exige recrear la BD o SQL manual",
+    "detalle": "No existen migraciones versionadas del esquema",
+    "duracion_s": 0.0,
+    "fecha": "26/11/2026 02:42",
+    "test": "api/test_no_funcionales.py::test_migraciones_versionadas"
+  },
+  "TC-SEC-01": {
+    "estado": "FALLÓ",
+    "obtenido": "API no ofrece TLS; API responde por HTTP plano sin redirigir; Frontend no ofrece TLS; Frontend responde por HTTP plano sin redirigir; PostgreSQL sin SSL",
+    "detalle": "API no ofrece TLS; API responde por HTTP plano sin redirigir; Frontend no ofrece TLS; Frontend responde por HTTP plano sin redirigir; PostgreSQL sin SSL",
+    "duracion_s": 4.19,
+    "fecha": "26/11/2026 02:42",
+    "test": "api/test_seguridad.py::test_tls"
+  },
+  "TC-SEC-02": {
+    "estado": "FALLÓ",
+    "obtenido": "3 de 3 contraseñas almacenadas en texto plano",
+    "detalle": "3 contraseñas almacenadas en texto plano (sin bcrypt)",
+    "duracion_s": 0.11,
+    "fecha": "26/11/2026 02:42",
+    "test": "api/test_seguridad.py::test_bcrypt"
+  },
+  "TC-SEC-03": {
+    "estado": "FALLÓ",
+    "obtenido": "Número de cuenta, titular y RUT legibles en la BD (sin cifrar)",
+    "detalle": "Datos bancarios almacenados en texto plano",
+    "duracion_s": 0.21,
+    "fecha": "26/11/2026 02:42",
+    "test": "api/test_seguridad.py::test_cifrado_reposo"
+  },
+  "TC-SEC-04": {
+    "estado": "FALLÓ",
+    "obtenido": "El editor crea, edita y elimina: HTTP (201, 200, 200)",
+    "detalle": "El rol editor ejecuta escrituras (HTTP (201, 200, 200)); el backend no valida roles",
+    "duracion_s": 0.06,
+    "fecha": "26/11/2026 02:42",
+    "test": "api/test_seguridad.py::test_editor_no_escribe"
+  },
+  "TC-SEC-05": {
+    "estado": "FALLÓ",
+    "obtenido": "10 de 10 operaciones aceptadas sin autenticación",
+    "detalle": "10/10 endpoints responden sin token: GET /contratos/11, GET /contratos/11/file, GET /auditoria, GET /empresas, GET /empresas/7, GET /usuarios/10, GET /empresa-usuarios/8, GET /roles, POST /roles, PUT /empresas/8",
+    "duracion_s": 0.32,
+    "fecha": "26/11/2026 02:42",
+    "test": "api/test_seguridad.py::test_endpoints_sin_autenticacion"
+  },
+  "TC-SEC-06": {
+    "estado": "FALLÓ",
+    "obtenido": "Contrato y documento borrados por un anónimo sin rastro en auditoría (HTTP 500)",
+    "detalle": "Un usuario anónimo eliminó el contrato y su documento; el borrado no quedó auditado",
+    "duracion_s": 0.49,
+    "fecha": "26/11/2026 02:42",
+    "test": "api/test_seguridad.py::test_borrado_anonimo_contrato"
+  },
+  "TC-SEC-07": {
+    "estado": "FALLÓ",
+    "obtenido": "El atacante se convirtió en administrador de otra empresa y obtuvo sus datos bancarios",
+    "detalle": "Modificación anónima del vínculo empresa-usuario",
+    "duracion_s": 8.12,
+    "fecha": "26/11/2026 02:42",
+    "test": "api/test_seguridad.py::test_toma_control_entre_empresas"
+  },
+  "TC-SEC-08": {
+    "estado": "FALLÓ",
+    "obtenido": "Creación HTTP 201 y reasignación HTTP 200; la víctima ve 2 contratos ajenos",
+    "detalle": "La API acepta cliente_id de otra empresa en POST y PUT /contratos",
+    "duracion_s": 4.09,
+    "fecha": "26/11/2026 02:42",
+    "test": "api/test_seguridad.py::test_contratos_a_clientes_ajenos"
+  },
+  "TC-SEC-09": {
+    "estado": "FALLÓ",
+    "obtenido": "El backend almacenó el payload sin sanear (HTTP 201); React lo escapa al mostrarlo (ver evidencia de interfaz), por lo que el riesgo queda latente para otros consumidores de la API",
+    "detalle": "Entrada con HTML/JS aceptada y almacenada sin saneamiento",
+    "duracion_s": 0.13,
+    "fecha": "26/11/2026 02:42",
+    "test": "api/test_seguridad.py::test_xss_almacenado"
+  },
+  "TC-SEC-10": {
+    "estado": "PASÓ",
+    "obtenido": "Login HTTP 401; búsqueda devolvió 0 filas (de 27 en la BD) y 0 de otras empresas: consultas parametrizadas efectivas",
+    "detalle": "",
+    "duracion_s": 4.13,
+    "fecha": "26/11/2026 02:42",
+    "test": "api/test_seguridad.py::test_inyeccion_sql"
+  },
+  "TC-SEC-11": {
+    "estado": "FALLÓ",
+    "obtenido": "La API autoriza cualquier origen (Access-Control-Allow-Origin: *)",
+    "detalle": "CORS abierto: Access-Control-Allow-Origin: *",
+    "duracion_s": 0.01,
+    "fecha": "26/11/2026 02:42",
+    "test": "api/test_seguridad.py::test_cors"
+  },
+  "TC-SEC-12": {
+    "estado": "FALLÓ",
+    "obtenido": "API sin 5/5 y frontend sin 5/5 cabeceras; la API revela 'X-Powered-By: Express'",
+    "detalle": "assert (not ['Content-Security-Policy', 'X-Frame-Options', 'X-Content-Type-Options', 'Referrer-Policy', 'Strict-Transport-Security'])",
+    "duracion_s": 0.01,
+    "fecha": "26/11/2026 02:42",
+    "test": "api/test_seguridad.py::test_cabeceras_seguridad"
+  },
+  "TC-SEC-13": {
+    "estado": "FALLÓ",
+    "obtenido": "HTTP 500 con detalle interno de PostgreSQL en 'glosa'; los logs imprimen el contenido del token",
+    "detalle": "Las respuestas exponen mensajes internos de la base de datos",
+    "duracion_s": 0.14,
+    "fecha": "26/11/2026 02:42",
+    "test": "api/test_seguridad.py::test_errores_y_logs"
+  },
+  "TC-SEC-14": {
+    "estado": "FALLÓ",
+    "obtenido": "Auditoría pública con eventos de 9 usuarios de distintas empresas; se aceptan eventos fabricados (HTTP 201)",
+    "detalle": "La auditoría completa es legible sin autenticación",
+    "duracion_s": 0.03,
+    "fecha": "26/11/2026 02:42",
+    "test": "api/test_seguridad.py::test_auditoria_confidencial_integra"
+  },
+  "TC-SEC-15": {
+    "estado": "FALLÓ",
+    "obtenido": "No existe respaldo automatizado ni procedimiento de restauración",
+    "detalle": "No hay política ni mecanismo de respaldo y recuperación",
+    "duracion_s": 0.01,
+    "fecha": "26/11/2026 02:42",
+    "test": "api/test_seguridad.py::test_respaldo"
+  },
+  "TC-SEC-16": {
+    "estado": "FALLÓ",
+    "obtenido": "El editor recibe 2 números de cuenta completos sin enmascarar",
+    "detalle": "La API entrega datos bancarios completos a un perfil de sólo lectura",
+    "duracion_s": 0.01,
+    "fecha": "26/11/2026 02:42",
+    "test": "api/test_seguridad.py::test_minimizacion_datos"
+  },
+  "TC-SEC-17": {
+    "estado": "FALLÓ",
+    "obtenido": "La API acepta el token falsificado (HTTP 200) y entrega 2 clientes de la víctima",
+    "detalle": "Con el secreto publicado cualquiera puede fabricar tokens válidos de cualquier empresa",
+    "duracion_s": 0.01,
+    "fecha": "26/11/2026 02:42",
+    "test": "api/test_seguridad.py::test_secreto_jwt_publicado"
+  },
+  "TC-SEC-18": {
+    "estado": "FALLÓ",
+    "obtenido": "Se aceptaron 3/3 contraseñas débiles: ['123', 'password', 'abcdefghijkl']",
+    "detalle": "Contraseñas que incumplen la política aceptadas: ['123', 'password', 'abcdefghijkl']",
+    "duracion_s": 0.06,
+    "fecha": "26/11/2026 02:42",
+    "test": "api/test_seguridad.py::test_politica_contrasenas"
+  },
+  "TC-SEC-19": {
+    "estado": "FALLÓ",
+    "obtenido": "Archivos no permitidos aceptados: ['malware.exe', 'pagina.html', 'grande.pdf']",
+    "detalle": "Se aceptaron archivos no permitidos: ['malware.exe', 'pagina.html', 'grande.pdf']",
+    "duracion_s": 0.49,
+    "fecha": "26/11/2026 02:42",
+    "test": "api/test_seguridad.py::test_archivos_peligrosos"
+  },
+  "TC-SEC-20": {
+    "estado": "FALLÓ",
+    "obtenido": "Sin limitación de intentos: 0 respuestas 429/423 de 30",
+    "detalle": "No existe limitación de intentos ni bloqueo de cuenta",
+    "duracion_s": 16.19,
+    "fecha": "26/11/2026 02:42",
+    "test": "api/test_seguridad.py::test_fuerza_bruta"
+  },
+  "TC-NFR-02": {
+    "estado": "FALLÓ",
+    "obtenido": "Login listo en 3.43 s; dashboard (página principal) en 8.93 s",
+    "detalle": "Página principal en 8.9 s (umbral 2 s)",
+    "duracion_s": 12.67,
+    "fecha": "26/11/2026 02:43",
+    "test": "ui/test_ui.py::test_carga_movil"
+  },
+  "TC-NFR-04": {
+    "estado": "FALLÓ",
+    "obtenido": "8 violaciones de impacto crítico o serio en 5 vistas (3 reglas WCAG incumplidas)",
+    "detalle": "8 violaciones WCAG 2.1 AA de impacto crítico/serio",
+    "duracion_s": 21.2,
+    "fecha": "26/11/2026 02:44",
+    "test": "ui/test_ui.py::test_accesibilidad_axe"
+  },
+  "TC-NFR-05": {
+    "estado": "FALLÓ",
+    "obtenido": "Fuente mínima 10.5 px; 1 textos < 12 px y 1 controles < 24 px",
+    "detalle": "Hay textos menores a 12 px o controles táctiles menores a 24×24 px",
+    "duracion_s": 9.69,
+    "fecha": "26/11/2026 02:44",
+    "test": "ui/test_ui.py::test_tipografia_y_objetivos"
+  },
+  "TC-NFR-06": {
+    "estado": "PASÓ",
+    "obtenido": "Registro de 2 pasos + inicio de sesión completados en 10.2 s y dashboard visible",
+    "detalle": "",
+    "duracion_s": 10.34,
+    "fecha": "26/11/2026 02:44",
+    "test": "ui/test_ui.py::test_flujo_registro_ui"
+  },
+  "TC-NFR-07": {
+    "estado": "FALLÓ",
+    "obtenido": "La interfaz muestra el error técnico de PostgreSQL",
+    "detalle": "El mensaje de error expone términos técnicos de la base de datos al usuario",
+    "duracion_s": 1.29,
+    "fecha": "26/11/2026 02:44",
+    "test": "ui/test_ui.py::test_mensajes_error_ui"
+  },
+  "TC-NFR-08": {
+    "estado": "FALLÓ",
+    "obtenido": "No existe navegación cliente → contratos y la API ignora el filtro por cliente",
+    "detalle": "No hay flujo escalonado cliente → contratos del cliente",
+    "duracion_s": 22.34,
+    "fecha": "26/11/2026 02:44",
+    "test": "ui/test_ui.py::test_flujo_cliente_contratos"
+  },
+  "TC-NFR-09": {
+    "estado": "PASÓ",
+    "obtenido": "Flujo completo en 4 de 4 navegadores",
+    "detalle": "",
+    "duracion_s": 42.39,
+    "fecha": "26/11/2026 02:45",
+    "test": "ui/test_ui.py::test_compatibilidad"
+  },
+  "TC-NFR-10": {
+    "estado": "FALLÓ",
+    "obtenido": "Contenido recortado en: Dashboard en Móvil, Clientes en Móvil (el menú lateral no se colapsa en pantallas pequeñas)",
+    "detalle": "Contenido recortado o desbordado en Dashboard en Móvil, Clientes en Móvil",
+    "duracion_s": 43.88,
+    "fecha": "26/11/2026 02:46",
+    "test": "ui/test_ui.py::test_responsivo"
+  },
+  "TC-NFR-11": {
+    "estado": "FALLÓ",
+    "obtenido": "Un corte de la BD derriba la API (pool de pg sin manejador de errores); Docker la reinició en 1.0 s; atlas-backend, atlas-frontend sin healthcheck",
+    "detalle": "Un corte transitorio de la BD derriba la API y los servicios atlas-backend, atlas-frontend no tienen healthcheck; la disponibilidad depende sólo del reinicio del contenedor",
+    "duracion_s": 5.52,
+    "fecha": "26/11/2026 02:46",
+    "test": "api/test_zz_disponibilidad.py::test_recuperacion_backend"
+  }
+}

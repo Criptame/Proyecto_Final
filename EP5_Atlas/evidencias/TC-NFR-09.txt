@@ -1,0 +1,5 @@
+Chromium (Chrome)  v159.0.8154.6   login + dashboard en 9.0 s; errores JS: 0; menú visible: True
+Microsoft Edge     v158.0.4370.33  login + dashboard en 9.5 s; errores JS: 0; menú visible: True
+Firefox            v159.0          login + dashboard en 10.2 s; errores JS: 0; menú visible: True
+WebKit (Safari)    v27.2           login + dashboard en 9.4 s; errores JS: 0; menú visible: True
+=> Flujo completo en 4 de 4 navegadores

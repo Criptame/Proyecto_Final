@@ -1,0 +1,3 @@
+GET /contratos?cliente_id=2 -> 2 contratos, 1 de otros clientes (filtro ignorado)
+Acciones disponibles en la fila del cliente: ['', '']; enlaces a contratos: 0
+=> No existe navegación cliente → contratos y la API ignora el filtro por cliente

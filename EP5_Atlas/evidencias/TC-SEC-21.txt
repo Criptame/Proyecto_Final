@@ -1,0 +1,27 @@
+npm audit backend   -> crítica 1, alta 7, moderada 2, baja 0
+   · body-parser            high     body-parser vulnerable to denial of service when invalid limit value s
+   · brace-expansion        high     brace-expansion: Zero-step sequence causes process hang and memory exh
+   · express                high     (dependencia transitiva)
+   · jws                    high     auth0/node-jws Improperly Verifies HMAC Signature
+   · minimatch              high     minimatch has a ReDoS via repeated wildcards with non-matching literal
+   · path-to-regexp         high     path-to-regexp vulnerable to Regular Expression Denial of Service via 
+   · picomatch              high     Picomatch: Method Injection in POSIX Character Classes causes incorrec
+   · proxy-addr             critical proxy-addr vulnerable to IP spoofing via IPv4-mapped IPv6 trust subnet
+npm audit frontend  -> crítica 0, alta 15, moderada 6, baja 1
+   · axios                  high     Axios has a NO_PROXY Hostname Normalization Bypass that Leads to SSRF
+   · brace-expansion        high     brace-expansion: Zero-step sequence causes process hang and memory exh
+   · browserslist           high     Browserslist: Unbounded memory growth (no cache eviction) via distinct
+   · flatted                high     flatted vulnerable to unbounded recursion DoS in parse() revive phase
+   · form-data              high     form-data: CRLF injection in form-data via unescaped multipart field n
+   · js-yaml                high     JS-YAML: Quadratic-complexity DoS in merge key handling via repeated a
+   · minimatch              high     minimatch has a ReDoS via repeated wildcards with non-matching literal
+   · nanoid                 high     nanoid: non-secure generators can loop indefinitely with negative size
+   · picomatch              high     Picomatch: Method Injection in POSIX Character Classes causes incorrec
+   · postcss                high     PostCSS has XSS via Unescaped </style> in its CSS Stringify Output
+   · react-router           high     React Router vulnerable to XSS via Open Redirects
+   · react-router-dom       high     (dependencia transitiva)
+   · rollup                 high     Rollup 4 has Arbitrary File Write via Path Traversal
+   · source-map-js          high     source-map-js allows event-loop denial of service through indexed sour
+   · vite                   high     Vite Vulnerable to Path Traversal in Optimized Deps `.map` Handling
+Trivy fs (CVE de dependencias) -> {'CRITICAL': 1, 'HIGH': 34, 'MEDIUM': 36, 'LOW': 4}
+=> 23 vulnerabilidades altas/críticas según npm audit; Trivy reporta 1 críticas y 34 altas

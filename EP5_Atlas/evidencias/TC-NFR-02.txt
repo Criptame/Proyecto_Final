@@ -1,0 +1,4 @@
+Emulación: 390×844, 4G lenta (1,6 Mbps / 150 ms RTT), CPU 4× más lenta, caché deshabilitada
+Login visible (interactivo): 3.43 s | DOMContentLoaded 3.08 s | transferido 1 KB (documento)
+Desde 'Ingresar' hasta dashboard con métricas: 8.93 s
+=> Login listo en 3.43 s; dashboard (página principal) en 8.93 s

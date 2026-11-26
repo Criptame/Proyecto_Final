@@ -1,0 +1,14 @@
+# Correo duplicado
+> POST /clientes   [con token]
+  {"nombre": "Duplicado", "correo": "cliente_a50d38@qa.test"}
+< HTTP 500  (7 ms)
+  {"error":"Error al crear cliente","glosa":"duplicate key value violates unique constraint \"clientes_correo_key\""}
+# Identificador inválido
+> GET /clientes/abc   [con token]
+< HTTP 500  (13 ms)
+  {"error":"Error al obtener cliente","glosa":"invalid input syntax for type bigint: \"abc\""}
+$ docker logs atlas-backend | grep authUser
+  authUser 3
+  authUser 6
+  authUser 6
+=> HTTP 500 con detalle interno de PostgreSQL en 'glosa'; los logs imprimen el contenido del token

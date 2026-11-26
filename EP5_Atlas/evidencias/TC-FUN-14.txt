@@ -1,0 +1,9 @@
+# Subida
+> POST /contratos   [con token]
+< HTTP 201  (33 ms)
+  {"id":"5","cliente_id":"4","titulo":"Contrato QA 060fb8","descripcion":"Contrato generado por la suite automatizada","fecha_inicio":"2026-10-27T00:00:00.000Z","fecha_fin":"2027-05-25T00:00:00.000Z","c
+# Descarga
+> GET /contratos/5/file   [con token]
+< HTTP 200  (11 ms)
+  <222 bytes application/pdf>
+=> Subida 0.03 s, descarga 0.01 s; SHA-256 idéntico

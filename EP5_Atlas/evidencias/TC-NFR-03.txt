@@ -1,0 +1,4 @@
+k6: 200 usuarios virtuales, 4086 peticiones (39.6 req/s)
+  http_req_duration  p50=4014 ms  p90=4024 ms  p95=4027 ms  máx=4078 ms
+  http_req_failed    0.00 %
+=> Con 200 usuarios concurrentes: p95 = 4027 ms y 0.00 % de errores

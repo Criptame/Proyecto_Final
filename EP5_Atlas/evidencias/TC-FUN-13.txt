@@ -1,0 +1,7 @@
+> POST /contratos   [con token]
+< HTTP 201  (32 ms)
+  {"id":"3","cliente_id":"4","titulo":"Servicio A b70579","descripcion":"Contrato generado por la suite automatizada","fecha_inicio":"2026-10-27T00:00:00.000Z","fecha_fin":"2027-05-25T00:00:00.000Z","cr
+> POST /contratos   [con token]
+< HTTP 201  (17 ms)
+  {"id":"4","cliente_id":"4","titulo":"Servicio B 5868bb","descripcion":"Contrato generado por la suite automatizada","fecha_inicio":"2026-10-27T00:00:00.000Z","fecha_fin":"2027-05-25T00:00:00.000Z","cr
+=> HTTP 201/201; ambos contratos presentes en el listado: True

@@ -1,0 +1,3 @@
+API: faltan ['Content-Security-Policy', 'X-Frame-Options', 'X-Content-Type-Options', 'Referrer-Policy', 'Strict-Transport-Security']; X-Powered-By: Express; Server: -
+Frontend: faltan ['Content-Security-Policy', 'X-Frame-Options', 'X-Content-Type-Options', 'Referrer-Policy', 'Strict-Transport-Security']; X-Powered-By: no; Server: nginx/1.31.10
+=> API sin 5/5 y frontend sin 5/5 cabeceras; la API revela 'X-Powered-By: Express'

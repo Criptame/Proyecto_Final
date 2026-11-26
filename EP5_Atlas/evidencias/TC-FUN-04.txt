@@ -1,0 +1,13 @@
+Claves de la respuesta de login: ['token']
+> POST /autenticacion/refresh   [con token]
+< HTTP 404  (6 ms)
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /autenticacion/refresh</pre>
+</bod
+=> Sin refresh token (HTTP 404 en /refresh); access token de 120 min

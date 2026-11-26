@@ -1,0 +1,4 @@
+> adjuntar malware.exe  (0 KB) -> HTTP 201 en 0.0 s
+> adjuntar pagina.html  (0 KB) -> HTTP 201 en 0.0 s
+> adjuntar grande.pdf   (25,600 KB) -> HTTP 201 en 0.4 s
+=> Archivos no permitidos aceptados: ['malware.exe', 'pagina.html', 'grande.pdf']

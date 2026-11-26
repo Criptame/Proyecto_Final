@@ -1,0 +1,5 @@
+$ SELECT nombre_usuario, contrasena_hash FROM usuarios WHERE ...
+  admin                  | admin
+  editor                 | editor
+  victima_92f2bb         | Qa#Prueba2026!
+=> 3 de 3 contraseñas almacenadas en texto plano

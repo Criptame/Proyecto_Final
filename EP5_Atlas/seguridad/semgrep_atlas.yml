@@ -1,0 +1,123 @@
+# Reglas SAST personalizadas para Atlas (complementan los rulesets públicos de Semgrep).
+# Cada regla codifica un requisito del ERS para que el pipeline lo verifique en cada cambio.
+rules:
+  - id: atlas-ruta-escritura-sin-autenticacion
+    languages: [javascript]
+    severity: ERROR
+    message: >-
+      Ruta de escritura ($M) sin verificación de autenticación que responda 401 antes de modificar datos.
+      Incumple NFR-SEG-4 y RB-2 (OWASP A01:2025, CWE-306).
+      Excepción aceptada tras el triage: POST /empresas es el registro público (RF-2.1) y no requiere sesión.
+    metadata: {ers: "NFR-SEG-4, RB-2", owasp: "A01:2025", cwe: "CWE-306"}
+    patterns:
+      - pattern-either:
+          - pattern: router.$M($PATH, async ($REQ, $RES) => { ... })
+          - pattern: router.$M($PATH, $MW, async ($REQ, $RES) => { ... })
+      - metavariable-regex:
+          metavariable: $M
+          regex: ^(post|put|delete)$
+      - pattern-not: |
+          router.$M($PATH, ..., async ($REQ, $RES) => {
+            ...
+            return $RES.status(401).$F(...);
+            ...
+          })
+
+  - id: atlas-secreto-jwt-por-defecto
+    languages: [javascript]
+    severity: ERROR
+    message: Secreto de firma JWT con valor por defecto en el código fuente (NFR-SEG-9, CWE-798).
+    metadata: {ers: "NFR-SEG-9", owasp: "A07:2025", cwe: "CWE-798"}
+    patterns:
+      - pattern: process.env.$V || "$LIT"
+      - metavariable-regex: {metavariable: $V, regex: (?i).*(secret|jwt).*}
+
+  - id: atlas-credenciales-bd-en-codigo
+    languages: [javascript]
+    severity: ERROR
+    message: Cadena de conexión con usuario y contraseña de PostgreSQL embebida en el código (CWE-798).
+    metadata: {ers: "NFR-SEG-3", owasp: "A02:2025", cwe: "CWE-798"}
+    pattern: process.env.DATABASE_URL || "=~/postgres:\/\/[^:]+:[^@]+@/"
+
+  - id: atlas-contrasena-comparada-en-claro
+    languages: [javascript]
+    severity: ERROR
+    message: La contraseña se compara en texto plano; debe usarse bcrypt.compare (NFR-SEG-2, CWE-256).
+    metadata: {ers: "NFR-SEG-2", owasp: "A04:2025", cwe: "CWE-256"}
+    # Ajuste tras el triage: en el frontend la misma comparación valida la confirmación de contraseña (falso positivo).
+    paths:
+      include: ["/BACKEND/"]
+    pattern-either:
+      - pattern: $U.contrasena_hash !== $P
+      - pattern: $U.contrasena_hash === $P
+      - pattern: $U.contrasena_hash != $P
+      - pattern: $U.contrasena_hash == $P
+
+  - id: atlas-contrasena-guardada-sin-hash
+    languages: [javascript]
+    severity: ERROR
+    message: Se inserta o actualiza contrasena_hash con el valor recibido del cliente, sin aplicar hash (NFR-SEG-2).
+    metadata: {ers: "NFR-SEG-2", owasp: "A04:2025", cwe: "CWE-256"}
+    patterns:
+      - pattern: $POOL.query("$SQL", [..., contrasena_hash, ...])
+      - metavariable-regex: {metavariable: $SQL, regex: (?is).*(insert|update).*contrasena_hash.*}
+
+  - id: atlas-error-interno-expuesto
+    languages: [javascript]
+    severity: WARNING
+    message: La respuesta 500 incluye el mensaje interno del error ('glosa'); expone detalles de la BD (NFR-SEG-6, CWE-209).
+    metadata: {ers: "NFR-SEG-6", owasp: "A10:2025", cwe: "CWE-209"}
+    pattern: '$RES.status(500).json({..., glosa: $E.message || $X, ...})'
+
+  - id: atlas-latencia-artificial
+    languages: [javascript]
+    severity: WARNING
+    message: Latencia artificial en un endpoint; incumple NFR-PERF-1/2/3.
+    metadata: {ers: "NFR-PERF-1"}
+    pattern: await delay($MS)
+
+  - id: atlas-cors-sin-lista-blanca
+    languages: [javascript]
+    severity: WARNING
+    message: CORS habilitado para cualquier origen (NFR-SEG-5, CWE-942).
+    metadata: {ers: "NFR-SEG-5", owasp: "A02:2025", cwe: "CWE-942"}
+    pattern: $APP.use(cors())
+
+  - id: atlas-multer-sin-limites
+    languages: [javascript]
+    severity: WARNING
+    message: Carga de archivos sin límite de tamaño ni filtro de tipo (RF-5.2, CWE-434/CWE-400).
+    metadata: {ers: "RF-5.2, NFR-SEG-5", owasp: "A06:2025", cwe: "CWE-434"}
+    patterns:
+      - pattern: multer({...})
+      - pattern-not: "multer({..., limits: $L, ...})"
+
+  - id: atlas-borrado-fisico
+    languages: [javascript]
+    severity: WARNING
+    message: Eliminación física con DELETE; el ERS exige eliminación lógica (criterio RF-4).
+    metadata: {ers: "RF-4.2"}
+    pattern: $POOL.query("=~/^\s*DELETE\s+FROM/i", ...)
+
+  - id: atlas-log-de-datos-de-sesion
+    languages: [javascript]
+    severity: WARNING
+    message: Se registra en consola el contenido del token del usuario (NFR-SEG-6, CWE-532).
+    metadata: {ers: "NFR-SEG-6", owasp: "A09:2025", cwe: "CWE-532"}
+    pattern-either:
+      - pattern: console.log("authUser", ...)
+      - pattern: console.log("authUser.empresaId", ...)
+
+  - id: atlas-rol-definido-en-el-cliente
+    languages: [javascript]
+    severity: ERROR
+    message: El rol del usuario se obtiene de localStorage con 'administrador' por defecto; la autorización depende del navegador (RF-3.2, CWE-602).
+    metadata: {ers: "RF-3.2, NFR-SEG-4", owasp: "A01:2025", cwe: "CWE-602"}
+    pattern: localStorage.getItem("role") || "administrador"
+
+  - id: atlas-token-en-localstorage
+    languages: [javascript]
+    severity: WARNING
+    message: El JWT se guarda en localStorage, accesible para cualquier script inyectado (CWE-922).
+    metadata: {ers: "NFR-SEG-9", owasp: "A07:2025", cwe: "CWE-922"}
+    pattern: localStorage.setItem("token", $T)

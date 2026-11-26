@@ -1,0 +1,11 @@
+  [OK] Crear cliente                        CLIENTES_CREAR
+  [OK] Editar cliente                       CLIENTES_ACTUALIZAR
+  [OK] Eliminar cliente                     CLIENTES_ELIMINAR
+  [OK] Crear contrato + subir documento     CONTRATOS_CREAR
+  [OK] Editar contrato + nuevo documento    CONTRATOS_ACTUALIZAR
+  [OK] Eliminar contrato                    CONTRATOS_ELIMINAR
+  [NO] Descargar documento                  DOCUMENTO_DESCARGAR
+  [NO] Crear usuario                        USUARIOS_CREAR
+  [OK] Editar usuario                       USUARIOS_ACTUALIZAR
+  [OK] Eliminar usuario                     USUARIOS_ELIMINAR
+=> 8/10 acciones auditadas; sin registro: Descargar documento, Crear usuario

@@ -1,0 +1,4 @@
+Dependencias del backend: ['express', 'pg', 'multer', 'jsonwebtoken', 'cors', 'morgan', 'swagger-ui-express', 'dotenv', 'nodemon']
+BACKEND/sql: ['dump-atlas.sql', 'init-db.sh', 'init.sql']
+init-db.sh sólo se ejecuta cuando el volumen de PostgreSQL está vacío (docker-entrypoint-initdb.d)
+=> Sin herramienta de migraciones ni versiones del esquema: un cambio exige recrear la BD o SQL manual

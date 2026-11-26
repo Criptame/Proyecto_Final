@@ -1,0 +1,13 @@
+# Entornos y dependencias: no se versionan, se recrean con
+#   python -m venv .venv  +  .venv\Scripts\python -m pip install -r EP5_Atlas\requirements.txt
+#   npm install  (dentro de EP5_Atlas\presentacion)
+.venv/
+node_modules/
+
+# Archivos generados por Python y pytest
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Archivos temporales de Word / PowerPoint abiertos
+~$*

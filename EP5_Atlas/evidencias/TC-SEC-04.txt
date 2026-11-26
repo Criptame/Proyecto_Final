@@ -1,0 +1,16 @@
+Token del editor (rol 2) no incluye rol: {'usuarioId': '2', 'nombreUsuario': 'editor', 'empresaUsuarioId': '2', 'empresaId': '1', 'iat': 1795671735, 'exp': 1795678935}
+# Editor crea cliente
+> POST /clientes   [con token]
+  {"nombre": "Creado por editor 32b790", "correo": "ed_2a5e19@qa.test"}
+< HTTP 201  (19 ms)
+  {"id":"29","nombre":"Creado por editor 32b790","correo":"ed_2a5e19@qa.test","telefono":null,"direccion":null,"es_empresa
+# Editor edita cliente
+> PUT /clientes/29   [con token]
+  {"nombre": "Editado por editor", "correo": "ed2_17b8d1@qa.test"}
+< HTTP 200  (18 ms)
+  {"id":"29","nombre":"Editado por editor","correo":"ed2_17b8d1@qa.test","telefono
+# Editor elimina cliente
+> DELETE /clientes/29   [con token]
+< HTTP 200  (19 ms)
+  {"deleted":true}
+=> El editor crea, edita y elimina: HTTP (201, 200, 200)

@@ -1,0 +1,9 @@
+Trivy config: 4 configuraciones inseguras
+  [HIGH] DS-0002 Image user should not be 'root'
+  [LOW] DS-0026 No HEALTHCHECK defined
+  [HIGH] DS-0002 Image user should not be 'root'
+  [LOW] DS-0026 No HEALTHCHECK defined
+$ psql -h <host> -p 15432 -U postgres (contraseña por defecto 'postgres')
+  postgres conectado; usuarios=7
+Imagen base del backend: node:18-alpine (Node 18: fin de soporte abril 2025)
+=> BD accesible desde la red con credenciales por defecto: sí; 4 configuraciones inseguras en Dockerfile/compose

@@ -1,0 +1,8 @@
+atlas-postgres   restart=unless-stopped  healthcheck=sí
+atlas-backend    restart=unless-stopped  healthcheck=no
+atlas-frontend   restart=unless-stopped  healthcheck=no
+$ SELECT pg_terminate_backend(pid) ...  -> 1 conexiones de la API terminadas (simula reinicio de la BD)
+La API dejó de responder a los 0.0 s del corte; causa en el log: throw er; // Unhandled 'error' event / error: terminating connection due to administrator command
+Reinicios automáticos del contenedor: 0 -> 1
+Recuperación: 1.0 s después del corte
+=> Un corte de la BD derriba la API (pool de pg sin manejador de errores); Docker la reinició en 1.0 s; atlas-backend, atlas-frontend sin healthcheck

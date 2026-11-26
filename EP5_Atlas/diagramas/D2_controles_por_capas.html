@@ -1,0 +1,47 @@
+<html><head><meta charset="utf-8"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;color:#1f2933;background:#fff;padding:18px;width:1000px;font-size:17px}
+.tag{display:inline-block;font-size:15px;padding:3px 9px;border-radius:11px;margin:3px 4px 3px 0;font-weight:bold}
+.n{background:#e6f0ff;color:#1d4e89;border:1px solid #9fbfe8}
+.l{background:#fff4e0;color:#8a4b00;border:1px solid #f0c27a}
+.t{background:#eef1f4;color:#3e4c59;border:1px solid #c5ccd3}
+.ok{background:#e3f6ea;color:#1b6b3a;border:1px solid #8fd1a7}
+.ko{background:#fde8e8;color:#a61b1b;border:1px solid #f0a3a3}
+.down{text-align:center;font-size:26px;color:#829ab1;line-height:30px}
+
+    .capa{display:flex;margin-bottom:9px;border:1px solid #c5ccd3;border-radius:10px;overflow:hidden}
+    .lab{width:150px;color:#fff;font-weight:bold;font-size:18px;padding:10px;display:flex;align-items:center}
+    .grid{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:8px;background:#fbfcfd}
+    .c{border-radius:8px;padding:6px 9px;background:#fff;font-size:17px} .m{font-size:14.5px;color:#52606d;margin:2px 0 3px}
+    .okb{border:2px solid #8fd1a7} .kob{border:2px solid #f0a3a3} .tb{border:2px solid #c5ccd3}
+    .st{display:inline-block;font-size:14.5px;font-weight:bold;padding:1px 8px;border-radius:9px}
+    .res{margin:0 0 10px}</style></head><body>
+    <div class="res"><span class="tag ok">✔ 2 controles verificados</span><span class="tag ko">✘ 25 controles ausentes o con falla</span>
+    <span class="tag t">27 controles exigidos por el ERS, OWASP ASVS e ISO/IEC 27001</span></div><div class="capa"><div class="lab" style="background:#334e68">Cliente (navegador)</div><div class="grid"><div class="c okb"><b>Escape de salida (React)</b><div class="m">NFR-SEG-5 · TC-SEC-09</div>
+            <span class="st ok">✔ verificado en la UI</span></div><div class="c kob"><b>Content-Security-Policy</b><div class="m">NFR-SEG-5 · TC-SEC-12</div>
+            <span class="st ko">✘ ausente o con falla</span></div><div class="c kob"><b>Rol entregado por el servidor</b><div class="m">NFR-SEG-4 · TC-SEC-04</div>
+            <span class="st ko">✘ ausente o con falla</span></div><div class="c kob"><b>Mensajes de error de negocio</b><div class="m">NFR-USAB-3 · TC-NFR-07</div>
+            <span class="st ko">✘ ausente o con falla</span></div></div></div><div class="capa"><div class="lab" style="background:#1d4e89">Borde y transporte</div><div class="grid"><div class="c kob"><b>TLS 1.3 + HSTS</b><div class="m">NFR-SEG-1 · TC-SEC-01</div>
+            <span class="st ko">✘ ausente o con falla</span></div><div class="c kob"><b>CORS con lista blanca</b><div class="m">NFR-SEG-5 · TC-SEC-11</div>
+            <span class="st ko">✘ ausente o con falla</span></div><div class="c kob"><b>Cabeceras de seguridad</b><div class="m">NFR-SEG-5 · TC-SEC-12</div>
+            <span class="st ko">✘ ausente o con falla</span></div><div class="c kob"><b>Límite de intentos de login</b><div class="m">NFR-SEG-5 · TC-SEC-20</div>
+            <span class="st ko">✘ ausente o con falla</span></div></div></div><div class="capa"><div class="lab" style="background:#2f6f9f">API (Express)</div><div class="grid"><div class="c kob"><b>JWT corto, refresh y revocación</b><div class="m">RF-1.2 · NFR-SEG-9 · TC-FUN-03 / TC-FUN-04</div>
+            <span class="st ko">✘ ausente o con falla</span></div><div class="c kob"><b>Secreto de firma protegido</b><div class="m">NFR-SEG-9 · TC-SEC-17</div>
+            <span class="st ko">✘ ausente o con falla</span></div><div class="c kob"><b>Autenticación en todos los endpoints</b><div class="m">NFR-SEG-4 · TC-SEC-05 / TC-SEC-06</div>
+            <span class="st ko">✘ ausente o con falla</span></div><div class="c kob"><b>RBAC: el editor sólo lee</b><div class="m">RF-3.2 · RB-4 · TC-SEC-04</div>
+            <span class="st ko">✘ ausente o con falla</span></div><div class="c kob"><b>Aislamiento entre empresas</b><div class="m">RB-2 · TC-SEC-07 / TC-SEC-08</div>
+            <span class="st ko">✘ ausente o con falla</span></div><div class="c kob"><b>Validación de entradas</b><div class="m">RF-4.3 · NFR-SEG-5 · TC-FUN-12 / TC-SEC-09</div>
+            <span class="st ko">✘ ausente o con falla</span></div><div class="c okb"><b>Consultas parametrizadas</b><div class="m">NFR-SEG-5 · TC-SEC-10</div>
+            <span class="st ok">✔ verificado</span></div><div class="c kob"><b>Validación de archivos</b><div class="m">RF-5.2 · TC-SEC-19</div>
+            <span class="st ko">✘ ausente o con falla</span></div><div class="c kob"><b>Auditoría completa y protegida</b><div class="m">RF-6.1 · NFR-SEG-6 · TC-FUN-19 / TC-SEC-14</div>
+            <span class="st ko">✘ ausente o con falla</span></div></div></div><div class="capa"><div class="lab" style="background:#3d7f72">Datos</div><div class="grid"><div class="c kob"><b>Contraseñas con bcrypt</b><div class="m">NFR-SEG-2 · TC-SEC-02</div>
+            <span class="st ko">✘ ausente o con falla</span></div><div class="c kob"><b>Cifrado de datos bancarios</b><div class="m">NFR-SEG-3 · TC-SEC-03</div>
+            <span class="st ko">✘ ausente o con falla</span></div><div class="c kob"><b>BD no expuesta</b><div class="m">NFR-SEG-3 · TC-SEC-25</div>
+            <span class="st ko">✘ ausente o con falla</span></div><div class="c kob"><b>Respaldo y restauración</b><div class="m">NFR-SEG-7 · TC-SEC-15</div>
+            <span class="st ko">✘ ausente o con falla</span></div><div class="c kob"><b>Eliminación lógica</b><div class="m">Criterio RF-4 · TC-FUN-11</div>
+            <span class="st ko">✘ ausente o con falla</span></div><div class="c kob"><b>Storage de documentos</b><div class="m">RF-5.3 · TC-FUN-16</div>
+            <span class="st ko">✘ ausente o con falla</span></div></div></div><div class="capa"><div class="lab" style="background:#5b3a8c">Operación y suministro</div><div class="grid"><div class="c kob"><b>SCA de dependencias</b><div class="m">OWASP A03:2025 · TC-SEC-21</div>
+            <span class="st ko">✘ ausente o con falla</span></div><div class="c kob"><b>Escaneo de secretos</b><div class="m">NFR-SEG-9 · TC-SEC-23</div>
+            <span class="st ko">✘ ausente o con falla</span></div><div class="c kob"><b>Healthcheck y recuperación</b><div class="m">NFR-DIS-1 · TC-NFR-11</div>
+            <span class="st ko">✘ ausente o con falla</span></div><div class="c kob"><b>Migraciones versionadas</b><div class="m">NFR-DIS-2 · TC-NFR-12</div>
+            <span class="st ko">✘ ausente o con falla</span></div></div></div></body></html>

@@ -1,0 +1,5 @@
+> OPTIONS /clientes  Origin: https://sitio-malicioso.example
+< Access-Control-Allow-Origin: *
+< Access-Control-Allow-Methods: GET,HEAD,PUT,PATCH,POST,DELETE
+< Access-Control-Allow-Headers: authorization
+=> La API autoriza cualquier origen (Access-Control-Allow-Origin: *)

@@ -1,0 +1,7 @@
+> POST /autenticacion/login   [SIN token]
+  {"nombre_usuario": "admin", "password": "admin"}
+< HTTP 200  (4025 ms)
+  {"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvSWQiOiIxIiwibm9tYnJlVXN1YXJpbyI6ImFkbWluIiwiZW1wcmVzYVVzdWFya
+payload JWT: {'usuarioId': '1', 'nombreUsuario': 'admin', 'empresaUsuarioId': '1', 'empresaId': '1', 'iat': 1795671489, 'exp': 1795678689}
+eventos LOGIN de admin en el último minuto: 1
+=> HTTP 200 con JWT (usuarioId=1, empresaId=1, vigencia 2 h) y evento LOGIN auditado

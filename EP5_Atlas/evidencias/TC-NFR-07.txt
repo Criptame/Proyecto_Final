@@ -1,0 +1,2 @@
+Mensaje mostrado al usuario: 'Error al crear empresa con usuario | duplicate key value violates unique constraint "usuarios_nombre_usuario_key"'
+=> La interfaz muestra el error técnico de PostgreSQL

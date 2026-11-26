@@ -1,0 +1,5 @@
+> POST /empresas   [SIN token]
+  {"usuario": {"nombre_usuario": "dup_a596cb", "contrasena_hash": "Qa#Prueba2026!", "correo": "dup_a596cb@qa.test"}, "empresa": {"nombre": "Empresa duplicada", "correo": "contacto_funcional_95caf7@qa.test"}}
+< HTTP 500  (14 ms)
+  {"error":"Error al crear empresa con usuario","glosa":"duplicate key value violates unique constraint \"empresas_correo_key\""}
+=> Segunda empresa con el mismo correo rechazada (HTTP 500)
